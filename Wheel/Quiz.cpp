@@ -2,7 +2,7 @@
 #include "Quiz.h"
 
 //xoa di
-
+jkjhgjhg
 Quiz::Quiz() : Sprite() {
 	question = "";
 	answer = "";

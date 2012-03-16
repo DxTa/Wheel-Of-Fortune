@@ -1,12 +1,12 @@
 ﻿
 #include "Quiz.h"
-
+//gghfghf
 Quiz::Quiz() : Sprite() {
 	question = "";
 	answer = "";
 	number_of_words = 0;
 	count_words.push_back(-1);
-}đâsds
+}
 
 Quiz::Quiz(string pquestion,string panswer) : Sprite() {
 	question = pquestion;

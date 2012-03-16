@@ -1,6 +1,5 @@
-﻿
-#include "Quiz.h"
-//gghfghf
+﻿#include "Quiz.h"
+
 Quiz::Quiz() : Sprite() {
 	question = "";
 	answer = "";

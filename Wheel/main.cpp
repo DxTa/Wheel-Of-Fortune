@@ -92,6 +92,7 @@ bool game_init(HWND)
 	quiz->change();
 	quiz->setAnswer("Cho meo lon ga chim co buom ca");
 	quiz->change();
+	//test phat'
 
 	keyboard = new Keyboard();
 	keyboard->setPosition(640.0f,513-80);

@@ -28,16 +28,13 @@ public:
 	string getQuestion() const {return question;}
 	string getAnswer() const {return answer;}
 	void setQuestion(string pquestion) {question = pquestion;}
-	void setAnswer(string panswer) {
-		answer.clear();
-		answer = panswer;}
+	void setAnswer(string panswer) {answer = panswer;}
 	void setQuizPos(double width_button, double height_button, double x1, double y1, double x2, double y2);
 	void drawQuiz();
-	void addQuizEntity();
 	int inputQuiz(int i);
 	void addLetter(int );
 	void arrangeLetter();
-	void update();
+	void change();
 	void reset();
 };
 

@@ -89,20 +89,15 @@ bool game_init(HWND)
 	quiz->loadImage("quiz_background.png",D3DCOLOR_XRGB(255,255,255));
 	quiz->setPosition(0,0);
 	quiz->setAnswer("a b c fdasaskdjasd asdasdasd asdjasdas");
-
-	quiz->arrangeLetter();
-	quiz->setQuizPos(27,39,quiz->getX(),quiz->getY(),quiz->getX() + quiz->getWidth(),quiz->getY() + quiz->getHeight());
-	quiz->addQuizEntity();
-	//quiz->reset();
+	quiz->change();
+	//quiz->arrangeLetter();
+	//quiz->setQuizPos(27,39,quiz->getX(),quiz->getY(),quiz->getX() + quiz->getWidth(),quiz->getY() + quiz->getHeight());
 	quiz->setAnswer("Cho meo lon ga chim co buom ca");
-	quiz->update();
-	//ostringstream ss;
-	//ss << quiz->getAnswer();
+	quiz->change();
 
 	keyboard = new Keyboard();
 	keyboard->setPosition(640.0f,513-80);
 	keyboard->addEntity();
-
 
 	return true;
 }

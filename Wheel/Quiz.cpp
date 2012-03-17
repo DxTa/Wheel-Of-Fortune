@@ -229,20 +229,6 @@ void Quiz::drawQuiz() {
 		iter++;
 	}
 }
-void Quiz::addQuizEntity() {
-	std::list<Button*>::iterator iter;
-	iter = letters.begin();
-	Button* button;
-
-	while (iter != letters.end()) {
-		button = *iter;
-		button->draw();
-		iter++;
-	}
-
-	int i = 0;
-
-}
 
 void Quiz::reset() {
 	std::list<Button*>::iterator iter;
@@ -262,7 +248,7 @@ void Quiz::reset() {
 	}
 }
 
-void Quiz::update() {
+void Quiz::change() {
 	reset();
 
 	arrangeLetter();
@@ -271,7 +257,7 @@ void Quiz::update() {
 	i = this->getY();
 	i = this->getWidth();
 	i = this->getHeight();
-	addQuizEntity();
+	//addQuizEntity();
 }
 
 

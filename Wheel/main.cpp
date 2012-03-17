@@ -90,8 +90,6 @@ bool game_init(HWND)
 	quiz->setPosition(0,0);
 	quiz->setAnswer("a b c fdasaskdjasd asdasdasd asdjasdas");
 	quiz->change();
-	//quiz->arrangeLetter();
-	//quiz->setQuizPos(27,39,quiz->getX(),quiz->getY(),quiz->getX() + quiz->getWidth(),quiz->getY() + quiz->getHeight());
 	quiz->setAnswer("Cho meo lon ga chim co buom ca");
 	quiz->change();
 

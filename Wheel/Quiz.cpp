@@ -257,7 +257,6 @@ void Quiz::change() {
 	i = this->getY();
 	i = this->getWidth();
 	i = this->getHeight();
-	//addQuizEntity();
 }
 
 

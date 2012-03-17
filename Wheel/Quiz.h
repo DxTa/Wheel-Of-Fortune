@@ -7,8 +7,8 @@
 #include "xmllite.h"
 #include <iostream>
 #include <sstream>
-#include <vector>
 #include "utils.h"
+#include <vector>
 
 using namespace std;
 using namespace Advanced2D;

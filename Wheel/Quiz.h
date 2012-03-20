@@ -10,6 +10,8 @@
 #include "utils.h"
 #include <vector>
 #include <string.h>
+#include "Player.h"
+#include <stdlib.h>
 
 using namespace std;
 using namespace Advanced2D;
@@ -33,7 +35,7 @@ public:
 
 	void setQuizPos(double width_button, double height_button, double x1, double y1, double x2, double y2);
 	void drawQuiz();
-	int inputQuiz(int i);
+	int inputQuiz(int i); // biến i để chọn độ khó, số độ khó bằng số bàn chơi = num_player + 1. lớn hơn thì auto set khó nhất.
 	void addLetter(int );
 	void arrangeLetter();
 	void change();

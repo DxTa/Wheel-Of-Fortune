@@ -89,7 +89,15 @@ int Quiz::inputQuiz(int x){
    pFileStream->Seek(liBeggining, STREAM_SEEK_SET, NULL);
    pReader->SetInput(pFileStream);
 
-   int k=0,j=1;//k la` bien dem'. j bien' de? lay ra phan` tu? thu' j. j = 1 thi` lay' phan` tu? dau` tien
+   int num_player = Player::getNumPlayer();
+   if (x> (num_player + 1)) x = num_player + 1; // biến x để chọn độ khó, số độ khó bằng số bàn chơi = num_player + 1. lớn hơn thì auto set khó nhất.
+   int interval = i/(num_player+1);
+   srand ( time(NULL) );
+   int j = rand() % interval + x*interval; //random ra câu hổi trong khoảng có độ khó đã tính dc phía trên
+
+   //chỗ này sẽ add thêm hàm ghi câu hỏi vào log, để tránh chơi lặp câu hỏi.
+
+   int k=0;//k la` bien dem'. j bien' de? lay ra phan` tu? thu' j. j = 1 thi` lay' phan` tu? dau` tien
    
    while (S_OK == (hr = pReader->Read(&nodeType))) {
       switch (nodeType) {

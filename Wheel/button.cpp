@@ -11,11 +11,11 @@ Button::Button(string plabel) : Sprite() {
 
 	ostringstream ss1,ss2;
 	image_normal = new Texture();
-	ss1 << "button/" << label << "" <<".png";
+	ss1 << "button/" << label << "_normal" <<".png";
 	image_normal->Load(ss1.str());
 	
 	image_pressed = new	Texture();
-	ss2 << "button/"<< label << "'" <<".png";
+	ss2 << "button/"<< label << "_pressed" <<".png";
 	image_pressed->Load(ss2.str());
 	callback = NULL;
 	reset();

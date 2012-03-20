@@ -151,6 +151,13 @@ void Scene::init() {
 	keyboard->setPosition(380,0);
 	keyboard->addEntity();
 
+	quiz = new Quiz();
+	quiz->setPosition(0,0);
+	quiz->setWidth(380);
+	quiz->setHeight(200);
+	quiz->setAnswer("Cho meo lon ga chim co buom ca");
+	quiz->change();
+
 	PlayerMenu_Spin = new Button("spin_button");
 	PlayerMenu_Spin->setCallback(spin);
 	PlayerMenu_Spin->setCollidable(false);

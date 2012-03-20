@@ -11,6 +11,7 @@ Keyboard::Keyboard() {
 		letter[i] = new Button(ss);
 		letter[i]->reset();
 	}
+	setStatus(UNAVAILABLE);
 }
 
 Keyboard::~Keyboard() {
@@ -32,19 +33,25 @@ void Keyboard::setPosition(double x,double y) {
 }
 
 void Keyboard::draw() {
+	if(this==NULL)
+		return;
 	int i;
 	for(i=0;i<26;i++)
 		letter[i]->draw();
 }
 
 void Keyboard::reset() {
+	if(this==NULL)
+		return;
 	int i;
 	for(i=0;i<26;i++) {
 		letter[i]->reset();
 	}
 }
 
-void Keyboard::resetPosition() {
+void Keyboard::updateMouseMove() {
+	if(this==NULL)
+		return;
 	int i;
 	for(i=0;i<26;i++) {
 		letter[i]->setCheckPosition(false);
@@ -52,21 +59,27 @@ void Keyboard::resetPosition() {
 }
 
 string Keyboard::chose() {
+	if(this==NULL)
+		return "";
 	int i;
 	string temp;
+	if(status == UNAVAILABLE)
+		return "";
 	if(status == AVAILABLE) {
 		for(i=0;i<26;i++) {
-			if(letter[i]->isPosition()==true) {
+			if((letter[i]->isPosition()==true) && (letter[i]->getStatus() != Button::BUTTON_PRESSED)) {
 				letter[i]->pressed();
-				status = UNAVAILABLE;
+				setStatus(UNAVAILABLE);
 				return letter[i]->getLabel();
 			}
 		}
 	}
-	return "MISS";
+	return "";
 }
 
 void Keyboard::addEntity() {
+	if(this==NULL)
+		return;
 	int i;
 	for(i=0;i<26;i++) {
 		if(letter[i])

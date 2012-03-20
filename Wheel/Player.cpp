@@ -11,7 +11,7 @@ Player::Player() : Sprite() {
 	total_score = 0;
 	score = 0;
 	turn_left = 3;
-	status = AWAIT;
+	setStatus(AWAIT);
 	turn_gift = 0;
 }
 
@@ -20,23 +20,56 @@ Player::Player(string na) : Sprite() {
 	total_score = 0;
 	score = 0;
 	name = na;
-	status = AWAIT;
+	setStatus(AWAIT);
+	turn_left = 3;
 	turn_gift = 0;
 }
 
 int Player::spin(Wheel* wheel) {
 	if(wheel->spin() == Wheel::STOP) {
 		int TossUp = wheel->getTossUp();
-		if(keyboard!=NULL)
-			keyboard->setStatus(Keyboard::AVAILABLE);
+		if(getStatus() == SPINNING) {
+			/*switch(TossUp) {
+			case Wheel::G_300_0 :
+				setStatus(Player::READY_TO_ANSWER);
+				break;
+			}*/
+			setStatus(Player::READY_TO_ANSWER);
+		}
 		return TossUp;
 	}
-	else return Wheel::SPINNING;
+	else {
+		setStatus(Player::SPINNING);
+		return Player::SPINNING;
+	}
 }
 
 
-bool Player::answer() {
-	if(keyboard->chose() == "A")
-		return true;
-	else return false;
+string Player::answer(Keyboard* keyboard) {
+	if(getStatus() == READY_TO_ANSWER) {
+		string ss;
+		keyboard->setStatus(Keyboard::AVAILABLE);
+		ss = keyboard->chose();
+		if(ss!= "")
+			setStatus(PLAYING);
+		if(((ss == "A") || (ss == "B")) || (ss == "C") ||  (ss == "D") || (ss == "E"))
+			end_play();
+		return ss;
+	}
+	else
+		return "";
+}
+
+void Player::end_play() {
+	if(turn_gift == 0) {
+		if(turn_left == 0)
+			setStatus(LOSED);
+		else 
+			setStatus(AWAIT);
+		currentPlayer += 1;
+		if(currentPlayer > numberPlayer)
+			currentPlayer = 1;
+	}
+	else 
+		turn_gift--;
 }

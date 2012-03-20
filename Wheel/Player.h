@@ -6,13 +6,10 @@
 #include "Keyboard.h"
 #include "Quiz.h"
 
-extern Keyboard* keyboard;
-
 using namespace Advanced2D;
 using namespace	std;
 
 class Player : public Sprite {
-	enum P_STATUS {AWAIT=100,PLAYING,CHOSING,CHOSED,LOSED,WIN_STAGE};
 	private:
 		string name;
 		static int numberPlayer;
@@ -23,6 +20,7 @@ class Player : public Sprite {
 		int turn_left;
 		int turn_gift;
 	public :
+		enum P_STATUS {AWAIT=100,PLAYING,READY_TO_SPIN,SPINNING,READY_TO_ANSWER,ANSWERED,LOSED,WIN_STAGE};
 		Player();
 		Player(string );
 		~Player() {Sprite::~Sprite();}
@@ -30,16 +28,14 @@ class Player : public Sprite {
 		static int getNumPlayer() {return numberPlayer;}
 		string getName() const {return name;}
 		int getScore() const {return score;}
-		int getLeftover() const {return turn_left;}
 		int getStatus() const {return status;}
-		int getGiftturn() const {return turn_gift;}
+		int getTurnLeft() const {return turn_gift;}
+		int getTurnGift() const {return turn_left;}
 
 		static void setCurrentPlayer(int current) {currentPlayer =  current;}
 		static void setNumPlayer(int num) {numberPlayer = num;}
 		void setName(string na) {name = na;}
 		void setScore(int s) {score = s;}
-		void setTurnLeft(int l) {turn_left = l; if(turn_left == 0) status = LOSED;}
-		void setTurnLeft() {turn_left--;if(turn_left == 0) status = LOSED;}
 		void setStatus(P_STATUS sta) {status = sta;}
 		void winScore(int sco) {score = sco;}
 
@@ -48,9 +44,9 @@ class Player : public Sprite {
 
 		int start_play();
 		int spin(Wheel*);
-		bool answer();
+		string answer(Keyboard* );
 		bool fullanswer();
-		void end_play(P_STATUS);
+		void end_play();
 };
 
 #endif

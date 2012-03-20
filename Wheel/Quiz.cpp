@@ -1,32 +1,21 @@
-﻿#include "Quiz.h"
+#include "Quiz.h"
 
 Quiz::Quiz() : Sprite() {
 	question = "";
 	answer = "";
-	number_of_words = 0;
-	count_words.push_back(-1);
 }
 
 Quiz::Quiz(string pquestion,string panswer) : Sprite() {
 	question = pquestion;
 	answer = panswer;
-	number_of_words = 0;
-	count_words.push_back(-1);
 }
 
 void Quiz::addLetter(int i) {
 	ostringstream ss;
-	if (answer.at(i) == '\n' || answer.at(i) == '\0' || answer.at(i) == ' ' || answer.at(i) == '\r') {
-		count_words.push_back(i);
-		number_of_words++;
-	}// lưu lại vị trí các khoảng cách, lưu cả vị trí đầu và cuối, chẳng hạn "aa" thì lưu {-1,2}
 	ss << answer.at(i);
-
 	Button* button = new Button(ss.str());
 	button->setCollidable(false);
-	button->setColor(D3DCOLOR_XRGB(0,255,255));
 	button->setID(i);
-	button->reset();
 	letters.push_back(button);
 }
 
@@ -34,13 +23,11 @@ void Quiz::arrangeLetter() {
 	std::list<Button*>::iterator iter;
 	letters.clear();
 	int strlen = answer.length();
-	if (strlen <= 0 ) return;
 	for(int i = 0;i<strlen;i++) {
 		addLetter(i);
 	}
-	number_of_words++; //do mặc định khởi tạo là 0 nên phải +1
-	count_words.push_back(strlen); //lưu ký tự kết thúc
 	iter = letters.begin();
+	
 }
 
 int Quiz::inputQuiz(int x){
@@ -158,106 +145,3 @@ int Quiz::inputQuiz(int x){
    }
    return 0;
 }
-
-/*
-chiều dài nút, chiều cao nút. x1,y1 x2,y2 là vùng mà ta muốn sắp xếp ô chữ trong đó
-*/
-void Quiz::setQuizPos(double width_button, double height_button, double x1, double y1, double x2, double y2) {
-	double xo = x1,yo = y1,fx,fy;
-	int max_words_in_row = (x2-x1)/(width_button+5);
-	int max_rows = (y2-y1)/(height_button+5);
-	if (letters.size() >= (max_rows*max_words_in_row)) return; //qua' dai`
-	/*
-	xếp từng hàng đầy nhất có thể cho đến khi không xếp dc hơn thì chuyển hàng mới tiếp tục xêp
-	xếp từng hàng thì tiện căn giữa từng hàng.
-	dừng khi letters.end()
-	*/
-	int row = 0;
-	std::list<Button*>::iterator iter;
-	iter = letters.begin();
-	Button* button;
-	int i = 0;
-	button = *iter;
-	fy = yo;
-	i=0;
-	while (iter != letters.end()) {
-		int k,j;
-		if (row > 0) {iter++;}
-		k = count_words[i] + 1;
-		for (j=i; j<=number_of_words; j++) 
-			if ((count_words[j] - count_words[i]) >= max_words_in_row+2) { //gioi han max_words_in_row ky tu 1 hang`, + 2 vi` co 2 khoang trong'
-				break;
-			}
-		i = j-1;
-		fx = xo+(width_button+5)*(((max_words_in_row-(count_words[i] - k))%max_words_in_row)/2);
-		while (iter != letters.end() && k < count_words[i]) {
-			for (j=0;j<i;j++)
-				if (k==count_words[j]) {
-
-					goto cont;
-				}
-			button = *iter;
-			button->setPosition(fx,fy);
-			cont:
-			fx = fx + width_button + 5;
-			k++;
-			++iter;
-		}
-		row++;
-		fy = fy + height_button + 5;
-	}
-	//xong sắp xếp ô chữ, tiếp theo sẽ là tính toàn vị trí đặt ô chữ đã săp xếp trong khu vực x1,y1 x2,y2 phù hợp
-	//i = row;
-	double delta_y = (double)(y2-fy)/2;
-	iter = letters.begin();
-	while (iter != letters.end()) {
-		button = *iter;
-		button->setY(button->getY() + delta_y);
-		++iter;
-	}
-}
-
-void Quiz::drawQuiz() {
-	std::list<Button*>::iterator iter;
-	iter = letters.begin();
-	Button* button;
-	while (iter != letters.end()) {
-		button = *iter;
-		button->draw();
-		//g_engine->addEntity(button);
-
-		iter++;
-	}
-}
-
-void Quiz::reset() {
-	std::list<Button*>::iterator iter;
-	iter = letters.begin();
-
-	while (iter != letters.end()) {
-		delete(*iter);
-		iter = letters.erase(iter);
-		++iter;
-	}
-	letters.clear();
-	number_of_words = 0;
-	if (count_words.empty() == false) {
-		count_words.erase(count_words.begin(),count_words.end());
-		count_words.clear();
-		count_words.push_back(-1);
-	}
-}
-
-void Quiz::change() {
-	reset();
-
-	arrangeLetter();
-	setQuizPos(27,39,this->getX(),this->getY(),this->getX() + this->getWidth(),this->getY() + this->getHeight());
-	int i = this->getX();
-	i = this->getY();
-	i = this->getWidth();
-	i = this->getHeight();
-}
-
-
-

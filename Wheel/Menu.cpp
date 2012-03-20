@@ -66,13 +66,14 @@ void Menu::updateMouseButton() {
 	while (iter != menu.end())
 	{
 		button = *iter;
-		if(button->isPosition()==true) {
-			button->pressed();
-			break;
+		if(button) {
+			if(button->isPosition()==true) {
+				button->pressed();
+				break;
+			}
 		}
 		++iter;
 	}
-
 }
 
 void Menu::updateMouseMove() {
@@ -82,8 +83,10 @@ void Menu::updateMouseMove() {
 	while (iter != menu.end())
 	{
 		button = *iter;
-		button->setCheckPosition(false);
-		++iter;
+		if(button) {
+			button->setCheckPosition(false);
+			++iter;
+		}
 	}
 }
 
@@ -94,7 +97,8 @@ void Menu::update() {
 	while (iter != menu.end())
 	{
 		button = *iter;
-		button->reset();
+		if(button)
+			button->reset();
 		++iter;
 	}
 }

@@ -20,7 +20,7 @@ public :
 	void setPosition(double x,double y);
 	void draw();
 	void addEntity();
-	void resetPosition();
+	void updateMouseMove();
 };
 
 

@@ -32,12 +32,14 @@ public:
 	};
 	enum DICRECTION  {LEFT,RIGHT,NONE};
 	enum WHEEL_STATUS {STOP=0,SPINNING=1,WAIT};
+	enum OBJECTYPE {WHEEL_POS=151};
 	Wheel();
 	Wheel(double,double);
 
 	int getTossUp();
 	int getDirection() const {return direction;}
-	bool getStatus() const {return start_spin;}
+	int getStatus() const {return status;}
+	bool getStartSpin() const {return start_spin;}
 	bool isCheckPosition() const {return checkposition;}
 	bool isHolding() const {return wheel_holding;}
 	double getAngle() const {return angle;}
@@ -57,7 +59,8 @@ public:
 	void setInterval(double i) {interval = i;}
 	void setOR(double x, double y, double r);
 	void setFriction(double fric) {friction = fric;}
-	void setStatus(bool stat) {start_spin = stat;}
+	void setStatus(int pstatus) {status = pstatus;}
+	void setStartSpin(bool stat) {start_spin = stat;}
 	void setSpeed(double sp) {speed = sp;}
 	void setAngle(double angl) {angle = angl;}
 	void setS(double epsilon) {s = epsilon;}

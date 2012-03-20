@@ -9,7 +9,7 @@ Wheel::Wheel() : Sprite() {
 	direction = NONE;
 	teng = "";
 	start_spin  = false;
-	
+	setStatus(STOP);
 }
 
 Wheel::Wheel(double sp,double fric) : Sprite() {
@@ -20,7 +20,7 @@ Wheel::Wheel(double sp,double fric) : Sprite() {
 	direction = NONE;
 	teng = "";
 	start_spin = false;
-	
+	setStatus(STOP);
 }
 
 int Wheel::spin() {
@@ -49,12 +49,17 @@ int Wheel::spin() {
 	}
 
 	if(speed > 0) {
-		status = SPINNING;
+		setStatus(SPINNING);
 		return SPINNING;
 	}
 	else {
-		status = STOP;
-		return STOP;
+		if(getStatus() == Wheel::WAIT) {
+			return Wheel::WAIT;
+		}
+		else {
+			setStatus(Wheel::STOP);
+			return Wheel::STOP;
+		}
 	}
 }
 
@@ -82,8 +87,8 @@ void Wheel::setOR(double x, double y, double r) {
 void Wheel::update() {
 	if(this->isHolding() ==false) {
 		if (this->getSpeed() > 0) {
-			if (this->getStatus() == false) 
-				this->setStatus(true);
+			if (this->getStartSpin() == false) 
+				this->setStartSpin(true);
 		}
 	}
 }
@@ -98,7 +103,7 @@ void Wheel::updateDirection(double delta_x,double delta_y,Sprite* cursor) {
 }
 
 void Wheel::updateMouseButton() {
-	if(this->isCheckPosition() == true && this->getStatus() == false) {
+	if((this->isCheckPosition() == true) && (this->getStartSpin() == false)&& ((getStatus() == Wheel::WAIT) || (getStatus() == Wheel::SPINNING))) {
 		this->setHolding(true);
 	}
 	else this->setHolding(false);

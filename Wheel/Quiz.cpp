@@ -1,5 +1,6 @@
 ﻿#include "Quiz.h"
 
+
 Quiz::Quiz() : Sprite() {
 	question = "";
 	answer = "";
@@ -12,6 +13,16 @@ Quiz::Quiz(string pquestion,string panswer) : Sprite() {
 	answer = panswer;
 	number_of_words = 0;
 	count_words.push_back(-1);
+}
+
+void Quiz::setQuestion(string pquestion) {
+		std::transform(pquestion.begin(), pquestion.end(), pquestion.begin(), ::toupper);
+		question = pquestion;
+}
+
+void Quiz::setAnswer(string panswer) {
+		std::transform(panswer.begin(), panswer.end(), panswer.begin(), ::toupper);
+		answer = panswer;
 }
 
 void Quiz::addLetter(int i) {
@@ -41,6 +52,32 @@ void Quiz::arrangeLetter() {
 	number_of_words++; //do mặc định khởi tạo là 0 nên phải +1
 	count_words.push_back(strlen); //lưu ký tự kết thúc
 	iter = letters.begin();
+}
+
+void Quiz::inputLog() {
+	ifstream log("log.txt");
+	if (!log.is_open()) {
+		return;
+	}
+	else {
+		int buffer;
+		while(!log.eof()) {
+			log >> buffer;
+			recent.push_back(buffer);
+			if (recent.size() > 100) {
+				recent.erase(recent.begin());
+			}
+		}
+	}
+	log.close();
+}
+
+void Quiz::outputLog() {
+	ofstream log("log.txt");
+	vector<int>::iterator iter;
+	for (iter = recent.begin(); iter < recent.end(); iter++)
+		log << *iter;
+	log.close();
 }
 
 int Quiz::inputQuiz(int x){
@@ -92,12 +129,45 @@ int Quiz::inputQuiz(int x){
    int num_player = Player::getNumPlayer();
    if (x> (num_player + 1)) x = num_player + 1; // biến x để chọn độ khó, số độ khó bằng số bàn chơi = num_player + 1. lớn hơn thì auto set khó nhất.
    int interval = i/(num_player+1);
-   srand ( time(NULL) );
-   int j = rand() % interval + x*interval; //random ra câu hổi trong khoảng có độ khó đã tính dc phía trên
+   int k; //biến chạy vòng lặp
+   std::vector<int> randomNumber;
+   int tempxleft = x, tempxright = x, tempx = x; //lưu cấp độ khó vào biến temp để tránh thay đổi giá trị ban đầu
+   int j;
+   rmkrandom:
+   for (k = tempx*interval; k < (tempx+1)*interval; k++) { //chạy vong lặp này để tạo mảng các quiz có thể chọn dc, từ đó lấy random
+	   vector<int>::iterator iter;
+	   iter = find(recent.begin(),recent.end(),k);
+	   if (iter == recent.end()) {
+		   randomNumber.push_back(k);
+	   }
+   }
+   if (randomNumber.empty() == true) {
+	   if ((abs(x-tempxleft) >= abs(x-tempxright)) && (tempxleft > 0)) { //chọn lân cận trái
+			tempxleft--;
+	   		tempx = tempxleft;
+	   }
+	   else { //chọn lân cận phải
+		   tempxright++; 
+		   tempx = tempxright;
+	   }
 
-   fstream log;//chỗ này sẽ add thêm hàm ghi câu hỏi vào log, để tránh chơi lặp câu hỏi.
+	   if ((tempxleft < 0) && (tempxright > x)) { // các câu hỏi đã chọn hết --> xóa log.
+		   recent.erase(recent.begin(),recent.end());
+		   recent.clear();
+		   tempx = x;	tempxleft = x;	tempxright = x;
+	   }
 
-   int k=0;//k la` bien dem'. j bien' de? lay ra phan` tu? thu' j. j = 1 thi` lay' phan` tu? dau` tien
+	   goto rmkrandom; //chọn lại
+   }
+   else {
+		srand ( time(NULL) );
+		j = rand() % randomNumber.size();
+		j = randomNumber.at(j);
+		randomNumber.erase(randomNumber.begin(),randomNumber.end()); //sau khi đã chọn dc quiz thì giải phóng mảng random
+		randomNumber.clear();
+   }
+
+   k=0;//k la` bien dem'. j bien' de? lay ra phan` tu? thu' j. j = 1 thi` lay' phan` tu? dau` tien
    
    while (S_OK == (hr = pReader->Read(&nodeType))) {
       switch (nodeType) {
@@ -131,10 +201,14 @@ int Quiz::inputQuiz(int x){
             return -1;
          }
 		 if (wcscmp(pwszLocalName,L"Question") == 0) {
-			 setQuestion(strdup(narrow(pwszValue).c_str()));
+			 string temp = strdup(narrow(pwszValue).c_str());
+			 std::transform(temp.begin(), temp.end(), temp.begin(), ::toupper); //qui đổi sang CAP để tránh lỗi
+			 setQuestion(temp);
 		 }
 		 else if (wcscmp(pwszLocalName,L"Answer") == 0) {
-			 setAnswer(strdup(narrow(pwszValue).c_str()));
+			 string temp = strdup(narrow(pwszValue).c_str());  
+			 std::transform(temp.begin(), temp.end(), temp.begin(), ::toupper); //qui đổi sang CAP để tránh lỗi
+			 setAnswer(temp);
 		 }
          break;
 
@@ -270,6 +344,7 @@ bool Quiz::check(string panswer, int *result) {
 		return true;
 	}
 	*result = 0;
+	std::transform(panswer.begin(), panswer.end(), panswer.begin(), ::toupper); //qui đổi sang CAP để tránh lỗi
 	std::list<Letters*>::iterator iter;
 	iter = letters.begin();
 	Letters* letter;

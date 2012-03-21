@@ -173,7 +173,7 @@ void Scene::init() {
 	quiz->setPosition(0,0);
 	quiz->setWidth(380);
 	quiz->setHeight(200);
-	//quiz->setAnswer("Cho meo lon ga chim co buom ca");
+	quiz->inputLog();
 	quiz->inputQuiz(0);
 	quiz->change();
 	int result;

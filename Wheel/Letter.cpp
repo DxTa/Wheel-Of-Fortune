@@ -11,7 +11,7 @@ Letters::Letters(string plabel) : Sprite() {
 	ostringstream ss;
 
 	static int i = 0;
-	if (i=0) {image_off->Load("button/off.png");i=1;}
+	if (i == 0) {image_off->Load("button/off.png");i=1;}
 	
 	image_on = new	Texture();
 	//ss2 << "button/"<< label << "_on" <<".png";

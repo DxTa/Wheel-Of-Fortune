@@ -12,8 +12,10 @@ private:
 	//int value;
 	int status;
 	string label;
-	Texture *image_off;
-	Texture *image_on;
+	//static 
+	Texture *image_off = new Texture();
+	//image_off->Load("off.png"); //cho` source
+	//Texture *image_on;
 	//void (*callback)();
 public :
 	Letters(string );

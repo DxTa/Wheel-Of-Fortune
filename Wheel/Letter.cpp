@@ -9,7 +9,7 @@ Letters::Letters(string plabel) : Sprite() {
 	//setObjectType(BUTTON);
 
 	ostringstream ss1,ss2;
-	image_off = new Texture();
+	image_off = new Texture(); //chac' la ko nen neu' dung` 1 anh? duy nhat'
 	//ss1 << "letters_off" <<".png";
 	ss1 << "button/" << label << "_normal" <<".png";
 	image_off->Load(ss1.str());
@@ -25,7 +25,7 @@ Letters::Letters(string plabel) : Sprite() {
 Letters::~Letters() {
 	Sprite::~Sprite();
 	if(image_off!=NULL)
-		image_off->Release();
+		image_off->Release(); //chac' la ko nen neu' dung` 1 anh? duy nhat'
 	if(image_on!=NULL)
 		image_on->Release();
 }
@@ -46,9 +46,9 @@ void Letters::on() {
 
 void Letters::release() {
 	Sprite::~Sprite();
-	if(image_off!=NULL)
-		image_off->Release();
-	if(image_on!=NULL)
-		image_on->Release();
+	//if(image_off!=NULL)
+	//	image_off->Release();
+	//if(image_on!=NULL)
+	//	image_on->Release();
 	setAlive(false);
 }

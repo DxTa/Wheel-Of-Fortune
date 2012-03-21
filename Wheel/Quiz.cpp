@@ -24,7 +24,7 @@ void Quiz::addLetter(int i) {
 
 	Letters* letter = new Letters(ss.str());
 	letter->setCollidable(false);
-	letter->setColor(D3DCOLOR_XRGB(0,255,255));
+	//letter->setColor(D3DCOLOR_XRGB(0,255,255));
 	letter->setID(i);
 	letter->off();
 	letters.push_back(letter);
@@ -95,7 +95,7 @@ int Quiz::inputQuiz(int x){
    srand ( time(NULL) );
    int j = rand() % interval + x*interval; //random ra câu hổi trong khoảng có độ khó đã tính dc phía trên
 
-   //chỗ này sẽ add thêm hàm ghi câu hỏi vào log, để tránh chơi lặp câu hỏi.
+   fstream log;//chỗ này sẽ add thêm hàm ghi câu hỏi vào log, để tránh chơi lặp câu hỏi.
 
    int k=0;//k la` bien dem'. j bien' de? lay ra phan` tu? thu' j. j = 1 thi` lay' phan` tu? dau` tien
    
@@ -261,10 +261,8 @@ void Quiz::reset() {
 void Quiz::change() {
 	reset();
 	arrangeLetter();
-	setQuizPos(44,34,this->getX(),this->getY(),this->getX() + this->getWidth(),this->getY() + this->getHeight());
+	setQuizPos(Letters::getImage_off()->getWidth(),Letters::getImage_off()->getHeight(),this->getX(),this->getY(),this->getX() + this->getWidth(),this->getY() + this->getHeight());
 }
-
-//void Quiz::update() {}
 
 bool Quiz::check(string panswer, int *result) {
 	if (panswer.compare(answer) == 0) {
@@ -277,8 +275,10 @@ bool Quiz::check(string panswer, int *result) {
 	Letters* letter;
 	while (iter != letters.end()) {
 		letter = *iter;
-		if (panswer.compare(letter->getLabel()) == 0) (*result)++;
-		letter->on();
+		if (panswer.compare(letter->getLabel()) == 0) {
+			(*result)++;
+			letter->on();
+		}
 		iter++;
 	}
 	if (*result > 0) return true;

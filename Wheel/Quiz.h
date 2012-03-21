@@ -40,7 +40,6 @@ public:
 	void arrangeLetter();
 	void change();
 	void reset();
-	//void update(); //hình như ko cần
 	bool check(string panswer, int *result); //nếu đoán đúng cả dãy thì result=0,true / nếu đoán dc 1 chữ thì result = số chữ trong dãy,true
 };
 

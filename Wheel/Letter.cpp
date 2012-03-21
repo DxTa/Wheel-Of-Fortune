@@ -1,5 +1,5 @@
 #include "Letter.h"
-
+Texture* Letters::image_off = new Texture();
 Letters::Letters(string plabel) : Sprite() {
 	label = plabel;
 	status = OFF;
@@ -8,24 +8,23 @@ Letters::Letters(string plabel) : Sprite() {
 	setCollisionMethod(COLLISION_RECT);
 	//setObjectType(BUTTON);
 
-	ostringstream ss1,ss2;
-	image_off = new Texture(); //chac' la ko nen neu' dung` 1 anh? duy nhat'
-	//ss1 << "letters_off" <<".png";
-	ss1 << "button/" << label << "_normal" <<".png";
-	image_off->Load(ss1.str());
+	ostringstream ss;
+
+	static int i = 0;
+	if (i=0) {image_off->Load("button/off.png");i=1;}
 	
 	image_on = new	Texture();
 	//ss2 << "button/"<< label << "_on" <<".png";
-	ss2 << "button/" << label << "_pressed" <<".png";
-	image_on->Load(ss2.str());
+	ss << "button/" << label << "_pressed" <<".png";
+	image_on->Load(ss.str());
 	//callback = NULL;
 	off();
 }
 
 Letters::~Letters() {
 	Sprite::~Sprite();
-	if(image_off!=NULL)
-		image_off->Release(); //chac' la ko nen neu' dung` 1 anh? duy nhat'
+	//if(image_off!=NULL)
+	//	image_off->Release(); //chac' la ko nen neu' dung` 1 anh? duy nhat'
 	if(image_on!=NULL)
 		image_on->Release();
 }

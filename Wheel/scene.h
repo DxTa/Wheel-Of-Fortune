@@ -176,6 +176,8 @@ void Scene::init() {
 	//quiz->setAnswer("Cho meo lon ga chim co buom ca");
 	quiz->inputQuiz(0);
 	quiz->change();
+	int result;
+	quiz->check("A",&result);
 }
 
 void Scene::scene2() {

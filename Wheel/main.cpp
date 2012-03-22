@@ -82,8 +82,9 @@ void game_render2d()
 	g_player->spin(wheel);
 	system12->Print(0,0,g_player->getName(),D3DCOLOR_XRGB(255,255,100));
 	system12->Print(0,50,chose,D3DCOLOR_XRGB(255,255,100));
-	cursor->draw();
 	quiz->drawQuiz();
+	cursor->draw();
+	
 }
 
 void game_end() 

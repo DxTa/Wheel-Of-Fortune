@@ -3,8 +3,6 @@
 
 #include "Engine/Advanced2D.h"
 #include "Letter.h"
-#include <atlbase.h>
-#include "xmllite.h"
 #include <iostream>
 #include <fstream>
 #include <iostream>
@@ -27,7 +25,7 @@ private:
 	std::vector<int> count_words; //lưu index vị trí bắt đầu kết thúc của mỗi từ (index các khoảng trống)
 	int number_of_words; //số từ trong answer
 	std::list<Letters*> letters; //lưu từng ký tự answers trong này
-	std::vector<int> recent;
+	std::vector<int> recent; //lưu 100 câu hỏi gần nhất
 public:
 	Quiz();
 	Quiz(string,string);

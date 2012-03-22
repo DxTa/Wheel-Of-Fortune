@@ -61,8 +61,11 @@ void Quiz::inputLog() {
 	}
 	else {
 		int buffer;
-		while(!log.eof()) {
+		vector<int>::iterator iter;
+	   	while(!log.eof()) {
 			log >> buffer;
+			iter = find(recent.begin(),recent.end(),buffer);
+			if (iter != recent.end()) continue;
 			recent.push_back(buffer);
 			if (recent.size() > 100) {
 				recent.erase(recent.begin());
@@ -76,7 +79,7 @@ void Quiz::outputLog() {
 	ofstream log("log.txt");
 	vector<int>::iterator iter;
 	for (iter = recent.begin(); iter < recent.end(); iter++)
-		log << *iter;
+		log << *iter << "\n";
 	log.close();
 }
 
@@ -163,6 +166,11 @@ int Quiz::inputQuiz(int x){
 		srand ( time(NULL) );
 		j = rand() % randomNumber.size();
 		j = randomNumber.at(j);
+		recent.push_back(j);
+		if (recent.size() > 100) {
+			recent.erase(recent.begin());
+		}
+		outputLog();
 		randomNumber.erase(randomNumber.begin(),randomNumber.end()); //sau khi đã chọn dc quiz thì giải phóng mảng random
 		randomNumber.clear();
    }

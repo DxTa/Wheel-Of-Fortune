@@ -18,6 +18,7 @@ public :
 	Letters(string );
 	~Letters();
 	inline int getStatus() const {return status;}
+	void setStatus(int pstatus) {status = pstatus;}
 	string getLabel() const {return label;}
 	static Texture* getImage_off() {return image_off;}
 	//void setCallback(void(*function)()) {callback = function;}

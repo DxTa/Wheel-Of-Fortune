@@ -34,6 +34,8 @@ void Quiz::addLetter(int i) {
 	ss << answer.at(i);
 
 	Letters* letter = new Letters(ss.str());
+	if (answer.at(i) == '\n' || answer.at(i) == '\0' || answer.at(i) == ' ' || answer.at(i) == '\r')
+		letter->setStatus(ON);
 	letter->setCollidable(false);
 	//letter->setColor(D3DCOLOR_XRGB(0,255,255));
 	letter->setID(i);
@@ -121,7 +123,7 @@ int Quiz::inputQuiz(int x,int numberPlayer){
 		   tempx = tempxright;
 	   }
 
-	   if ((tempxleft < 0) && (tempxright > x)) { // các câu hỏi đã chọn hết --> xóa log.
+	   if ((tempxleft < 0) && (tempxright > num_player)) { // các câu hỏi đã chọn hết --> xóa log.
 		   recent.erase(recent.begin(),recent.end());
 		   recent.clear();
 		   tempx = x;	tempxleft = x;	tempxright = x;
@@ -277,6 +279,8 @@ bool Quiz::isFinish() {
 	Letters* letter;
 	while (iter != letters.end()) {
 		letter = *iter;
+		string ss = letter->getLabel();
+		if ((ss.compare("\n") == 0) || (ss.compare("\0") == 0) || (ss.compare("\r") == 0) || (ss.compare(" ") == 0)) {iter++;continue;}
 		if(letter->getStatus() == OFF) {
 			result = false;
 			break;

@@ -244,8 +244,10 @@ int Quiz::inputQuiz(int x){
 /*
 chiều dài nút, chiều cao nút. x1,y1 x2,y2 là vùng mà ta muốn sắp xếp ô chữ trong đó
 */
-void Quiz::setQuizPos(double width_button, double height_button, double x1, double y1, double x2, double y2) {
+void Quiz::setQuizPos(double x1, double y1, double x2, double y2) {
 	double xo = x1,yo = y1,fx,fy;
+	double width_button = letters.front()->getWidth() * letters.front()->getScale();
+	double height_button = letters.front()->getHeight() * letters.front()->getScale();
 	int max_words_in_row = (x2-x1)/(width_button+5);
 	int max_rows = (y2-y1)/(height_button+5);
 	if (letters.size() >= (max_rows*max_words_in_row)) return; //qua' dai`
@@ -337,7 +339,7 @@ void Quiz::reset() {
 void Quiz::change() {
 	reset();
 	arrangeLetter();
-	setQuizPos(Letters::getImage_off()->getWidth()*0.8f,Letters::getImage_off()->getHeight()*0.8f,this->getX(),this->getY(),this->getX() + this->getWidth(),this->getY() + this->getHeight());
+	setQuizPos(this->getX(),this->getY(),this->getX() + this->getWidth(),this->getY() + this->getHeight());
 }
 
 bool Quiz::check(string panswer, int *result) {

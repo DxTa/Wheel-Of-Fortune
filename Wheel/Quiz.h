@@ -37,7 +37,7 @@ public:
 	void setQuestion(string pquestion);
 	void setAnswer(string panswer);
 
-	void setQuizPos(double width_button, double height_button, double x1, double y1, double x2, double y2);
+	void setQuizPos(double x1, double y1, double x2, double y2);
 	void drawQuiz();
 	void inputLog();
 	void outputLog();

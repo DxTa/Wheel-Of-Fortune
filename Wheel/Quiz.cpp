@@ -149,7 +149,7 @@ int Quiz::inputQuiz(int x,int numberPlayer){
 }
 
 /*
-chiều dài nút, chiều cao nút. x1,y1 x2,y2 là vùng mà ta muốn sắp xếp ô chữ trong đó
+x1,y1 x2,y2 là vùng mà ta muốn sắp xếp ô chữ trong đó
 */
 void Quiz::setQuizPos(double x1, double y1, double x2, double y2) {
 	double xo = x1,yo = y1,fx,fy;

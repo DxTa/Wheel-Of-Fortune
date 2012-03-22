@@ -243,7 +243,6 @@ void Scene::update() {
 	PlayerMenu_Spin->reset();
 	PlayeMenu_Guess->reset();
 	if(quiz->isFinish() == true) {
-		//quiz->inputQuiz(0,Player::getNumPlayer());
 		quiz->change(0,Player::getNumPlayer());
 		keyboard->reset();
 	}

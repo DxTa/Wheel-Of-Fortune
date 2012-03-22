@@ -176,9 +176,6 @@ void Scene::init() {
 	quiz->inputLog();
 	quiz->inputQuiz(0);
 	quiz->change();
-	int result;
-	quiz->check("A",&result);
-
 }
 
 void Scene::scene2() {

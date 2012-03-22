@@ -52,8 +52,9 @@ string Player::answer(Keyboard* keyboard) {
 		ss = keyboard->chose();
 		if(ss!= "")
 			setStatus(PLAYING);
-		if(((ss == "A") || (ss == "B")) || (ss == "C") ||  (ss == "D") || (ss == "E"))
-			end_play();
+		int result;
+//		quiz->check(ss,&result);
+		//	end_play();
 		return ss;
 	}
 	else

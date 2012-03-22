@@ -79,9 +79,11 @@ void game_update()
 void game_render2d()
 {	
 	Scene::wheel->setHolding(false);
+	ostringstream ss;
+	ss << result;
 	g_player->spin(wheel);
 	system12->Print(0,0,g_player->getName(),D3DCOLOR_XRGB(255,255,100));
-	system12->Print(0,50,chose,D3DCOLOR_XRGB(255,255,100));
+	system12->Print(0,50,ss.str(),D3DCOLOR_XRGB(255,255,100));
 	quiz->drawQuiz();
 	cursor->draw();
 	
@@ -117,11 +119,12 @@ void game_render3d()
 }
 
 void game_mouseButton(int button) {
-	string ss;
+	int temp;
 	switch(button) {
 	case 0 :	
 			Scene::updateMouseButton();
-			chose += Scene::g_player->answer(keyboard);
+			Scene::quiz->check(Scene::g_player->answer(keyboard),&temp);
+			result += temp;
 			break;
 	}
 }

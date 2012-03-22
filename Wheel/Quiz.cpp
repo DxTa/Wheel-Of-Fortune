@@ -34,8 +34,8 @@ void Quiz::addLetter(int i) {
 	ss << answer.at(i);
 
 	Letters* letter = new Letters(ss.str());
-	if (answer.at(i) == '\n' || answer.at(i) == '\0' || answer.at(i) == ' ' || answer.at(i) == '\r')
-		letter->setStatus(ON);
+	//if (answer.at(i) == '\n' || answer.at(i) == '\0' || answer.at(i) == ' ' || answer.at(i) == '\r')
+	//	letter->setStatus(ON);
 	letter->setCollidable(false);
 	//letter->setColor(D3DCOLOR_XRGB(0,255,255));
 	letter->setID(i);
@@ -45,7 +45,7 @@ void Quiz::addLetter(int i) {
 
 void Quiz::arrangeLetter() {
 	std::list<Letters*>::iterator iter;
-	letters.clear();
+	//letters.clear();
 	int strlen = answer.length();
 	if (strlen <= 0 ) return;
 	for(int i = 0;i<strlen;i++) {
@@ -67,9 +67,8 @@ void Quiz::inputLog() {
 	   	while(!log.eof()) {
 			log >> buffer;
 			iter = find(recent.begin(),recent.end(),buffer);
-			if (iter != recent.end()) continue;
+			if (iter != recent.end() || buffer < 0) continue;
 			recent.push_back(buffer);
-			int a = recent.size();
 			if (recent.size() > 100) {
 				recent.erase(recent.begin());
 			}
@@ -143,7 +142,7 @@ int Quiz::inputQuiz(int x,int numberPlayer){
 		randomNumber.erase(randomNumber.begin(),randomNumber.end()); //sau khi đã chọn dc quiz thì giải phóng mảng random
 		randomNumber.clear();
    }
-
+   
    Utils::xmlat(pReader,pFileStream,j,L"Question",&question);
    Utils::xmlat(pReader,pFileStream,j,L"Answer",&answer);
    return 0;
@@ -212,6 +211,7 @@ void Quiz::setQuizPos(double x1, double y1, double x2, double y2) {
 }
 
 void Quiz::drawQuiz() {
+	if (letters.empty() == true) return;
 	std::list<Letters*>::iterator iter;
 	iter = letters.begin();
 	Letters* letter;
@@ -229,23 +229,24 @@ void Quiz::drawQuiz() {
 void Quiz::reset() {
 	std::list<Letters*>::iterator iter;
 	iter = letters.begin();
-
 	while (iter != letters.end()) {
 		delete(*iter);
-		iter = letters.erase(iter);
+		letters.erase(iter);
 		++iter;
 	}
 	letters.clear();
+
 	number_of_words = 0;
-	if (count_words.empty() != false) {
+	if (count_words.empty() == false) {
 		count_words.erase(count_words.begin(),count_words.end());
 		count_words.clear();
 		count_words.push_back(-1);
 	}
 }
 
-void Quiz::change() {
+void Quiz::change(int x, int num_player) {
 	reset();
+	inputQuiz(x,num_player);
 	arrangeLetter();
 	setQuizPos(this->getX(),this->getY(),this->getX() + this->getWidth(),this->getY() + this->getHeight());
 }

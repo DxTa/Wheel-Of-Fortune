@@ -41,7 +41,7 @@ public:
 	int inputQuiz(int ,int); // biến i để chọn độ khó, số độ khó bằng số bàn chơi = num_player + 1. lớn hơn thì auto set khó nhất.
 	void addLetter(int );
 	void arrangeLetter();
-	void change();
+	void change(int x, int num_player);
 	void reset();
 	bool check(string panswer, int *result); //nếu đoán đúng cả dãy thì result=0,true / nếu đoán dc 1 chữ thì result = số chữ trong dãy,true
 	bool isFinish();

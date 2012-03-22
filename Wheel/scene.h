@@ -174,8 +174,7 @@ void Scene::init() {
 	quiz->setWidth(380);
 	quiz->setHeight(200);
 	quiz->inputLog();
-	quiz->inputQuiz(0,Player::getNumPlayer());
-	quiz->change();
+	quiz->change(0,Player::getNumPlayer());
 }
 
 void Scene::scene2() {
@@ -245,7 +244,7 @@ void Scene::update() {
 	PlayeMenu_Guess->reset();
 	if(quiz->isFinish() == true) {
 		//quiz->inputQuiz(0,Player::getNumPlayer());
-		quiz->change();
+		quiz->change(0,Player::getNumPlayer());
 		keyboard->reset();
 	}
 }

@@ -174,7 +174,7 @@ void Scene::init() {
 	quiz->setWidth(380);
 	quiz->setHeight(200);
 	quiz->inputLog();
-	quiz->inputQuiz(0);
+	quiz->inputQuiz(0,Player::getNumPlayer());
 	quiz->change();
 }
 
@@ -243,6 +243,11 @@ void Scene::update() {
 	Scene::menu->update();
 	PlayerMenu_Spin->reset();
 	PlayeMenu_Guess->reset();
+	if(quiz->isFinish() == true) {
+		quiz->inputQuiz(0,Player::getNumPlayer());
+		quiz->change();
+		keyboard->reset();
+	}
 }
 
 void Scene::updateMouseButton() {

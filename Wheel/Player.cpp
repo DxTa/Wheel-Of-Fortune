@@ -27,7 +27,7 @@ Player::Player(string na) : Sprite() {
 
 int Player::spin(Wheel* wheel) {
 	if(wheel->spin() == Wheel::STOP) {
-		int TossUp = wheel->getTossUp();
+		TossUp = wheel->getTossUp();
 		if(getStatus() == SPINNING) {
 			/*switch(TossUp) {
 			case Wheel::G_300_0 :
@@ -45,7 +45,7 @@ int Player::spin(Wheel* wheel) {
 }
 
 
-string Player::answer(Keyboard* keyboard) {
+string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 	if(getStatus() == READY_TO_ANSWER) {
 		string ss;
 		keyboard->setStatus(Keyboard::AVAILABLE);
@@ -53,8 +53,13 @@ string Player::answer(Keyboard* keyboard) {
 		if(ss!= "")
 			setStatus(PLAYING);
 		int result;
-//		quiz->check(ss,&result);
-		//	end_play();
+		if(quiz->check(ss,&result)) {
+			switch(TossUp) {
+			default:
+				score += TossUp*result;
+				break;
+			}
+		}
 		return ss;
 	}
 	else

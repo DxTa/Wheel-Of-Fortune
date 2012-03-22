@@ -84,7 +84,7 @@ void Quiz::outputLog() {
 	log.close();
 }
 
-int Quiz::inputQuiz(int x){
+int Quiz::inputQuiz(int x,int numberPlayer){
    CComPtr<IStream> pFileStream;
    CComPtr<IXmlReader> pReader;
 
@@ -94,7 +94,7 @@ int Quiz::inputQuiz(int x){
 
    Utils::xmlrewind(pReader,pFileStream);
 
-   int num_player = Player::getNumPlayer();
+   int num_player = numberPlayer;
    if (x> (num_player + 1)) x = num_player + 1; // biến x để chọn độ khó, số độ khó bằng số bàn chơi = num_player + 1. lớn hơn thì auto set khó nhất.
    int interval = i/(num_player+1);
    int k; //biến chạy vòng lặp
@@ -268,4 +268,20 @@ bool Quiz::check(string panswer, int *result) {
 	}
 	if (*result > 0) return true;
 	else return false;
+}
+
+bool Quiz::isFinish() {
+	bool result = true;
+	std::list<Letters*>::iterator iter;
+	iter = letters.begin();
+	Letters* letter;
+	while (iter != letters.end()) {
+		letter = *iter;
+		if(letter->getStatus() == OFF) {
+			result = false;
+			break;
+		}
+		iter++;
+	}
+	return result;
 }

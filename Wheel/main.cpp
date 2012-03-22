@@ -12,7 +12,6 @@
 #include "Player.h"
 #include "scene.h"
 #include "Cursor.h"
-
 #include <math.h>
 
 
@@ -25,9 +24,6 @@ Cursor* cursor;
 Font* system12;
 
 string chose;
-
-int result;
-
 
 enum {CURSOR=150};
 bool game_preload() 
@@ -78,10 +74,10 @@ void game_update()
 
 void game_render2d()
 {	
-	Scene::wheel->setHolding(false);
 	ostringstream ss;
-	ss << result;
+	Scene::wheel->setHolding(false);
 	g_player->spin(wheel);
+	ss << quiz->isFinish();
 	system12->Print(0,0,g_player->getName(),D3DCOLOR_XRGB(255,255,100));
 	system12->Print(0,50,ss.str(),D3DCOLOR_XRGB(255,255,100));
 	quiz->drawQuiz();
@@ -119,12 +115,10 @@ void game_render3d()
 }
 
 void game_mouseButton(int button) {
-	int temp;
 	switch(button) {
 	case 0 :	
 			Scene::updateMouseButton();
-			Scene::quiz->check(Scene::g_player->answer(keyboard),&temp);
-			result += temp;
+			g_player->answer(keyboard,quiz);
 			break;
 	}
 }

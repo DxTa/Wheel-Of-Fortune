@@ -10,7 +10,6 @@
 #include "utils.h"
 #include <vector>
 #include <string.h>
-#include "Player.h"
 #include <stdlib.h>
 #include <algorithm>
 
@@ -39,12 +38,13 @@ public:
 	void drawQuiz();
 	void inputLog();
 	void outputLog();
-	int inputQuiz(int i); // biến i để chọn độ khó, số độ khó bằng số bàn chơi = num_player + 1. lớn hơn thì auto set khó nhất.
+	int inputQuiz(int ,int); // biến i để chọn độ khó, số độ khó bằng số bàn chơi = num_player + 1. lớn hơn thì auto set khó nhất.
 	void addLetter(int );
 	void arrangeLetter();
 	void change();
 	void reset();
 	bool check(string panswer, int *result); //nếu đoán đúng cả dãy thì result=0,true / nếu đoán dc 1 chữ thì result = số chữ trong dãy,true
+	bool isFinish();
 };
 
 #endif

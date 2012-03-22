@@ -16,6 +16,7 @@ class Player : public Sprite {
 		static int currentPlayer;
 		int total_score;
 		int score;
+		int TossUp;
 		int status;
 		int turn_left;
 		int turn_gift;
@@ -44,7 +45,8 @@ class Player : public Sprite {
 
 		int start_play();
 		int spin(Wheel*);
-		string answer(Keyboard* );
+		string answer(Keyboard*,Quiz*);
+		string hehe(Letters*);
 		bool fullanswer();
 		void end_play();
 };

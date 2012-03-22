@@ -178,6 +178,7 @@ void Scene::init() {
 	quiz->change();
 	int result;
 	quiz->check("A",&result);
+
 }
 
 void Scene::scene2() {

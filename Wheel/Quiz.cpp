@@ -200,12 +200,12 @@ int Quiz::inputQuiz(int x){
             wprintf(L"Error getting value, error is %08.8lx", hr);
             return -1;
          }
-		 if (wcscmp(pwszLocalName,L"Question") == 0) {
+		 if (wcscmp(pwszLocalName,L"Question") == 0 && j == k) {
 			 string temp = strdup(narrow(pwszValue).c_str());
 			 std::transform(temp.begin(), temp.end(), temp.begin(), ::toupper); //qui đổi sang CAP để tránh lỗi
 			 setQuestion(temp);
 		 }
-		 else if (wcscmp(pwszLocalName,L"Answer") == 0) {
+		 else if (wcscmp(pwszLocalName,L"Answer") == 0 && j == k) {
 			 string temp = strdup(narrow(pwszValue).c_str());  
 			 std::transform(temp.begin(), temp.end(), temp.begin(), ::toupper); //qui đổi sang CAP để tránh lỗi
 			 setAnswer(temp);
@@ -307,6 +307,8 @@ void Quiz::drawQuiz() {
 	Letters* letter;
 	while (iter != letters.end()) {
 		letter = *iter;
+		string ss = letter->getLabel();
+		if ((ss.compare("\n") == 0) || (ss.compare("\0") == 0) || (ss.compare("\r") == 0) || (ss.compare(" ") == 0)) {iter++;continue;}
 		letter->draw();
 		//g_engine->addEntity(button);
 
@@ -335,7 +337,7 @@ void Quiz::reset() {
 void Quiz::change() {
 	reset();
 	arrangeLetter();
-	setQuizPos(Letters::getImage_off()->getWidth(),Letters::getImage_off()->getHeight(),this->getX(),this->getY(),this->getX() + this->getWidth(),this->getY() + this->getHeight());
+	setQuizPos(Letters::getImage_off()->getWidth()*0.8f,Letters::getImage_off()->getHeight()*0.8f,this->getX(),this->getY(),this->getX() + this->getWidth(),this->getY() + this->getHeight());
 }
 
 bool Quiz::check(string panswer, int *result) {

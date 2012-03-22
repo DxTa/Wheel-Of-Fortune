@@ -67,6 +67,7 @@ void Quiz::inputLog() {
 			iter = find(recent.begin(),recent.end(),buffer);
 			if (iter != recent.end()) continue;
 			recent.push_back(buffer);
+			int a = recent.size();
 			if (recent.size() > 100) {
 				recent.erase(recent.begin());
 			}
@@ -87,7 +88,7 @@ int Quiz::inputQuiz(int x){
    CComPtr<IStream> pFileStream;
    CComPtr<IXmlReader> pReader;
 
-   Utils::xmlopen(&pFileStream,&pReader,L"file.xml");
+   if (Utils::xmlopen(&pFileStream,&pReader,L"file.xml") == false) return -1;
 
    int i = Utils::xmlcount(pReader,pFileStream,L"entry");
 
@@ -109,11 +110,13 @@ int Quiz::inputQuiz(int x){
 	   }
    }
    if (randomNumber.empty() == true) {
-	   if ((abs(x-tempxleft) >= abs(x-tempxright)) && (tempxleft > 0)) { //chọn lân cận trái
+	   if ((abs(x-tempxleft) >= abs(x-tempxright)) && (tempxleft >= 0)) { //chọn lân cận trái
 			tempxleft--;
+			if (tempxleft < 0) goto right;
 	   		tempx = tempxleft;
 	   }
 	   else { //chọn lân cận phải
+		   right:
 		   tempxright++; 
 		   tempx = tempxright;
 	   }
@@ -139,7 +142,8 @@ int Quiz::inputQuiz(int x){
 		randomNumber.clear();
    }
 
-   Utils::xmlat(pReader,pFileStream,j,&question,&answer);
+   Utils::xmlat(pReader,pFileStream,j,L"Question",&question);
+   Utils::xmlat(pReader,pFileStream,j,L"Answer",&answer);
    return 0;
 }
 
@@ -231,7 +235,7 @@ void Quiz::reset() {
 	}
 	letters.clear();
 	number_of_words = 0;
-	if (count_words.empty() == false) {
+	if (count_words.empty() != false) {
 		count_words.erase(count_words.begin(),count_words.end());
 		count_words.clear();
 		count_words.push_back(-1);

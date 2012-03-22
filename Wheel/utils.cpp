@@ -71,12 +71,12 @@ void Utils::xmlrewind(IXmlReader *pReader, IStream *pFileStream) {
    pReader->SetInput(pFileStream);
 }
 
-bool Utils::xmlat(IXmlReader *pReader, IStream *pFileStream, int index, string *question, string *answer) {
+bool Utils::xmlat(IXmlReader *pReader, IStream *pFileStream, int index, WCHAR* string1, string *string2) {
 	HRESULT hr;
 	const WCHAR* pwszLocalName;
    const WCHAR* pwszValue;
    XmlNodeType nodeType;
-	int i=0;//i la` bien dem'. j bien' de? lay ra phan` tu? thu' j. j = 1 thi` lay' phan` tu? dau` tien
+	int i=-1;//i la` bien dem'. j bien' de? lay ra phan` tu? thu' j. j = 1 thi` lay' phan` tu? dau` tien
    xmlrewind(pReader,pFileStream);
    int check = 0;
    while (S_OK == (hr = pReader->Read(&nodeType))) {
@@ -110,16 +110,10 @@ bool Utils::xmlat(IXmlReader *pReader, IStream *pFileStream, int index, string *
             wprintf(L"Error getting value, error is %08.8lx", hr);
             return false;
          }
-		 if (wcscmp(pwszLocalName,L"Question") == 0 && index == i) {
-			 (*question).clear();
-			 *question = strdup(narrow(pwszValue).c_str());
-			 std::transform((*question).begin(), (*question).end(), (*question).begin(), ::toupper); //qui đổi sang CAP để tránh lỗi
-			 check++;
-		 }
-		 else if (wcscmp(pwszLocalName,L"Answer") == 0 && index == i) {
-			 (*answer).clear();
-			 *answer = strdup(narrow(pwszValue).c_str());  
-			 std::transform((*answer).begin(), (*answer).end(), (*answer).begin(), ::toupper); //qui đổi sang CAP để tránh lỗi
+		 if (wcscmp(pwszLocalName,string1) == 0 && index == i) {
+			 (*string2).clear();
+			 (*string2) = strdup(narrow(pwszValue).c_str());  
+			 std::transform((*string2).begin(), (*string2).end(), (*string2).begin(), ::toupper); //qui đổi sang CAP để tránh lỗi
 			 check++;
 		 }
          break;
@@ -150,6 +144,6 @@ bool Utils::xmlat(IXmlReader *pReader, IStream *pFileStream, int index, string *
       }
 	  if (i > index) break;
    }
-   if (check == 2) return true;
+   if (check == 1) return true;
    else return false;
 }

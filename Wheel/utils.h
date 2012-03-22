@@ -17,7 +17,7 @@ namespace Utils {
 	bool xmlopen(IStream **pFileStream, IXmlReader **pReader,WCHAR* filename);
 	int xmlcount(IXmlReader *pReader, IStream *pFileStream, WCHAR* entry);
 	void xmlrewind(IXmlReader *pReader, IStream *pFileStream);
-	bool xmlat(IXmlReader *pReader, IStream *pFileStream, int index, string *question, string *answer);
+	bool xmlat(IXmlReader *pReader, IStream *pFileStream, int index, WCHAR* string1, string *string2);
 }
 
 #endif

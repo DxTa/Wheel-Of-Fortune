@@ -81,8 +81,7 @@ void game_render2d()
 	system12->Print(0,0,g_player->getName(),D3DCOLOR_XRGB(255,255,100));
 	system12->Print(0,50,ss.str(),D3DCOLOR_XRGB(255,255,100));
 	quiz->drawQuiz();
-	cursor->draw();
-	
+	cursor->draw();	
 }
 
 void game_end() 

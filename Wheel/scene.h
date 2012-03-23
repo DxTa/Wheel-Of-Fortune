@@ -276,5 +276,4 @@ void Scene::release() {
 	delete quiz;
 	delete PlayerMenu_Spin;
 	delete PlayeMenu_Guess;
-
 }

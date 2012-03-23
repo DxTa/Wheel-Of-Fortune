@@ -4,7 +4,7 @@ Letters::Letters(string plabel) : Sprite() {
 	label = plabel;
 	status = OFF;
 	//checkposition = false;
-	setScale(0.7f);
+	setScale(0.5f);
 	setCollisionMethod(COLLISION_RECT);
 	//setObjectType(BUTTON);
 

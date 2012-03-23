@@ -142,7 +142,7 @@ int Quiz::inputQuiz(int x,int numberPlayer){
 		randomNumber.erase(randomNumber.begin(),randomNumber.end()); //sau khi đã chọn dc quiz thì giải phóng mảng random
 		randomNumber.clear();
    }
-   
+   j = 16;
    Utils::xmlat(pReader,pFileStream,j,L"Question",&question);
    Utils::xmlat(pReader,pFileStream,j,L"Answer",&answer);
    return 0;
@@ -231,7 +231,7 @@ void Quiz::reset() {
 	iter = letters.begin();
 	while (iter != letters.end()) {
 		delete(*iter);
-		letters.erase(iter);
+		//letters.erase(iter); //hình như cái này gây lỗi
 		++iter;
 	}
 	letters.clear();

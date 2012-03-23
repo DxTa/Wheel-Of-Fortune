@@ -38,7 +38,7 @@ public:
 	void drawQuiz();
 	void inputLog();
 	void outputLog();
-	int inputQuiz(int ,int); // biến i để chọn độ khó, số độ khó bằng số bàn chơi = num_player + 1. lớn hơn thì auto set khó nhất.
+	int inputQuiz(int ,int); //biến i để chọn độ khó, số độ khó bằng số bàn chơi = num_player + 1. lớn hơn thì auto set khó nhất.
 	void addLetter(int );
 	void arrangeLetter();
 	void change(int x, int num_player); //hàm change sẽ bao gồm cả inpủ random 1 câu hỏi theo độ khó x.

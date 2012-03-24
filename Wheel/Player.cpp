@@ -26,6 +26,8 @@ Player::Player(string na) : Sprite() {
 }
 
 int Player::spin(Wheel* wheel) {
+	if(getStatus() == Player::LOSED)
+		return -1;
 	if(wheel->spin() == Wheel::STOP) {
 		TossUp = wheel->getTossUp();
 		if(getStatus() == SPINNING) {
@@ -44,21 +46,26 @@ int Player::spin(Wheel* wheel) {
 	}
 }
 
-
 string Player::answer(Keyboard* keyboard,Quiz* quiz) {
+	if(getStatus() == LOSED)
+		return "";
 	if(getStatus() == READY_TO_ANSWER) {
 		string ss;
 		keyboard->setStatus(Keyboard::AVAILABLE);
 		ss = keyboard->chose();
-		if(ss!= "")
+		if(ss!= "") {
 			setStatus(PLAYING);
-		int result;
-		if(quiz->check(ss,&result)) {
-			switch(TossUp) {
-			default:
-				score += TossUp*result;
-				break;
+			int result = 0;
+			if(quiz->check(ss,&result)) {
+				turn_left = 3;
+				switch(TossUp) {
+				default:
+					score += TossUp*result;
+					break;
+				}
 			}
+			else 
+				end_play();
 		}
 		return ss;
 	}
@@ -68,10 +75,12 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 
 void Player::end_play() {
 	if(turn_gift == 0) {
-		if(turn_left == 0)
+		--turn_left;
+		if(turn_left <= 0)
 			setStatus(LOSED);
-		else 
+		else {
 			setStatus(AWAIT);
+		}
 		currentPlayer += 1;
 		if(currentPlayer > numberPlayer)
 			currentPlayer = 1;

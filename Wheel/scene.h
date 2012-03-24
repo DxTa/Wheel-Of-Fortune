@@ -20,23 +20,13 @@ namespace Scene {
 	Quiz* quiz;
 	Button* PlayerMenu_Spin;
 	Button* PlayeMenu_Guess;
-	bool scene1_start=false;
-	bool scene2_start=false;
-	bool scene3_start=false;
-	bool scene4_start=false;
+	Button* Next_Stage;
 	bool sceneplay_start = false;
 	bool scenePlayerMenu_start = false;
-	bool scene1_on = false;
-	bool scene2_on = false;
-	bool scene3_on = false;
-	bool scene4_on = false;
 	bool sceneplay_on = false;
 	bool scenePlayerMenu_on = false;
+	bool checkNextStage;
 
-	void scene1();
-	void scene2();
-	void scene3();
-	void scene4();
 	void sceneplay();
 	void scenePlayerMenu();
 
@@ -49,7 +39,11 @@ namespace Scene {
 	void newPlayer();
 	void updatePlayer();
 	void deletePlayer();
+	void resetPlayer();
+	void nextStage();
 
+	bool isEndStage();
+	bool isNextStage();
 }
 
 void g_exit() {
@@ -83,16 +77,24 @@ void Scene::newPlayer() {
 }
 
 void Scene::updatePlayer() {
+	if(isEndStage() == true) {
+		quiz->openAll();
+		Next_Stage->setVisible(true);
+		Next_Stage->setCollidable(true);
+		if(isNextStage() == true) {
+			nextStage();
+		}
+		return;
+	}
 	std::list<Player*>::iterator iter;
 	iter = playerlist.begin();
-	while (iter != playerlist.end())
-	{
+	while (iter != playerlist.end()) {
 		g_player = *iter;
 		if(g_player) {
 			if(g_player->getID() == Player::getCurrentPlayer()) {
 				if((g_player->getStatus()!= Player::LOSED) && (g_player->getStatus()!= Player::READY_TO_ANSWER) && (g_player->getStatus()!= Player::SPINNING))
 					g_player->setStatus(Player::PLAYING);
-					break;
+				break;
 			}
 		}
 		++iter;
@@ -102,26 +104,52 @@ void Scene::updatePlayer() {
 void Scene::deletePlayer() {
 	std::list<Player*>::iterator iter;
 	iter = playerlist.begin();
-	while (iter != playerlist.end())
-	{
+	while (iter != playerlist.end()) {
 		g_player = *iter;
 		delete g_player;
 		iter = playerlist.erase(iter);
 	}
 }
 
-void scene1_to_scene4() {
-	Scene::scene1_start = false;
-	Scene::scene1_on = false;
-	Scene::scene4_start = true;
+bool Scene::isEndStage() {
+	Player* player;
+	bool result = true;
+	std::list<Player*>::iterator iter;
+	iter = playerlist.begin();
+	while (iter != playerlist.end()) {
+		player = *iter;
+		if(player) { 
+			if(player->getStatus()!= Player::LOSED) {
+				result = false;
+				break;
+			}
+		}
+		++iter;
+	}
+	return result;
 }
 
-void scene4_to_play() {
-	Scene::scene4_start = false;
-	Scene::scene4_on = false;
-	Scene::sceneplay_start = true;
+bool Scene::isNextStage() {
+	return checkNextStage;
 }
 
+void Scene::nextStage() {
+	if(!quiz->isFinish())
+		return;
+	quiz->change(0,Player::getNumPlayer());
+	keyboard->reset();
+	Player* player;
+	std::list<Player*>::iterator iter;
+	iter = playerlist.begin();
+	while (iter != playerlist.end()) {
+		player = *iter;
+		player->setStatus(Player::AWAIT);
+		++iter;
+	}
+	checkNextStage = false;
+	Next_Stage->setVisible(false);
+	Next_Stage->setCollidable(false);
+}
 
 void Scene::init() {
 	menu = new Menu();
@@ -164,6 +192,14 @@ void Scene::init() {
 	PlayeMenu_Guess->setVisible(false);
 	PlayeMenu_Guess->setPosition(520,150);
 	g_engine->addEntity(PlayeMenu_Guess);
+
+	Next_Stage = new Button("NextStage_button");
+	Next_Stage->setCallback(nextStage);
+	Next_Stage->setCollidable(false);
+	Next_Stage->setVisible(false);
+	Next_Stage->setPosition(g_engine->getScreenWidth()-Next_Stage->getWidth(),g_engine->getScreenHeight()-Next_Stage->getHeight());
+	g_engine->addEntity(Next_Stage);
+
 	Scene::newPlayer();
 	Scene::newPlayer();
 	Scene::newPlayer();
@@ -175,36 +211,8 @@ void Scene::init() {
 	quiz->setHeight(200);
 	quiz->inputLog();
 	quiz->change(0,Player::getNumPlayer());
-}
-
-void Scene::scene2() {
-	scene1_start = false;
-	menu->close();
-	menu = new Menu("Scene2","about_button","exit_button",NULL);
-	menu->setPosition(100,100);
-}
-
-void Scene::scene3() {
-	scene2_start = false;
-	menu->close();
-	menu = new Menu("Scene3","about_button","Highscore_button",NULL);
-	menu->setPosition(100,100);
-}
-
-void Scene::scene4() {
-	if(scene4_on == true)
-		return;
-	if((scene4_start == true) && (scene4_on == false)) {
-		menu->close();
-		background_image->Release();
-		delete menu;
-		background_image->Load("scene4.jpg");
-		menu = new Menu("Scene4","play_button","Highscore_button","about_button","exit_button",NULL);
-		menu->addFunction("exit_button",g_exit);
-		menu->addFunction("play_button",scene4_to_play);
-		menu->setPosition(200,100);
-		scene4_on = true;
-	}
+	Scene::scenePlayerMenu_start = true;
+	Scene::checkNextStage = false;
 }
 
 void Scene::sceneplay() {
@@ -222,7 +230,7 @@ void Scene::sceneplay() {
 }
 
 void Scene::scenePlayerMenu() {
-	if(scenePlayerMenu_on == true)
+	if((scenePlayerMenu_on == true) || (Scene::isEndStage() == true) ||(Scene::quiz->isFinish() == true))
 		return;
 	if((scenePlayerMenu_start == true) && (scenePlayerMenu_on == false)) {
 		PlayerMenu_Spin->setVisible(true);
@@ -236,15 +244,17 @@ void Scene::scenePlayerMenu() {
 void Scene::update() {
 	Scene::background->setImage(Scene::background_image);
 	Scene::updatePlayer();
-	scene4();
 	sceneplay();
 	scenePlayerMenu();
 	Scene::menu->update();
 	PlayerMenu_Spin->reset();
 	PlayeMenu_Guess->reset();
-	if(quiz->isFinish() == true) {
-		quiz->change(0,Player::getNumPlayer());
-		keyboard->reset();
+	Next_Stage->reset();
+	if((quiz->isFinish() == true) && (isEndStage() == false)) {
+		Next_Stage->setVisible(true);
+		Next_Stage->setCollidable(true);
+		if(isNextStage() == true)
+			nextStage();
 	}
 }
 
@@ -255,6 +265,8 @@ void Scene::updateMouseButton() {
 		PlayerMenu_Spin->pressed();
 	if(PlayeMenu_Guess->isPosition() == true)
 		PlayeMenu_Guess->pressed();
+	if(Next_Stage->isPosition() ==true)
+		Next_Stage->pressed();
 }
 
 void Scene::updateMouseMove(double delta_x,double delta_y,double fx,double fy) {
@@ -263,6 +275,7 @@ void Scene::updateMouseMove(double delta_x,double delta_y,double fx,double fy) {
 	Scene::keyboard->updateMouseMove();
 	PlayerMenu_Spin->setCheckPosition(false);
 	PlayeMenu_Guess->setCheckPosition(false);
+	Next_Stage->setCheckPosition(false);
 }
 
 void Scene::release() {
@@ -276,4 +289,5 @@ void Scene::release() {
 	delete quiz;
 	delete PlayerMenu_Spin;
 	delete PlayeMenu_Guess;
+	delete Next_Stage;
 }

@@ -1,10 +1,12 @@
 #include "Letter.h"
+
 Texture* Letters::image_off = new Texture();
+
 Letters::Letters(string plabel) : Sprite() {
 	label = plabel;
 	status = OFF;
 	//checkposition = false;
-	setScale(0.5f);
+	setScale(0.7f);
 	setCollisionMethod(COLLISION_RECT);
 	//setObjectType(BUTTON);
 
@@ -48,8 +50,8 @@ void Letters::on() {
 
 void Letters::release() {
 	Sprite::~Sprite();
-	//if(image_off!=NULL)
-	//	image_off->Release();
+	if(image_off!=NULL)
+		image_off->Release();
 	//if(image_on!=NULL)
 	//	image_on->Release();
 	setAlive(false);

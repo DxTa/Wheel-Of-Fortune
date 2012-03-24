@@ -142,7 +142,7 @@ int Quiz::inputQuiz(int x,int numberPlayer){
 		randomNumber.erase(randomNumber.begin(),randomNumber.end()); //sau khi đã chọn dc quiz thì giải phóng mảng random
 		randomNumber.clear();
    }
-   j = 16;
+ //  j = 16;
    Utils::xmlat(pReader,pFileStream,j,L"Question",&question);
    Utils::xmlat(pReader,pFileStream,j,L"Answer",&answer);
    return 0;
@@ -220,8 +220,6 @@ void Quiz::drawQuiz() {
 		string ss = letter->getLabel();
 		if ((ss.compare("\n") == 0) || (ss.compare("\0") == 0) || (ss.compare("\r") == 0) || (ss.compare(" ") == 0)) {iter++;continue;}
 		letter->draw();
-		//g_engine->addEntity(button);
-
 		iter++;
 	}
 }
@@ -253,7 +251,7 @@ void Quiz::change(int x, int num_player) {
 
 bool Quiz::check(string panswer, int *result) {
 	if (panswer.compare(answer) == 0) {
-		*result = 0;
+		*result = -1;
 		return true;
 	}
 	*result = 0;
@@ -289,4 +287,17 @@ bool Quiz::isFinish() {
 		iter++;
 	}
 	return result;
+}
+
+void Quiz::openAll() {
+	std::list<Letters*>::iterator iter;
+	iter = letters.begin();
+	Letters* letter;
+	while (iter != letters.end()) {
+		letter = *iter;
+		string ss = letter->getLabel();
+		if ((ss.compare("\n") == 0) || (ss.compare("\0") == 0) || (ss.compare("\r") == 0) || (ss.compare(" ") == 0)) {iter++;continue;}
+		letter->on();
+		iter++;
+	}
 }

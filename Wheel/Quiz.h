@@ -43,7 +43,8 @@ public:
 	void arrangeLetter();
 	void change(int x, int num_player); //hàm change sẽ bao gồm cả inpủ random 1 câu hỏi theo độ khó x.
 	void reset();
-	bool check(string panswer, int *result); //nếu đoán đúng cả dãy thì result=0,true / nếu đoán dc 1 chữ thì result = số chữ trong dãy,true
+	void openAll();
+	bool check(string panswer, int *result); //nếu đoán đúng cả dãy thì result=-1,true / nếu đoán dc 1 chữ thì result = số chữ trong dãy,true
 	bool isFinish();
 };
 

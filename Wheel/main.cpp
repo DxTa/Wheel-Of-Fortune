@@ -77,11 +77,11 @@ void game_render2d()
 	ostringstream ss;
 	Scene::wheel->setHolding(false);
 	g_player->spin(wheel);
-	ss << quiz->isFinish();
+	//system12->Print(0,0,ss.str(),D3DCOLOR_XRGB(255,255,100));
 	system12->Print(0,0,g_player->getName(),D3DCOLOR_XRGB(255,255,100));
-	system12->Print(0,50,ss.str(),D3DCOLOR_XRGB(255,255,100));
 	quiz->drawQuiz();
-	cursor->draw();	
+	cursor->draw();
+	
 }
 
 void game_end() 
@@ -96,12 +96,14 @@ void game_keyPress(int key)
 
 void game_keyRelease(int key) 
 { 
+	Timer checkpress;
 	switch (key) {
 		case DIK_ESCAPE:
 			g_engine->Close();
 			break;
 		case DIK_SPACE:
-			Scene::scenePlayerMenu_start = true;
+			if((Scene::isEndStage() == true) || (Scene::quiz->isFinish() == true))
+				Scene::checkNextStage = true;
 			break;
 	}
 }
@@ -117,8 +119,9 @@ void game_mouseButton(int button) {
 	switch(button) {
 	case 0 :	
 			Scene::updateMouseButton();
-			g_player->answer(keyboard,quiz);
-			break;
+			if(g_player->answer(keyboard,quiz) != "")
+				Scene::scenePlayerMenu_start = true;
+				break;
 	}
 }
 

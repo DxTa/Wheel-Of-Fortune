@@ -250,7 +250,21 @@ void Quiz::change(int x, int num_player) {
 }
 
 bool Quiz::check(string panswer, int *result) {
-	if (panswer.compare(answer) == 0) {
+	if (letters.empty() == true) return false;
+	if (panswer.length() > 1) {
+		std::list<Letters*>::iterator iter;
+		iter = letters.begin();
+		Letters* letter;
+		int i = 0;
+		while (iter != letters.end()) {
+			letter = *iter;
+			string ss = letter->getLabel();
+			if ((ss.compare("\n") == 0) || (ss.compare("\0") == 0) || (ss.compare("\r") == 0) || (ss.compare(" ") == 0)) {iter++;continue;}
+			if ( i > panswer.length()) return false;
+			if (ss[0] == panswer.at(i)) return false;
+			iter++;
+			i++;
+		}
 		*result = -1;
 		return true;
 	}

@@ -10,6 +10,7 @@ ostringstream heee;
 
 namespace Scene {
 	std::list<Player*> playerlist;
+	Timer timecheck;
 	Player* g_player;
 	Menu* menu;
 	Sprite* background;
@@ -61,7 +62,7 @@ void spin() {
 }
 
 void guess() {
-	Scene::g_player->setStatus(Player::READY_TO_ANSWER);
+	Scene::g_player->setStatus(Player::READY_TO_FULL_ANSWER);
 	Scene::scenePlayerMenu_start  = false;
 	Scene::scenePlayerMenu_on = false;
 	Scene::PlayerMenu_Spin->setVisible(false);
@@ -92,7 +93,16 @@ void Scene::updatePlayer() {
 		g_player = *iter;
 		if(g_player) {
 			if(g_player->getID() == Player::getCurrentPlayer()) {
-				if((g_player->getStatus()!= Player::LOSED) && (g_player->getStatus()!= Player::READY_TO_ANSWER) && (g_player->getStatus()!= Player::SPINNING))
+				int count = 0;
+				while(g_player->getStatus() == Player::LOSED) {
+					Player::setCurrentPlayer(Player::getCurrentPlayer()+1);
+					++iter;
+					g_player = *iter;
+					count++;
+					if(count > Player::getNumPlayer())
+						return;
+				}
+				if((g_player->getStatus()!= Player::LOSED) && (g_player->getStatus()!= Player::READY_TO_ANSWER) && (g_player->getStatus()!= Player::SPINNING)&& (g_player->getStatus()!= Player::READY_TO_FULL_ANSWER))
 					g_player->setStatus(Player::PLAYING);
 				break;
 			}
@@ -134,6 +144,8 @@ bool Scene::isNextStage() {
 }
 
 void Scene::nextStage() {
+	static int phase=1;
+	phase++;
 	if(!quiz->isFinish())
 		return;
 	quiz->change(0,Player::getNumPlayer());
@@ -143,9 +155,11 @@ void Scene::nextStage() {
 	iter = playerlist.begin();
 	while (iter != playerlist.end()) {
 		player = *iter;
-		player->setStatus(Player::AWAIT);
+		player->reset();
 		++iter;
 	}
+	Player::setCurrentPlayer(phase);
+	scenePlayerMenu_start = true;
 	checkNextStage = false;
 	Next_Stage->setVisible(false);
 	Next_Stage->setCollidable(false);
@@ -233,11 +247,11 @@ void Scene::scenePlayerMenu() {
 	if((scenePlayerMenu_on == true) || (Scene::isEndStage() == true) ||(Scene::quiz->isFinish() == true))
 		return;
 	if((scenePlayerMenu_start == true) && (scenePlayerMenu_on == false)) {
+		scenePlayerMenu_on = true;
 		PlayerMenu_Spin->setVisible(true);
 		PlayerMenu_Spin->setCollidable(true);
 		PlayeMenu_Guess->setVisible(true);
 		PlayeMenu_Guess->setCollidable(true);
-		scenePlayerMenu_on = true;
 	}
 }
 
@@ -256,6 +270,8 @@ void Scene::update() {
 		if(isNextStage() == true)
 			nextStage();
 	}
+	if(g_player->getStatus() == Player::READY_TO_FULL_ANSWER)
+		keyboard->reset();
 }
 
 void Scene::updateMouseButton() {

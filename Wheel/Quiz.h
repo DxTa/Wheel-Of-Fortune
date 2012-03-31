@@ -23,6 +23,7 @@ private:
 	string answer;
 	std::vector<int> count_words; //lưu index vị trí bắt đầu kết thúc của mỗi từ (index các khoảng trống)
 	int number_of_words; //số từ trong answer
+	int size;
 	std::list<Letters*> letters; //lưu từng ký tự answers trong này
 	std::vector<int> recent; //lưu 100 câu hỏi gần nhất
 public:
@@ -38,13 +39,16 @@ public:
 	void drawQuiz();
 	void inputLog();
 	void outputLog();
+	void calSize();
 	int inputQuiz(int ,int); //biến i để chọn độ khó, số độ khó bằng số bàn chơi = num_player + 1. lớn hơn thì auto set khó nhất.
+	int getSize() const {return size;}
 	void addLetter(int );
 	void arrangeLetter();
 	void change(int x, int num_player); //hàm change sẽ bao gồm cả inpủ random 1 câu hỏi theo độ khó x.
 	void reset();
 	void openAll();
 	bool check(string panswer, int *result); //nếu đoán đúng cả dãy thì result=-1,true / nếu đoán dc 1 chữ thì result = số chữ trong dãy,true
+	bool check(string panswer);
 	bool isFinish();
 };
 

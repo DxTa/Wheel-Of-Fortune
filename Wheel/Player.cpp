@@ -69,11 +69,44 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 		}
 		return ss;
 	}
-	else
-		return "";
+	if(getStatus() == READY_TO_FULL_ANSWER) {
+		string ss;
+		keyboard->setStatus(Keyboard::AVAILABLE);
+		ss = keyboard->chose();
+		static int count=0;
+		int temp;
+		bool check;
+		static bool result = true;
+		if(ss!= "") {
+			setStatus(READY_TO_FULL_ANSWER);
+			count++;
+			check = quiz->check(ss);
+			if(check == false)
+				result = check;
+			if(count == (quiz->getSize())) {
+				if(result)
+					this->winStage(quiz);
+				else {
+					end_play(LOSED);
+				}
+				count = 0;
+				result = true;
+			}
+		}
+		return ss;
+		
+	}
+	return "";
 }
 
-void Player::end_play() {
+void Player::end_play(int pstatus) {
+	if(pstatus == LOSED) {
+		setStatus(LOSED);
+		currentPlayer += 1;
+		if(currentPlayer > numberPlayer)
+			currentPlayer = 1;
+		return;
+	}
 	if(turn_gift == 0) {
 		--turn_left;
 		if(turn_left <= 0)
@@ -84,7 +117,25 @@ void Player::end_play() {
 		currentPlayer += 1;
 		if(currentPlayer > numberPlayer)
 			currentPlayer = 1;
+		return;
 	}
 	else 
 		turn_gift--;
+}
+
+
+void Player::reset() {
+	setStatus(AWAIT);
+	turn_gift = 0;
+	turn_left = 3;
+	score = 0;
+}
+
+
+void Player::winStage(Quiz* quiz) {
+	if(score == 0)
+		total_score += 300;
+	else
+		total_score += score;
+	quiz->openAll();
 }

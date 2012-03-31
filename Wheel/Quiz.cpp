@@ -142,7 +142,7 @@ int Quiz::inputQuiz(int x,int numberPlayer){
 		randomNumber.erase(randomNumber.begin(),randomNumber.end()); //sau khi đã chọn dc quiz thì giải phóng mảng random
 		randomNumber.clear();
    }
- //  j = 16;
+   j = 16;
    Utils::xmlat(pReader,pFileStream,j,L"Question",&question);
    Utils::xmlat(pReader,pFileStream,j,L"Answer",&answer);
    return 0;
@@ -247,6 +247,7 @@ void Quiz::change(int x, int num_player) {
 	inputQuiz(x,num_player);
 	arrangeLetter();
 	setQuizPos(this->getX(),this->getY(),this->getX() + this->getWidth(),this->getY() + this->getHeight());
+	calSize();
 }
 
 bool Quiz::check(string panswer, int *result) {
@@ -268,6 +269,23 @@ bool Quiz::check(string panswer, int *result) {
 		iter++;
 	}
 	if (*result > 0) return true;
+	else return false;
+}
+
+bool Quiz::check(string panswer) {
+	int result = 0;
+	std::transform(panswer.begin(), panswer.end(), panswer.begin(), ::toupper); //qui đổi sang CAP để tránh lỗi
+	std::list<Letters*>::iterator iter;
+	iter = letters.begin();
+	Letters* letter;
+	while (iter != letters.end()) {
+		letter = *iter;
+		if (panswer.compare(letter->getLabel()) == 0) {
+			result++;
+		}
+		iter++;
+	}
+	if (result > 0) return true;
 	else return false;
 }
 
@@ -300,4 +318,19 @@ void Quiz::openAll() {
 		letter->on();
 		iter++;
 	}
+}
+
+void Quiz::calSize() {
+	int count = 0;
+	std::list<Letters*>::iterator iter;
+	iter = letters.begin();
+	Letters* letter;
+	while (iter != letters.end()) {
+		letter = *iter;
+		string ss = letter->getLabel();
+		if ((ss.compare("\n") == 0) || (ss.compare("\0") == 0) || (ss.compare("\r") == 0) || (ss.compare(" ") == 0)) {iter++;continue;}
+		count++;
+		iter++;
+	}
+	size = count;
 }

@@ -69,7 +69,8 @@ bool game_init(HWND)
 void game_update() 
 {
 	Scene::update();
-	
+	if(g_player->getStatus() != Player::READY_TO_FULL_ANSWER)
+		chose = "";
 }
 
 void game_render2d()
@@ -77,8 +78,8 @@ void game_render2d()
 	ostringstream ss;
 	Scene::wheel->setHolding(false);
 	g_player->spin(wheel);
-	//system12->Print(0,0,ss.str(),D3DCOLOR_XRGB(255,255,100));
-	system12->Print(0,0,g_player->getName(),D3DCOLOR_XRGB(255,255,100));
+	ss << g_player->getName() << " : " << g_player->getStatus() << " : " << quiz->getSize() << " : " <<chose;
+	system12->Print(0,0,ss.str(),D3DCOLOR_XRGB(255,255,100));
 	quiz->drawQuiz();
 	cursor->draw();
 	
@@ -116,12 +117,17 @@ void game_render3d()
 }
 
 void game_mouseButton(int button) {
+	string ss;
 	switch(button) {
 	case 0 :	
 			Scene::updateMouseButton();
-			if(g_player->answer(keyboard,quiz) != "")
-				Scene::scenePlayerMenu_start = true;
-				break;
+			if(timecheck.stopwatch(96)) {
+				ss = g_player->answer(keyboard,quiz);
+				chose += ss;
+				if((ss!= "") && (g_player->getStatus() != Player::READY_TO_FULL_ANSWER)) {
+					Scene::scenePlayerMenu_start = true;
+				}
+			}
 	}
 }
 

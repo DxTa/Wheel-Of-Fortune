@@ -3,6 +3,17 @@
 
 Wheel::Wheel() : Sprite() {
 	speed = 0;
+	power_bar = new Sprite();
+	power_bar->loadImage("powerbar.png");
+	power_bar->setSize(904,62);
+	power_bar->setScale(0.5);
+	power_bar->setCurrentFrame(0);
+	power_bar->setCollidable(false);
+	power_bar->setVisible(true);
+	power_bar->setPosition(513,400);
+	power_bar->setTotalFrames(21);
+	power_bar->setColumns(1);
+			
 	friction = 0.0002;
 	angle = 0;
 	s=0;
@@ -82,6 +93,8 @@ void Wheel::setOR(double x, double y, double r) {
 	ox = x;
 	oy = y;
 	or = r;
+	max_speed = (or * 3.14)/8000;
+	speed_interval = max_speed/21;
 }
 
 void Wheel::update() {
@@ -135,4 +148,11 @@ void Wheel::updateMousePosition(Sprite* cursor) {
 		this->setCheckPosition(true);
 	}
 	else this->setCheckPosition(false);
+}
+
+void Wheel::drawPowerBar() {
+	int ratio = speed/speed_interval;
+	if (ratio > 20) ratio = 20;
+	power_bar->setCurrentFrame(ratio);
+	power_bar->draw();
 }

@@ -8,11 +8,14 @@ using namespace Advanced2D;
 
 class Wheel : public Advanced2D::Sprite {
 private:
+	Sprite *power_bar;
 	int TossUp;
 	int direction;
 	int status;
 
 	double speed;
+	double max_speed;
+	double speed_interval;
 	double friction;
 	double angle,angle_redundance;
 	double s;
@@ -64,7 +67,8 @@ public:
 	void setSpeed(double sp) {speed = sp;}
 	void setAngle(double angl) {angle = angl;}
 	void setS(double epsilon) {s = epsilon;}
-
+	
+	void drawPowerBar();
 	void update();
 	void updateDirection(double ,double ,Sprite*);
 	void updateMouseButton();

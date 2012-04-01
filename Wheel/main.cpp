@@ -82,7 +82,7 @@ void game_render2d()
 	system12->Print(0,0,ss.str(),D3DCOLOR_XRGB(255,255,100));
 	quiz->drawQuiz();
 	cursor->draw();
-	
+	wheel->drawPowerBar();
 }
 
 void game_end() 
@@ -114,6 +114,7 @@ void game_render3d()
     g_engine->ClearScene(D3DCOLOR_XRGB(0,0,80));
 	g_engine->SetIdentity();
 	Scene::wheel->update();
+	
 }
 
 void game_mouseButton(int button) {

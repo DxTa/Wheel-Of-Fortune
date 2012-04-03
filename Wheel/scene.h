@@ -308,6 +308,7 @@ void Scene::updateMouseMove(double delta_x,double delta_y,double fx,double fy) {
 
 void Scene::release() {
 	deletePlayer();
+	Letters::release();
 	delete menu;
 	delete background;
 	delete background_image;
@@ -318,4 +319,5 @@ void Scene::release() {
 	delete PlayerMenu_Spin;
 	delete PlayeMenu_Guess;
 	delete Next_Stage;
+	
 }

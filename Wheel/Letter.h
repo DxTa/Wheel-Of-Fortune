@@ -21,10 +21,9 @@ public :
 	void setStatus(int pstatus) {status = pstatus;}
 	string getLabel() const {return label;}
 	static Texture* getImage_off() {return image_off;}
-	static void setImage_off();
 	void off(); //chưa lật
 	void on(); //lật ô chữ
-	void release();
+	static void release();
 };
 
 #endif

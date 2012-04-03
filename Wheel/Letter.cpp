@@ -42,13 +42,6 @@ void Letters::on() {
 }
 
 void Letters::release() {
-	Sprite::~Sprite();
 	if(image_off!=NULL)
 		image_off->Release();
-	if(image_on!=NULL)
-		image_on->Release();
-}
-
-void Letters::setImage_off() {
-	image_off->Load("button/off.png");
 }

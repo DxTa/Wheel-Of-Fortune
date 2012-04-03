@@ -10,6 +10,8 @@ ostringstream heee;
 
 namespace Scene {
 	std::list<Player*> playerlist;
+	string chose;
+	string ss;
 	Timer timecheck;
 	Player* g_player;
 	Menu* menu;
@@ -286,6 +288,13 @@ void Scene::updateMouseButton() {
 		PlayeMenu_Guess->pressed();
 	if(Next_Stage->isPosition() ==true)
 		Next_Stage->pressed();
+	if(timecheck.stopwatch(96)) {
+		ss = g_player->answer(keyboard,quiz);
+		chose += ss;
+		if((ss!= "") && (g_player->getStatus() != Player::READY_TO_FULL_ANSWER)) {
+			Scene::scenePlayerMenu_start = true;
+		}
+	}
 }
 
 void Scene::updateMouseMove(double delta_x,double delta_y,double fx,double fy) {

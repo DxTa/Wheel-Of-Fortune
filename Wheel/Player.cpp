@@ -58,6 +58,7 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 			int result = 0;
 			if(quiz->check(ss,&result)) {
 				turn_left = 3;
+				TossUp = 100;
 				switch(TossUp) {
 				default:
 					score += TossUp*result;

@@ -23,8 +23,6 @@ Cursor* cursor;
 
 Font* system12;
 
-string chose;
-string ss;
 enum {CURSOR=150};
 bool game_preload() 
 {
@@ -61,7 +59,6 @@ bool game_init(HWND)
 	}
 
 	Scene::sceneplay_start = true;
-	quiz->drawQuiz();
 	return true;
 }
 
@@ -122,13 +119,6 @@ void game_mouseButton(int button) {
 	switch(button) {
 	case 0 :	
 			Scene::updateMouseButton();
-			if(timecheck.stopwatch(96)) {
-				ss = g_player->answer(keyboard,quiz);
-				chose += ss;
-				if((ss!= "") && (g_player->getStatus() != Player::READY_TO_FULL_ANSWER)) {
-					Scene::scenePlayerMenu_start = true;
-				}
-			}
 	}
 }
 

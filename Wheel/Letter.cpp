@@ -12,7 +12,7 @@ Letters::Letters(string plabel) : Sprite() {
 	ostringstream ss;
 
 	static int i = 0;
-	if (i == 0) {
+	if ((i == 0) || (image_off == NULL)) {
 		image_off->Load("button/off.png");
 		i=1;
 	}
@@ -47,4 +47,8 @@ void Letters::release() {
 		image_off->Release();
 	if(image_on!=NULL)
 		image_on->Release();
+}
+
+void Letters::setImage_off() {
+	image_off->Load("button/off.png");
 }

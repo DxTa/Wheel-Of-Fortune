@@ -249,6 +249,7 @@ void Quiz::change(int x, int num_player) {
 	inputQuiz(x,num_player);
 	arrangeLetter();
 	setQuizPos(this->getX(),this->getY(),this->getX() + this->getWidth(),this->getY() + this->getHeight());
+	drawQuiz();
 	calSize();
 }
 

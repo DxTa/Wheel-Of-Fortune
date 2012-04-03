@@ -82,10 +82,10 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 			quiz->setLetter(count,ss);
 			quiz->indicator(count+1);
 			setStatus(READY_TO_FULL_ANSWER);
-			count++;
-			check = quiz->check(ss);
+			check = quiz->check(ss,count);
 			if(check == true) 
 				result++;
+			count++;
 			if(count == (quiz->getSize())) {
 				if(result == count) {
 					this->winStage(quiz);

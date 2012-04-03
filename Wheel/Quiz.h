@@ -53,7 +53,7 @@ public:
 	void reset();
 	void openAll();
 	bool check(string panswer, int *result); //nếu đoán đúng cả dãy thì result=-1,true / nếu đoán dc 1 chữ thì result = số chữ trong dãy,true
-	bool check(string panswer);
+	bool check(string ,int);
 	bool isFinish();
 	bool getClearTemp() const {return cleartemp;}
 	void setClearTemp(bool t) {cleartemp = t;}

@@ -288,40 +288,26 @@ bool Quiz::check(string panswer, int *result) {
 	else return false;
 }
 
-bool Quiz::check(string panswer) {
-	int result;
+bool Quiz::check(string panswer,int position) {
+	int count=0;
 	if (letters.empty() == true) return false;
-	if (panswer.length() > 1) {
-		std::list<Letters*>::iterator iter;
-		iter = letters.begin();
-		Letters* letter;
-		int i = 0;
-		while (iter != letters.end()) {
-			letter = *iter;
-			string ss = letter->getLabel();
-			if ((ss.compare("\n") == 0) || (ss.compare("\0") == 0) || (ss.compare("\r") == 0) || (ss.compare(" ") == 0)) {iter++;continue;}
-			if ( i > panswer.length()) return false;
-			if (ss[0] == panswer.at(i)) return false;
-			iter++;
-			i++;
-		}
-		result = -1;
-		return true;
-	}
-	result = 0;
 	std::transform(panswer.begin(), panswer.end(), panswer.begin(), ::toupper); //qui đổi sang CAP để tránh lỗi
 	std::list<Letters*>::iterator iter;
 	iter = letters.begin();
 	Letters* letter;
 	while (iter != letters.end()) {
 		letter = *iter;
-		if (panswer.compare(letter->getLabel()) == 0) {
-			result++;
+		string ss = letter->getLabel();
+		if ((ss.compare("\n") == 0) || (ss.compare("\0") == 0) || (ss.compare("\r") == 0) || (ss.compare(" ") == 0)) {iter++;continue;}
+		if(count == position) {
+			if(ss == panswer)
+				return true;
+			else
+				return false;
 		}
+		count++;
 		iter++;
 	}
-	if (result > 0) return true;
-	else return false;
 }
 
 bool Quiz::isFinish() {

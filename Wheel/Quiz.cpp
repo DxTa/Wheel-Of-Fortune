@@ -219,7 +219,7 @@ void Quiz::drawQuiz() {
 		letter = *iter;
 		string ss = letter->getLabel();
 		if ((ss.compare("\n") == 0) || (ss.compare("\0") == 0) || (ss.compare("\r") == 0) || (ss.compare(" ") == 0)) {iter++;continue;}
-		letter->draw();
+		g_engine->addEntity(letter);
 		iter++;
 	}
 }
@@ -227,9 +227,11 @@ void Quiz::drawQuiz() {
 void Quiz::reset() {
 	std::list<Letters*>::iterator iter;
 	iter = letters.begin();
+	Letters* temp;
 	while (iter != letters.end()) {
-		delete(*iter);
-		//letters.erase(iter); //hình như cái này gây lỗi
+		//delete(*iter);
+		temp = *iter;
+		temp->setAlive(false);
 		++iter;
 	}
 	letters.clear();
@@ -287,7 +289,26 @@ bool Quiz::check(string panswer, int *result) {
 }
 
 bool Quiz::check(string panswer) {
-	int result = 0;
+	int result;
+	if (letters.empty() == true) return false;
+	if (panswer.length() > 1) {
+		std::list<Letters*>::iterator iter;
+		iter = letters.begin();
+		Letters* letter;
+		int i = 0;
+		while (iter != letters.end()) {
+			letter = *iter;
+			string ss = letter->getLabel();
+			if ((ss.compare("\n") == 0) || (ss.compare("\0") == 0) || (ss.compare("\r") == 0) || (ss.compare(" ") == 0)) {iter++;continue;}
+			if ( i > panswer.length()) return false;
+			if (ss[0] == panswer.at(i)) return false;
+			iter++;
+			i++;
+		}
+		result = -1;
+		return true;
+	}
+	result = 0;
 	std::transform(panswer.begin(), panswer.end(), panswer.begin(), ::toupper); //qui đổi sang CAP để tránh lỗi
 	std::list<Letters*>::iterator iter;
 	iter = letters.begin();
@@ -312,7 +333,7 @@ bool Quiz::isFinish() {
 		letter = *iter;
 		string ss = letter->getLabel();
 		if ((ss.compare("\n") == 0) || (ss.compare("\0") == 0) || (ss.compare("\r") == 0) || (ss.compare(" ") == 0)) {iter++;continue;}
-		if(letter->getStatus() == OFF) {
+		if(letter->getStatus() == Letters::OFF) {
 			result = false;
 			break;
 		}
@@ -347,4 +368,56 @@ void Quiz::calSize() {
 		iter++;
 	}
 	size = count;
+}
+
+void Quiz::indicator(int i) {
+	static int check = -1;
+	if(check != i) {
+		int count = 0;
+		std::list<Letters*>::iterator iter;
+		iter = letters.begin();
+		Letters* letter;
+		while (iter != letters.end()) {
+			letter = *iter;
+			string ss = letter->getLabel();
+			if ((ss.compare("\n") == 0) || (ss.compare("\0") == 0) || (ss.compare("\r") == 0) || (ss.compare(" ") == 0)) {iter++;continue;}
+			if(count == i) {
+				letter->setColor(D3DCOLOR_XRGB(255,25,25));
+				break;
+			}
+			count++;
+			iter++;
+		}
+		check = i;
+	}
+}
+
+void Quiz::setLetter(int i,string label) {
+	static int check = -1;
+	if(check != i) {
+		Vector3 pos;
+		int count = 0;
+		std::list<Letters*>::iterator iter;
+		iter = letters.begin();
+		Letters* letter;
+		while (iter != letters.end()) {
+			letter = *iter;
+			string ss = letter->getLabel();
+			if ((ss.compare("\n") == 0) || (ss.compare("\0") == 0) || (ss.compare("\r") == 0) || (ss.compare(" ") == 0)) {iter++;continue;}
+			if(count == i) {
+				letter->setColor(D3DCOLOR_XRGB(255,255,255));
+				pos = letter->getPosition();
+				break;
+			}
+			count++;
+			iter++;
+		}
+		Letters *temp = new Letters(label);
+		temp->setObjectType(Letters::LETTER_TEMP);
+		temp->setPosition(pos);
+		temp->on();
+		setScale(0.7f);
+		g_engine->addEntity(temp);
+		check = i;
+	}
 }

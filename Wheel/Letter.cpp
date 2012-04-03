@@ -3,12 +3,11 @@
 Texture* Letters::image_off = new Texture();
 
 Letters::Letters(string plabel) : Sprite() {
+	setObjectType(LETTER_PER);
 	label = plabel;
 	status = OFF;
-	//checkposition = false;
 	setScale(0.7f);
-	setCollisionMethod(COLLISION_RECT);
-	//setObjectType(BUTTON);
+	setCollidable(false);
 
 	ostringstream ss;
 
@@ -19,17 +18,13 @@ Letters::Letters(string plabel) : Sprite() {
 	}
 	
 	image_on = new	Texture();
-	//ss2 << "button/"<< label << "_on" <<".png";
 	ss << "button/" << label << "_pressed" <<".png";
 	image_on->Load(ss.str());
-	//callback = NULL;
 	off();
 }
 
 Letters::~Letters() {
 	Sprite::~Sprite();
-	//if(image_off!=NULL)
-	//	image_off->Release(); //chac' la ko nen neu' dung` 1 anh? duy nhat'
 	if(image_on!=NULL)
 		image_on->Release();
 }
@@ -43,8 +38,6 @@ void Letters::on() {
 	if(status==OFF) {
 		setImage(image_on);
 		status = ON;
-		//if(callback!=NULL)
-		//	callback();
 	}
 }
 
@@ -52,7 +45,6 @@ void Letters::release() {
 	Sprite::~Sprite();
 	if(image_off!=NULL)
 		image_off->Release();
-	//if(image_on!=NULL)
-	//	image_on->Release();
-	setAlive(false);
+	if(image_on!=NULL)
+		image_on->Release();
 }

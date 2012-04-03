@@ -26,8 +26,8 @@ namespace Scene {
 	bool scenePlayerMenu_start = false;
 	bool sceneplay_on = false;
 	bool scenePlayerMenu_on = false;
-	bool checkNextStage;
-
+	bool checkNextStage = false;
+	bool cleartemp= true;
 	void sceneplay();
 	void scenePlayerMenu();
 
@@ -80,6 +80,7 @@ void Scene::newPlayer() {
 void Scene::updatePlayer() {
 	if(isEndStage() == true) {
 		quiz->openAll();
+		keyboard->setStatus(Keyboard::UNAVAILABLE);
 		Next_Stage->setVisible(true);
 		Next_Stage->setCollidable(true);
 		if(isNextStage() == true) {
@@ -102,7 +103,7 @@ void Scene::updatePlayer() {
 					if(count > Player::getNumPlayer())
 						return;
 				}
-				if((g_player->getStatus()!= Player::LOSED) && (g_player->getStatus()!= Player::READY_TO_ANSWER) && (g_player->getStatus()!= Player::SPINNING)&& (g_player->getStatus()!= Player::READY_TO_FULL_ANSWER))
+				if((g_player->getStatus()!= Player::LOSED) && (g_player->getStatus()!= Player::READY_TO_ANSWER) && (g_player->getStatus()!= Player::SPINNING)&& (g_player->getStatus()!= Player::READY_TO_FULL_ANSWER) && (g_player->getStatus() == Player::WIN_STAGE))
 					g_player->setStatus(Player::PLAYING);
 				break;
 			}
@@ -163,6 +164,7 @@ void Scene::nextStage() {
 	checkNextStage = false;
 	Next_Stage->setVisible(false);
 	Next_Stage->setCollidable(false);
+	cleartemp = true;
 }
 
 void Scene::init() {
@@ -267,6 +269,7 @@ void Scene::update() {
 	if((quiz->isFinish() == true) && (isEndStage() == false)) {
 		Next_Stage->setVisible(true);
 		Next_Stage->setCollidable(true);
+		keyboard->setStatus(Keyboard::UNAVAILABLE);
 		if(isNextStage() == true)
 			nextStage();
 	}

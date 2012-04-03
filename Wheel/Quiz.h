@@ -3,6 +3,7 @@
 
 #include "Engine/Advanced2D.h"
 #include "Letter.h"
+#include "button.h"
 #include <iostream>
 #include <fstream>
 #include <iostream>
@@ -26,7 +27,9 @@ private:
 	int size;
 	std::list<Letters*> letters; //lưu từng ký tự answers trong này
 	std::vector<int> recent; //lưu 100 câu hỏi gần nhất
+	bool cleartemp;
 public:
+	
 	Quiz();
 	Quiz(string,string);
 
@@ -45,11 +48,15 @@ public:
 	void addLetter(int );
 	void arrangeLetter();
 	void change(int x, int num_player); //hàm change sẽ bao gồm cả inpủ random 1 câu hỏi theo độ khó x.
+	void indicator(int );
+	void setLetter(int ,string = "");
 	void reset();
 	void openAll();
 	bool check(string panswer, int *result); //nếu đoán đúng cả dãy thì result=-1,true / nếu đoán dc 1 chữ thì result = số chữ trong dãy,true
 	bool check(string panswer);
 	bool isFinish();
+	bool getClearTemp() const {return cleartemp;}
+	void setClearTemp(bool t) {cleartemp = t;}
 };
 
 #endif

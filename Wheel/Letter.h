@@ -5,7 +5,7 @@
 using namespace Advanced2D;
 using namespace std;
 
-enum L_STATUS {OFF,ON};
+
 class Letters : public Sprite {
 private:
 	int status;
@@ -13,7 +13,8 @@ private:
 	static Texture *image_off;
 	Texture *image_on;
 public :
-	
+	enum L_STATUS {OFF,ON};
+	enum TYPE {LETTER_PER=1000,LETTER_TEMP};
 	Letters(string );
 	~Letters();
 	inline int getStatus() const {return status;}

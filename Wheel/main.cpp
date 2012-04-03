@@ -24,7 +24,7 @@ Cursor* cursor;
 Font* system12;
 
 string chose;
-
+string ss;
 enum {CURSOR=150};
 bool game_preload() 
 {
@@ -61,6 +61,7 @@ bool game_init(HWND)
 	}
 
 	Scene::sceneplay_start = true;
+	quiz->drawQuiz();
 	return true;
 }
 
@@ -75,12 +76,11 @@ void game_update()
 
 void game_render2d()
 {	
-	ostringstream ss;
+	ostringstream ss1;
 	Scene::wheel->setHolding(false);
 	g_player->spin(wheel);
-	ss << g_player->getName() << " : " << g_player->getStatus() << " : " << quiz->getSize() << " : " <<chose;
-	system12->Print(0,0,ss.str(),D3DCOLOR_XRGB(255,255,100));
-	quiz->drawQuiz();
+	ss1 << g_player->getName() << " : " << g_player->getStatus() << " : " << quiz->check(ss) << " : " <<chose;
+	system12->Print(0,0,ss1.str(),D3DCOLOR_XRGB(255,255,100));
 	cursor->draw();
 	wheel->drawPowerBar();
 }
@@ -118,7 +118,6 @@ void game_render3d()
 }
 
 void game_mouseButton(int button) {
-	string ss;
 	switch(button) {
 	case 0 :	
 			Scene::updateMouseButton();
@@ -147,7 +146,12 @@ void game_mouseMove(int x,int y) {
 
 void game_mouseWheel(int wheel) {}
 void game_entityRender(Advanced2D::Entity* entity) { }
-void game_entityUpdate(Advanced2D::Entity* entity) { }
+void game_entityUpdate(Advanced2D::Entity* entity) {
+	if((entity->getObjectType() == Letters::LETTER_TEMP)&& (quiz->getClearTemp() == true) && (Scene::cleartemp == true)) {
+		Letters *temp =(Letters*)entity;
+		temp->setAlive(false);
+	}
+}
 void game_entityCollision(Advanced2D::Entity* entity1,Advanced2D::Entity* entity2) {
 	if(entity1->getObjectType() == CURSOR) {
 		if(entity2->getObjectType() == Button::BUTTON) {

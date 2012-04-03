@@ -74,23 +74,30 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 		keyboard->setStatus(Keyboard::AVAILABLE);
 		ss = keyboard->chose();
 		static int count=0;
-		int temp;
 		bool check;
-		static bool result = true;
+		quiz->setClearTemp(false);
+		static int result = 0;
+		quiz->indicator(count);
 		if(ss!= "") {
+			quiz->setLetter(count,ss);
+			quiz->indicator(count+1);
 			setStatus(READY_TO_FULL_ANSWER);
 			count++;
 			check = quiz->check(ss);
-			if(check == false)
-				result = check;
+			if(check == true) 
+				result++;
 			if(count == (quiz->getSize())) {
-				if(result)
+				if(result == count) {
 					this->winStage(quiz);
+					quiz->setClearTemp(true);
+				}
 				else {
 					end_play(LOSED);
+					quiz->setClearTemp(true);
 				}
 				count = 0;
-				result = true;
+				result = 0;
+				quiz->setClearTemp(true);
 			}
 		}
 		return ss;
@@ -133,6 +140,7 @@ void Player::reset() {
 
 
 void Player::winStage(Quiz* quiz) {
+	setStatus(WIN_STAGE);
 	if(score == 0)
 		total_score += 300;
 	else

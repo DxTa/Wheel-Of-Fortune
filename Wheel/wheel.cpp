@@ -77,14 +77,14 @@ int Wheel::spin() {
 }
 
 bool Wheel::isSlices15() {
-	double angle_in_degree = 7.5 + g_engine->math->toDegrees(this->getAngle());
+	double angle_in_degree = g_engine->math->toDegrees(this->getAngle());
 	int times = (int)(angle_in_degree/15);
 	return (fabs(angle_in_degree - times*15) < fabs(g_engine->math->toDegrees(s)));
 }
 
 int Wheel::getTossUp() {
 	double angle_in_degree = g_engine->math->toDegrees(this->getAngle());
-	angle_redundance = ((angle_in_degree +7.5) - ((int)((angle_in_degree +7.5)/360))*360);
+	angle_redundance = ((angle_in_degree) - (((int)((angle_in_degree)/360))*360));
 	double slices = angle_redundance/15;
 	int position = (int)(std::floor(slices));
 	if (position < 0) position = 24 + position;

@@ -33,6 +33,9 @@ int Player::spin(Wheel* wheel) {
 		if(getStatus() == SPINNING) {
 			setStatus(Player::READY_TO_ANSWER);
 			switch(out) {
+			case Wheel::G_5000 :
+				TossUp = 5000;
+				break;
 			case Wheel::G_300_0 :
 			case Wheel::G_300_1 :
 			case Wheel::G_300_2:
@@ -59,6 +62,7 @@ int Player::spin(Wheel* wheel) {
 				break;
 			case Wheel::G_600_1 :
 			case Wheel::G_600_2 :
+			case Wheel::G_600_3 :
 				TossUp = 600;
 				break;
 			case Wheel::G_800_1 :

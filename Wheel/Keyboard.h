@@ -8,6 +8,7 @@ class Keyboard {
 private:
 	int status;
 	Button* letter[26];
+	int state[26];
 public :
 	enum K_STATUS {AVAILABLE=50,UNAVAILABLE};
 	Keyboard();
@@ -20,6 +21,8 @@ public :
 	void setPosition(double x,double y);
 	void draw();
 	void addEntity();
+	void saveState();
+	void loadState();
 	void updateMouseMove();
 };
 

@@ -86,3 +86,23 @@ void Keyboard::addEntity() {
 			g_engine->addEntity(letter[i]);
 	}
 }
+
+void Keyboard::saveState() {
+	int i;
+	for(i=0;i<26;i++) {
+		if(letter[i]->getStatus() == Button::BUTTON_PRESSED)
+			state[i] = 1;
+		else 
+			state[i] = 0;
+	}
+}
+
+void Keyboard::loadState() {
+	int i;
+	for(i=0;i<26;i++) {
+		if(state[i]==1)
+			letter[i]->pressed();
+		else 
+			letter[i]->reset();
+	}
+}

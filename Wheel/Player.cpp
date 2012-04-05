@@ -99,6 +99,7 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 				count = 0;
 				result = 0;
 				quiz->setClearTemp(true);
+				keyboard->loadState();
 			}
 		}
 		return ss;

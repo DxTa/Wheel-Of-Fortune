@@ -64,13 +64,14 @@ void spin() {
 }
 
 void guess() {
+	Scene::keyboard->saveState();
 	Scene::g_player->setStatus(Player::READY_TO_FULL_ANSWER);
 	Scene::scenePlayerMenu_start  = false;
 	Scene::scenePlayerMenu_on = false;
 	Scene::PlayerMenu_Spin->setVisible(false);
 	Scene::PlayerMenu_Spin->setCollidable(false);
 	Scene::PlayeMenu_Guess->setVisible(false);
-	Scene::PlayeMenu_Guess->setCollidable(false);
+	Scene::PlayeMenu_Guess->setCollidable(false);	
 }
 
 void Scene::newPlayer() {
@@ -275,8 +276,6 @@ void Scene::update() {
 		if(isNextStage() == true)
 			nextStage();
 	}
-	if(g_player->getStatus() == Player::READY_TO_FULL_ANSWER)
-		keyboard->reset();
 }
 
 void Scene::updateMouseButton() {
@@ -304,6 +303,8 @@ void Scene::updateMouseMove(double delta_x,double delta_y,double fx,double fy) {
 	PlayerMenu_Spin->setCheckPosition(false);
 	PlayeMenu_Guess->setCheckPosition(false);
 	Next_Stage->setCheckPosition(false);
+	if(g_player->getStatus() == Player::READY_TO_FULL_ANSWER)
+		keyboard->reset();
 }
 
 void Scene::release() {
@@ -319,5 +320,4 @@ void Scene::release() {
 	delete PlayerMenu_Spin;
 	delete PlayeMenu_Guess;
 	delete Next_Stage;
-	
 }

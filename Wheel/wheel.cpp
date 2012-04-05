@@ -18,7 +18,8 @@ Wheel::Wheel() : Sprite() {
 	angle = 0;
 	s=0;
 	direction = NONE;
-	teng = "";
+	teng = "pop";
+	g_engine->audio->Load("sound.mp3",teng);
 	start_spin  = false;
 	setStatus(STOP);
 }
@@ -29,7 +30,8 @@ Wheel::Wheel(double sp,double fric) : Sprite() {
 	angle = 0;
 	s = 0;
 	direction = NONE;
-	teng = "";
+	teng = "pop";
+	g_engine->audio->Load("sound.mp3",teng);
 	start_spin = false;
 	setStatus(STOP);
 }

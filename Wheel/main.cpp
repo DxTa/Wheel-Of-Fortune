@@ -76,8 +76,8 @@ void game_render2d()
 	int temp;
 	ostringstream ss1;
 	Scene::wheel->setHolding(false);
-	g_player->spin(wheel);
-	ss1 << g_player->getName() << " : " << g_player->getStatus() << " : " << g_player->getScore() << " : " <<chose;
+	temp = g_player->spin(wheel);
+	ss1 << g_player->getName() << " : " << g_player->getStatus() << " : " << temp << " : " <<chose;
 	system12->Print(0,0,ss1.str(),D3DCOLOR_XRGB(255,255,100));
 	cursor->draw();
 	wheel->drawPowerBar();

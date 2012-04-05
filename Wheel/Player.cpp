@@ -29,14 +29,47 @@ int Player::spin(Wheel* wheel) {
 	if(getStatus() == Player::LOSED)
 		return -1;
 	if(wheel->spin() == Wheel::STOP) {
-		TossUp = wheel->getTossUp();
+		int out = wheel->getTossUp();
 		if(getStatus() == SPINNING) {
-			/*switch(TossUp) {
-			case Wheel::G_300_0 :
-				setStatus(Player::READY_TO_ANSWER);
-				break;
-			}*/
 			setStatus(Player::READY_TO_ANSWER);
+			switch(out) {
+			case Wheel::G_300_0 :
+			case Wheel::G_300_1 :
+			case Wheel::G_300_2:
+			case Wheel::G_300_3 :
+				TossUp = 300;
+				break;
+			case Wheel::G_350 :
+				TossUp = 350;
+				break;	
+			case Wheel::G_400_1 :
+			case Wheel::G_400_2 :
+				TossUp = 400;
+				break;
+			case Wheel::G_500_2 :
+			case Wheel::G_500_3 :
+			case Wheel::G_500_4:
+				TossUp = 500;
+				break;
+			case Wheel::G_550 :
+				TossUp = 550;
+				break;
+			case Wheel::G_700 :
+				TossUp = 700;
+				break;
+			case Wheel::G_600_1 :
+			case Wheel::G_600_2 :
+				TossUp = 600;
+				break;
+			case Wheel::G_800_1 :
+			case Wheel::G_800_2 :
+				TossUp = 800;
+				break;
+			case Wheel::G_900_1 :
+			case Wheel::G_900_2 :
+				TossUp = 900;
+				break;
+			}
 		}
 		return TossUp;
 	}
@@ -58,7 +91,6 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 			int result = 0;
 			if(quiz->check(ss,&result)) {
 				turn_left = 3;
-				TossUp = 100;
 				switch(TossUp) {
 				default:
 					score += TossUp*result;

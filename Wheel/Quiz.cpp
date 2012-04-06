@@ -142,7 +142,6 @@ int Quiz::inputQuiz(int x,int numberPlayer){
 		randomNumber.erase(randomNumber.begin(),randomNumber.end()); //sau khi đã chọn dc quiz thì giải phóng mảng random
 		randomNumber.clear();
    }
-   j = 16;
    Utils::xmlat(pReader,pFileStream,j,L"Question",&question);
    Utils::xmlat(pReader,pFileStream,j,L"Answer",&answer);
    return 0;

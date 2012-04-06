@@ -85,6 +85,11 @@ bool Wheel::isSlices15() {
 int Wheel::getTossUp() {
 	double angle_in_degree = g_engine->math->toDegrees(this->getAngle());
 	angle_redundance = ((angle_in_degree) - (((int)((angle_in_degree)/360))*360));
+	if ((1 - fabs(angle_redundance/15 - std::floor(angle_redundance))) < 0.1)  {
+		angle_redundance += 2;
+		angle+= g_engine->math->toRadians(0.02);
+		this->setRotation(this->getAngle());
+	}
 	double slices = angle_redundance/15;
 	int position = (int)(std::floor(slices));
 	if (position < 0) position = 24 + position;
@@ -140,7 +145,11 @@ void Wheel::updateMouseMove(double delta_x,double delta_y,double fx,double fy) {
 			this->setAngle(this->getAngle() - fabs(atan(x)));
 		else
 			this->setAngle(this->getAngle() + fabs(atan(x)));
-		this->setSpeed(this->getS()*10/Utils::timecount());
+		double time = Utils::timecount();
+		if(this->getS()*10/time < ((2*3.14 + friction)/100)) 
+			this->setSpeed(((2*3.14 + friction)/100));
+		else 
+			this->setSpeed(this->getS()*10/time);
 	}
 }
 

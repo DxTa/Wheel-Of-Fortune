@@ -13,6 +13,7 @@ Player::Player() : Sprite() {
 	turn_left = 3;
 	setStatus(AWAIT);
 	turn_gift = 0;
+	TossUp = 0;
 }
 
 Player::Player(string na) : Sprite() {
@@ -23,6 +24,7 @@ Player::Player(string na) : Sprite() {
 	setStatus(AWAIT);
 	turn_left = 3;
 	turn_gift = 0;
+	TossUp = 0;
 }
 
 int Player::spin(Wheel* wheel) {
@@ -78,6 +80,7 @@ int Player::spin(Wheel* wheel) {
 		return TossUp;
 	}
 	else {
+		TossUp = 0;
 		setStatus(Player::SPINNING);
 		return Player::SPINNING;
 	}
@@ -95,11 +98,8 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 			int result = 0;
 			if(quiz->check(ss,&result)) {
 				turn_left = 3;
-				switch(TossUp) {
-				default:
+				if(TossUp > 0)
 					score += TossUp*result;
-					break;
-				}
 			}
 			else 
 				end_play();
@@ -126,11 +126,9 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 			if(count == (quiz->getSize())) {
 				if(result == count) {
 					this->winStage(quiz);
-					quiz->setClearTemp(true);
 				}
 				else {
 					end_play(LOSED);
-					quiz->setClearTemp(true);
 				}
 				count = 0;
 				result = 0;

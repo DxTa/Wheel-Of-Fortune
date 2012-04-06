@@ -157,12 +157,25 @@ void Scene::nextStage() {
 	Player* player;
 	std::list<Player*>::iterator iter;
 	iter = playerlist.begin();
+	int max = 0;
+	int count=1;
+	int max_id;
 	while (iter != playerlist.end()) {
 		player = *iter;
 		player->reset();
+		if(phase > Player::getNumPlayer()) {
+			if(max < player->getTotalScore()) {
+				max = player->getTotalScore();
+				max_id = count;
+			}
+		}
+		++count;
 		++iter;
 	}
-	Player::setCurrentPlayer(phase);
+	if(phase <= Player::getCurrentPlayer())
+		Player::setCurrentPlayer(phase);
+	else 
+		Player::setCurrentPlayer(max_id);
 	scenePlayerMenu_start = true;
 	checkNextStage = false;
 	Next_Stage->setVisible(false);

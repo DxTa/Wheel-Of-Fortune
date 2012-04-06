@@ -29,6 +29,7 @@ class Player : public Sprite {
 		static int getNumPlayer() {return numberPlayer;}
 		string getName() const {return name;}
 		int getScore() const {return score;}
+		int getTotalScore() const {return total_score;}
 		int getStatus() const {return status;}
 		int getTurnLeft() const {return turn_left;}
 		int getTurnGift() const {return turn_gift;}

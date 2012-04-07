@@ -84,13 +84,20 @@ bool Wheel::isSlices15() {
 
 int Wheel::getTossUp() {
 	double angle_in_degree = g_engine->math->toDegrees(this->getAngle());
-	angle_redundance = ((angle_in_degree) - (((int)((angle_in_degree)/360))*360));
-	if ((1 - fabs(angle_redundance/15 - std::floor(angle_redundance))) < 0.1)  {
-		angle_redundance += 2;
-		angle+= g_engine->math->toRadians(0.02);
+	angle_redundance = (this->getAngle() - (((int)((this->getAngle())/g_engine->math->toRadians(360)))*g_engine->math->toRadians(360)));
+	double delta_15 = fabs(g_engine->math->toDegrees(angle_redundance) - std::floor(g_engine->math->toDegrees(angle_redundance)/15)*15);
+	if (delta_15 < 1.5 || (15 - delta_15) < 1.5)  {
+		if (direction == LEFT) {
+			angle_redundance -= g_engine->math->toRadians(2.5);
+			angle -= g_engine->math->toRadians(2.5);
+		}
+		else {
+			angle_redundance += g_engine->math->toRadians(2.5);
+			angle+= g_engine->math->toRadians(2.5);
+		}
 		this->setRotation(this->getAngle());
 	}
-	double slices = angle_redundance/15;
+	double slices = angle_redundance/g_engine->math->toRadians(15);
 	int position = (int)(std::floor(slices));
 	if (position < 0) position = 24 + position;
 	return (Wheel::TossUp = position);

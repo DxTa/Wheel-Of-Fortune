@@ -35,45 +35,49 @@ int Player::spin(Wheel* wheel) {
 			int out = wheel->getTossUp();
 			setStatus(Player::READY_TO_ANSWER);
 			switch(out) {
-			case Wheel::G_5000 :
-				TossUp = 5000;
+			case Wheel::G_100 :
+			case Wheel::G_100_1 :
+			case Wheel::G_100_2 :
+				TossUp = 100;
 				break;
-			case Wheel::G_300_0 :
+			case Wheel::G_200:
+			case Wheel::G_200_1:
+			case Wheel::G_200_2:
+				TossUp = 200;
+				break;
+			case Wheel::G_300 :
 			case Wheel::G_300_1 :
 			case Wheel::G_300_2:
 			case Wheel::G_300_3 :
 				TossUp = 300;
 				break;
-			case Wheel::G_350 :
-				TossUp = 350;
-				break;	
-			case Wheel::G_400_1 :
-			case Wheel::G_400_2 :
+			case Wheel::G_400 :
+			case Wheel::G_400_1:
 				TossUp = 400;
-				break;
-			case Wheel::G_500_2 :
-			case Wheel::G_500_3 :
-			case Wheel::G_500_4:
+				break;	
+			case Wheel::G_500 :
 				TossUp = 500;
 				break;
-			case Wheel::G_550 :
-				TossUp = 550;
+			case Wheel::G_600 :
+			case Wheel::G_600_1 :
+				TossUp = 600;
 				break;
 			case Wheel::G_700 :
 				TossUp = 700;
 				break;
-			case Wheel::G_600_1 :
-			case Wheel::G_600_2 :
-			case Wheel::G_600_3 :
-				TossUp = 600;
-				break;
-			case Wheel::G_800_1 :
-			case Wheel::G_800_2 :
+			case Wheel::G_800:
 				TossUp = 800;
 				break;
-			case Wheel::G_900_1 :
-			case Wheel::G_900_2 :
+			case Wheel::G_900 :
 				TossUp = 900;
+				break;
+			case Wheel::G_BANKRUPT :
+			case Wheel::G_BANKRUPT_1 :
+				break;
+			case Wheel::G_LOSEATURN :
+			case Wheel::G_LOSEATURN_1 :
+				break;
+			case Wheel::G_FREEATURN :
 				break;
 			}
 		}

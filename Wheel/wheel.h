@@ -19,10 +19,10 @@ private:
 	double friction;
 	double angle,angle_redundance;
 	double s;
-	double interval;
 	double ox,oy,or;
 
 	bool start_spin;
+	bool fixxing;
 	bool wheel_holding;
 	bool checkposition;
 	string teng;
@@ -45,13 +45,13 @@ public:
 	bool getStartSpin() const {return start_spin;}
 	bool isCheckPosition() const {return checkposition;}
 	bool isHolding() const {return wheel_holding;}
+	bool isFixxing() const {return fixxing;}
 	double getAngle() const {return angle;}
 	double getAngleRedundance() const {return angle_redundance;}
 	double getS() const {return s;}
 	double getOX() const {return ox;}
 	double getOY() const {return oy;}
 	double getR() const {return or;}
-	double getInterval() const {return interval;}
 	double getSpeed() const {return speed;}
 	string getTeng() const {return teng;}
 
@@ -59,7 +59,6 @@ public:
 	void setCheckPosition(bool pos) {checkposition = pos;}
 	void setHolding(bool hold) {wheel_holding = hold;}
 	void setDirection(int dir) {direction = dir;}
-	void setInterval(double i) {interval = i;}
 	void setOR(double x, double y, double r);
 	void setFriction(double fric) {friction = fric;}
 	void setStatus(int pstatus) {status = pstatus;}

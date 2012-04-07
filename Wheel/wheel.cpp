@@ -1,8 +1,9 @@
-#include "wheel.h"
+﻿#include "wheel.h"
 #include "math.h"
 
 Wheel::Wheel() : Sprite() {
 	speed = 0;
+	TossUp = 0;
 	power_bar = new Sprite();
 	power_bar->loadImage("powerbar.png");
 	power_bar->setSize(904,62);
@@ -29,6 +30,7 @@ Wheel::Wheel(double sp,double fric) : Sprite() {
 	friction = fric;
 	angle = 0;
 	s = 0;
+	TossUp = 0;
 	direction = NONE;
 	teng = "pop";
 	g_engine->audio->Load("sound.mp3",teng);
@@ -61,11 +63,12 @@ int Wheel::spin() {
 			g_engine->audio->Play(teng);
 	}
 
-	if(speed > 0) {
+	if(speed > 0 && fixxing != true) {
 		setStatus(SPINNING);
 		return SPINNING;
 	}
-	else {
+	else if (speed <= 0) {
+		fixxing = false;
 		if(getStatus() == Wheel::WAIT) {
 			return Wheel::WAIT;
 		}
@@ -87,15 +90,18 @@ int Wheel::getTossUp() {
 	angle_redundance = (this->getAngle() - (((int)((this->getAngle())/g_engine->math->toRadians(360)))*g_engine->math->toRadians(360)));
 	double delta_15 = fabs(g_engine->math->toDegrees(angle_redundance) - std::floor(g_engine->math->toDegrees(angle_redundance)/15)*15);
 	if (delta_15 < 1.5 || (15 - delta_15) < 1.5)  {
+		//nếu góc lập lờ không rõ, tiến hành dịch thêm tí, gọi thao tác này là fixing, wheel sẽ quay nhưng vẫn là trạng thái STOP
+		fixxing = true; 
 		if (direction == LEFT) {
-			angle_redundance -= g_engine->math->toRadians(2.5);
-			angle -= g_engine->math->toRadians(2.5);
+			this->setSpeed(std::sqrt(g_engine->math->toRadians(2) * 2*friction));
+			direction = LEFT;
+			this->setStartSpin(true);
 		}
 		else {
-			angle_redundance += g_engine->math->toRadians(2.5);
-			angle+= g_engine->math->toRadians(2.5);
+			this->setSpeed(std::sqrt(g_engine->math->toRadians(2) * 2*friction));
+			direction = RIGHT;
+			this->setStartSpin(true);
 		}
-		this->setRotation(this->getAngle());
 	}
 	double slices = angle_redundance/g_engine->math->toRadians(15);
 	int position = (int)(std::floor(slices));
@@ -153,9 +159,9 @@ void Wheel::updateMouseMove(double delta_x,double delta_y,double fx,double fy) {
 		else
 			this->setAngle(this->getAngle() + fabs(atan(x)));
 		double time = Utils::timecount();
-		if(this->getS()*10/time < ((2*3.14 + friction)/100)) 
-			this->setSpeed(((2*3.14 + friction)/100));
-		else 
+		//if(this->getS()*10/time < ((2*3.14 + friction)/100)) 
+		//	this->setSpeed(((2*3.14 + friction)/100));
+		//else 
 			this->setSpeed(this->getS()*10/time);
 	}
 }

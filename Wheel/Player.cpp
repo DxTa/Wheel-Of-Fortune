@@ -80,11 +80,12 @@ int Player::spin(Wheel* wheel) {
 			case Wheel::G_FREEATURN :
 				break;
 			}
+			return TossUp;
 		}
-		return TossUp;
+		
 	}
 	else {
-		TossUp = 0;
+		if (wheel->isFixxing() == true) return -1;
 		setStatus(Player::SPINNING);
 		return Player::SPINNING;
 	}

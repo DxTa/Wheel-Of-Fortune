@@ -31,8 +31,8 @@ int Player::spin(Wheel* wheel) {
 	if(getStatus() == Player::LOSED)
 		return -1;
 	if(wheel->spin() == Wheel::STOP) {
-		int out = wheel->getTossUp();
 		if(getStatus() == SPINNING) {
+			int out = wheel->getTossUp();
 			setStatus(Player::READY_TO_ANSWER);
 			switch(out) {
 			case Wheel::G_5000 :
@@ -125,7 +125,8 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 			count++;
 			if(count == (quiz->getSize())) {
 				if(result == count) {
-					this->winStage(quiz);
+					this->winStage();
+					quiz->openAll();
 				}
 				else {
 					end_play(LOSED);
@@ -175,11 +176,11 @@ void Player::reset() {
 }
 
 
-void Player::winStage(Quiz* quiz) {
+void Player::winStage() {
 	setStatus(WIN_STAGE);
 	if(score == 0)
 		total_score += 300;
 	else
 		total_score += score;
-	quiz->openAll();
+	reset();
 }

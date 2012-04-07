@@ -77,7 +77,7 @@ void game_render2d()
 	ostringstream ss1;
 	Scene::wheel->setHolding(false);
 	temp = g_player->spin(wheel);
-	ss1 << g_player->getName() << " : " << g_player->getScore() << " : " << temp << " : " <<chose;
+	ss1 << g_player->getName() << " : " << g_player->getScore() << " : " << g_player->getTotalScore() << " : " <<chose;
 	system12->Print(0,0,ss1.str(),D3DCOLOR_XRGB(255,255,100));
 	system12->Print(0,300,quiz->getQuestion(),D3DCOLOR_XRGB(255,255,100));
 	wheel->drawPowerBar();

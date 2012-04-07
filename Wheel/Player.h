@@ -21,7 +21,7 @@ class Player : public Sprite {
 		int turn_left;
 		int turn_gift;
 	public :
-		enum P_STATUS {AWAIT=100,PLAYING,READY_TO_SPIN,SPINNING,READY_TO_ANSWER,READY_TO_FULL_ANSWER,LOSED,WIN_STAGE};
+		enum P_STATUS {AWAIT=100,PLAYING,READY_TO_SPIN,SPINNING,READY_TO_ANSWER,READY_TO_FULL_ANSWER,LOSED,WIN_STAGE,WIN_GAME};
 		Player();
 		Player(string );
 		~Player() {Sprite::~Sprite();}
@@ -37,11 +37,10 @@ class Player : public Sprite {
 		static void setCurrentPlayer(int current) {currentPlayer = current > numberPlayer ? 1 : current;}
 		static void setNumPlayer(int num) {numberPlayer = num;}
 		void setName(string na) {name = na;}
-		void setScore(int s) {score = s;}
+		void winScore() {total_score += score;}
 		void setStatus(P_STATUS sta) {status = sta;}
-		void winScore(int sco) {score = sco;}
 
-		void winStage(Quiz*);
+		void winStage();
 		void reset();
 
 		int start_play();

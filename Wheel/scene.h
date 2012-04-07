@@ -149,33 +149,50 @@ bool Scene::isNextStage() {
 
 void Scene::nextStage() {
 	static int phase=1;
-	phase++;
+	if(phase > (Player::getNumPlayer()+1))
+		g_engine->Close();
 	if(!quiz->isFinish())
 		return;
+	phase++;
+	g_player->winScore();
 	quiz->change(0,Player::getNumPlayer());
 	keyboard->reset();
 	Player* player;
 	std::list<Player*>::iterator iter;
 	iter = playerlist.begin();
-	int max = 0;
-	int count=1;
-	int max_id;
 	while (iter != playerlist.end()) {
 		player = *iter;
 		player->reset();
-		if(phase > Player::getNumPlayer()) {
-			if(max < player->getTotalScore()) {
-				max = player->getTotalScore();
-				max_id = count;
-			}
-		}
-		++count;
 		++iter;
 	}
-	if(phase <= Player::getCurrentPlayer())
-		Player::setCurrentPlayer(phase);
+	if(phase == (Player::getNumPlayer()+1)) {
+		string max_id;
+		int max = 0;
+		iter = playerlist.begin();
+		while (iter != playerlist.end()) {
+			player = *iter;
+			player->setStatus(Player::LOSED);
+			if(max < player->getTotalScore()) {
+				max = player->getTotalScore();
+				max_id = player->getName();
+			}
+			++iter;
+		}
+		int count = 1;
+		iter = playerlist.begin();
+		while (iter != playerlist.end()) {
+			player = *iter;
+			if(max_id == player->getName()){
+				player->setStatus(Player::WIN_GAME);
+				break;
+			}
+			++count;
+			++iter;
+		}
+		Player::setCurrentPlayer(count);
+	}
 	else 
-		Player::setCurrentPlayer(max_id);
+		Player::setCurrentPlayer(phase);
 	scenePlayerMenu_start = true;
 	checkNextStage = false;
 	Next_Stage->setVisible(false);

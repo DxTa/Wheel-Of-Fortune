@@ -47,8 +47,9 @@ int Wheel::spin() {
 	speed = speed - friction;
 	if(speed > 0) 
 		s = (speed_temp*speed_temp - speed*speed)/(2*friction);
-	if(speed <= 0)
+	if(speed <= 0) {
 		start_spin = false;
+	}
 
 	if(start_spin == true) {
 		if(direction == LEFT) 
@@ -64,12 +65,12 @@ int Wheel::spin() {
 			g_engine->audio->Play(teng);
 	}
 
-	if(speed > 0 && fixxing != true) {
+	if(speed > 0) {
 		setStatus(SPINNING);
 		return SPINNING;
 	}
 	else if (speed <= 0) {
-		fixxing = false;
+		
 		if(getStatus() == Wheel::WAIT) {
 			return Wheel::WAIT;
 		}
@@ -91,17 +92,19 @@ int Wheel::getTossUp() {
 	angle_redundance = (this->getAngle() - (((int)((this->getAngle())/g_engine->math->toRadians(360)))*g_engine->math->toRadians(360)));
 	double delta_15 = fabs(g_engine->math->toDegrees(angle_redundance) - std::floor(g_engine->math->toDegrees(angle_redundance)/15)*15);
 	if (delta_15 < 1.5 || (15 - delta_15) < 1.5)  {
-		//nếu góc lập lờ không rõ, tiến hành dịch thêm tí, gọi thao tác này là fixing, wheel sẽ quay nhưng vẫn là trạng thái STOP
-		fixxing = true; 
 		if (direction == LEFT) {
 			this->setSpeed(std::sqrt(g_engine->math->toRadians(2) * 2*friction));
 			direction = LEFT;
 			this->setStartSpin(true);
+			this->setStatus(SPINNING);
+			return -1; //còn phải dịch thêm tí --> trả lại TossUp = -1 không tồn tại
 		}
 		else {
 			this->setSpeed(std::sqrt(g_engine->math->toRadians(2) * 2*friction));
 			direction = RIGHT;
 			this->setStartSpin(true);
+			this->setStatus(SPINNING);
+			return -1; //còn phải dịch thêm tí --> trả lại TossUp = -1 không tồn tại
 		}
 	}
 	double slices = angle_redundance/g_engine->math->toRadians(15);
@@ -122,8 +125,8 @@ void Wheel::update() {
 	if(this->isHolding() ==false) {
 		if (this->getSpeed() > 0) {
 			if (this->getStartSpin() == false) {
-				if(this->getSpeed() < ((2*3.14 + friction)/100)) 
-				this->setSpeed(((2*3.14 + friction)/100));
+				//if(this->getSpeed() < ((2*3.14 + friction)/100)) 
+					//this->setSpeed(((2*3.14 + friction)/100));
 				this->setStartSpin(true);
 			}
 		}

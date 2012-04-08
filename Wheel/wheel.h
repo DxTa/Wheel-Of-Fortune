@@ -22,7 +22,6 @@ private:
 	double ox,oy,or;
 
 	bool start_spin;
-	bool fixxing;
 	bool wheel_holding;
 	bool checkposition;
 	string teng;
@@ -45,7 +44,6 @@ public:
 	bool getStartSpin() const {return start_spin;}
 	bool isCheckPosition() const {return checkposition;}
 	bool isHolding() const {return wheel_holding;}
-	bool isFixxing() const {return fixxing;}
 	double getAngle() const {return angle;}
 	double getAngleRedundance() const {return angle_redundance;}
 	double getS() const {return s;}

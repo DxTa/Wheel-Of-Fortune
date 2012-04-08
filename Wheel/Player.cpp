@@ -33,51 +33,66 @@ int Player::spin(Wheel* wheel) {
 	if(wheel->spin() == Wheel::STOP) {
 		if(getStatus() == SPINNING) {
 			int out = wheel->getTossUp();
-			setStatus(Player::READY_TO_ANSWER);
 			switch(out) {
 			case Wheel::G_100 :
 			case Wheel::G_100_1 :
 			case Wheel::G_100_2 :
 				TossUp = 100;
+				setStatus(Player::READY_TO_ANSWER);
 				break;
 			case Wheel::G_200:
 			case Wheel::G_200_1:
 			case Wheel::G_200_2:
 				TossUp = 200;
+				setStatus(Player::READY_TO_ANSWER);
 				break;
 			case Wheel::G_300 :
 			case Wheel::G_300_1 :
 			case Wheel::G_300_2:
 			case Wheel::G_300_3 :
 				TossUp = 300;
+				setStatus(Player::READY_TO_ANSWER);
 				break;
 			case Wheel::G_400 :
 			case Wheel::G_400_1:
 				TossUp = 400;
+				setStatus(Player::READY_TO_ANSWER);
 				break;	
 			case Wheel::G_500 :
 				TossUp = 500;
+				setStatus(Player::READY_TO_ANSWER);
 				break;
 			case Wheel::G_600 :
 			case Wheel::G_600_1 :
 				TossUp = 600;
+				setStatus(Player::READY_TO_ANSWER);
 				break;
 			case Wheel::G_700 :
 				TossUp = 700;
+				setStatus(Player::READY_TO_ANSWER);
 				break;
 			case Wheel::G_800:
 				TossUp = 800;
+				setStatus(Player::READY_TO_ANSWER);
 				break;
 			case Wheel::G_900 :
 				TossUp = 900;
+				setStatus(Player::READY_TO_ANSWER);
 				break;
 			case Wheel::G_BANKRUPT :
 			case Wheel::G_BANKRUPT_1 :
+				TossUp = Wheel::G_BANKRUPT;
 				break;
 			case Wheel::G_LOSEATURN :
 			case Wheel::G_LOSEATURN_1 :
+				TossUp = Wheel::G_LOSEATURN;
 				break;
 			case Wheel::G_FREEATURN :
+				TossUp = Wheel::G_FREEATURN;
+				setStatus(Player::READY_TO_ANSWER);
+				break;
+			case Wheel::G_GIFT :
+				TossUp = Wheel::G_GIFT;
 				break;
 			}
 			return TossUp;
@@ -85,7 +100,6 @@ int Player::spin(Wheel* wheel) {
 		
 	}
 	else {
-		if (wheel->isFixxing() == true) return -1;
 		setStatus(Player::SPINNING);
 		return Player::SPINNING;
 	}
@@ -103,8 +117,10 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 			int result = 0;
 			if(quiz->check(ss,&result)) {
 				turn_left = 3;
-				if(TossUp > 0)
+				if((TossUp > 0) && (TossUp != Wheel::G_FREEATURN))
 					score += TossUp*result;
+				if(TossUp == Wheel::G_FREEATURN)
+					turn_gift++;
 			}
 			else 
 				end_play();
@@ -157,7 +173,10 @@ void Player::end_play(int pstatus) {
 		return;
 	}
 	if(turn_gift == 0) {
-		--turn_left;
+		if((pstatus == Wheel::G_BANKRUPT) || (pstatus == Wheel::G_LOSEATURN))
+			;
+		else 
+			--turn_left;
 		if(turn_left <= 0)
 			setStatus(LOSED);
 		else {
@@ -189,3 +208,4 @@ void Player::winStage() {
 		total_score += score;
 	reset();
 }
+

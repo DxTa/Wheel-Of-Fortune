@@ -6,7 +6,7 @@ using namespace Advanced2D;
 using namespace std;
 
 class Button : public Sprite {
-private:
+protected :
 	Timer checkpress;
 	string label;
 	int status;

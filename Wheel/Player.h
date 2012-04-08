@@ -38,8 +38,9 @@ class Player : public Sprite {
 		static void setNumPlayer(int num) {numberPlayer = num;}
 		void setName(string na) {name = na;}
 		void winScore() {total_score += score;}
+		void setScore(int pscore) {score = pscore;}
 		void setStatus(P_STATUS sta) {status = sta;}
-
+		
 		void winStage();
 		void reset();
 

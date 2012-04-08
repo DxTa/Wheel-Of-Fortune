@@ -4,12 +4,12 @@
 #include "wheel.h"
 #include "Keyboard.h"
 #include "Quiz.h"
+#include "Gift.h"
 #include "Engine/Advanced2D.h"
-
-ostringstream heee;
 
 namespace Scene {
 	std::list<Player*> playerlist;
+	std::list<Gift*> giftlist;
 	string chose;
 	string ss;
 	Timer timecheck;
@@ -24,14 +24,18 @@ namespace Scene {
 	Button* PlayerMenu_Spin;
 	Button* PlayeMenu_Guess;
 	Button* Next_Stage;
+	Button* button_ok;
 	bool sceneplay_start = false;
-	bool scenePlayerMenu_start = false;
 	bool sceneplay_on = false;
+	bool scenePlayerMenu_start = false;
 	bool scenePlayerMenu_on = false;
+	bool scenePlayerGift_start = false;
+	bool scenePlayerGift_on = false;
 	bool checkNextStage = false;
 	bool cleartemp= true;
 	void sceneplay();
 	void scenePlayerMenu();
+	void scenePlayerGift();
 
 	void init();
 	void update();
@@ -44,6 +48,15 @@ namespace Scene {
 	void deletePlayer();
 	void resetPlayer();
 	void nextStage();
+	void spinPlayer();
+
+	void newGift(string );
+	void setGiftPosition(int x,int y);
+	void showGift();
+	void hideGift();
+	void updateGiftMouseMove();
+	void updateGiftMouseButton();
+	void deleteGift();
 
 	bool isEndStage();
 	bool isNextStage();
@@ -74,10 +87,83 @@ void guess() {
 	Scene::PlayeMenu_Guess->setCollidable(false);	
 }
 
+void showButtonOk() {
+	Scene::button_ok->setVisible(true);
+	Scene::button_ok->setCollidable(true);
+}
+
 void Scene::newPlayer() {
 	Player* player = new Player();
 	player->setID(Player::getNumPlayer());
 	playerlist.push_back(player);
+}
+
+void Scene::newGift(string name) {
+	Gift* gift = new Gift(name);
+	gift->setVisible(false);
+	gift->setCollidable(false);
+	gift->setCallback(showButtonOk);
+	g_engine->addEntity(gift);
+	giftlist.push_back(gift);
+}
+
+void Scene::setGiftPosition(int x,int y) {
+	list<Gift*>::iterator iter;
+	Gift* gift;
+	iter = giftlist.begin();
+	int i = 0;
+	while(iter!=giftlist.end()) {
+		gift = *iter;
+		gift->setPosition(x + (i%3)*gift->getWidth(),y + (int)(i/3)*gift->getHeight());
+		++i;
+		++iter;
+	}
+}
+
+void Scene::showGift() {
+	list<Gift*>::iterator iter;
+	iter = giftlist.begin();
+	int i = 0;
+	Gift* gift;
+	while(iter!=giftlist.end()) {
+		gift = *iter;
+		gift->setVisible(true);
+		gift->setCollidable(true);
+		++iter;
+	}
+	if(button_ok->getStatus()==Button::BUTTON_PRESSED) {
+		button_ok->reset();
+		button_ok->setVisible(false);
+		button_ok->setCollidable(false);
+	}
+}
+
+void Scene::hideGift() {
+	list<Gift*>::iterator iter;
+	iter = giftlist.begin();
+	int i = 0;
+	Gift* gift;
+	while(iter!=giftlist.end()) {
+		gift = *iter;
+		gift->setVisible(false);
+		gift->setCollidable(false);
+		++iter;
+	}
+	scenePlayerGift_start = false;
+	scenePlayerGift_on = false;
+	scenePlayerMenu_start = true;
+}
+
+void Scene::deleteGift() {
+	list<Gift*>::iterator iter;
+	iter = giftlist.begin();
+	int i = 0;
+	Gift* gift;
+	while(iter!=giftlist.end()) {
+		gift = *iter;
+		gift->setAlive(false);
+		iter = giftlist.erase(iter);
+	}
 }
 
 void Scene::updatePlayer() {
@@ -122,6 +208,26 @@ void Scene::deletePlayer() {
 		g_player = *iter;
 		delete g_player;
 		iter = playerlist.erase(iter);
+	}
+}
+
+void Scene::spinPlayer() {
+	Scene::wheel->setHolding(false);
+	if(wheel->getStatus() == Wheel::STOP)
+		return;
+	switch(g_player->spin(wheel)) {
+	case Wheel::G_BANKRUPT :
+		g_player->setScore(0);
+		g_player->end_play(Wheel::G_BANKRUPT);
+		Scene::scenePlayerMenu_start = true;
+		break;
+	case Wheel::G_LOSEATURN :
+		g_player->end_play(Wheel::G_LOSEATURN);
+		Scene::scenePlayerMenu_start = true;
+		break;
+	case Wheel::G_GIFT :
+		Scene::scenePlayerGift_start = true;
+		break;
 	}
 }
 
@@ -249,10 +355,25 @@ void Scene::init() {
 	Next_Stage->setPosition(g_engine->getScreenWidth()-Next_Stage->getWidth(),g_engine->getScreenHeight()-Next_Stage->getHeight());
 	g_engine->addEntity(Next_Stage);
 
+	button_ok = new Button("ok_button");
+	button_ok->setCallback(hideGift);
+	button_ok->setCollidable(false);
+	button_ok->setVisible(false);
+	button_ok->setPosition(g_engine->getScreenWidth()/2-button_ok->getWidth(),g_engine->getScreenHeight()/-button_ok->getHeight());
+	g_engine->addEntity(button_ok);
+
+
 	Scene::newPlayer();
 	Scene::newPlayer();
 	Scene::newPlayer();
 	Player::setCurrentPlayer(1);
+	Scene::newGift("car");
+	Scene::newGift("car");
+	Scene::newGift("car");
+	Scene::newGift("car");
+	Scene::newGift("car");
+	Scene::newGift("car");
+	Scene::setGiftPosition(700,300);
 
 	quiz = new Quiz();
 	quiz->setPosition(0,0);
@@ -262,6 +383,7 @@ void Scene::init() {
 	quiz->change(0,Player::getNumPlayer());
 	Scene::scenePlayerMenu_start = true;
 	Scene::checkNextStage = false;
+
 }
 
 void Scene::sceneplay() {
@@ -290,11 +412,21 @@ void Scene::scenePlayerMenu() {
 	}
 }
 
+void Scene::scenePlayerGift() {
+	if((scenePlayerGift_on == true) || (Scene::isEndStage() == true) ||(Scene::quiz->isFinish() == true))
+		return;
+	if((scenePlayerGift_start == true) && (scenePlayerGift_on == false)) {
+		scenePlayerGift_on = true;
+		showGift();
+	}
+}
+
 void Scene::update() {
 	Scene::background->setImage(Scene::background_image);
 	Scene::updatePlayer();
 	sceneplay();
 	scenePlayerMenu();
+	scenePlayerGift();
 	Scene::menu->update();
 	PlayerMenu_Spin->reset();
 	PlayeMenu_Guess->reset();
@@ -307,16 +439,29 @@ void Scene::update() {
 			nextStage();
 	}
 }
-
+void Scene::updateGiftMouseButton() {
+	list<Gift*>::iterator iter;
+	iter = giftlist.begin();
+	Gift* gift;
+	while(iter!=giftlist.end()) {
+		gift = *iter;
+		if(gift->isPosition()==true)
+			gift->pressed();
+		++iter;
+	}
+}
 void Scene::updateMouseButton() {
 	Scene::wheel->updateMouseButton();
 	Scene::menu->updateMouseButton();
+	Scene::updateGiftMouseButton();
 	if(PlayerMenu_Spin->isPosition() == true)
 		PlayerMenu_Spin->pressed();
 	if(PlayeMenu_Guess->isPosition() == true)
 		PlayeMenu_Guess->pressed();
-	if(Next_Stage->isPosition() ==true)
+	if(Next_Stage->isPosition() == true)
 		Next_Stage->pressed();
+	if(button_ok->isPosition() == true)
+		button_ok->pressed();
 	if(timecheck.stopwatch(96)) {
 		ss = g_player->answer(keyboard,quiz);
 		chose += ss;
@@ -326,12 +471,25 @@ void Scene::updateMouseButton() {
 	}
 }
 
+void Scene::updateGiftMouseMove() {
+	list<Gift*>::iterator iter;
+	iter = giftlist.begin();
+	Gift* gift;
+	while(iter!=giftlist.end()) {
+		gift = *iter;
+		gift->setCheckPosition(false);
+		++iter;
+	}
+}
+
 void Scene::updateMouseMove(double delta_x,double delta_y,double fx,double fy) {
 	Scene::wheel->updateMouseMove(delta_x,delta_y,fx,fy);
 	Scene::menu->updateMouseMove();
 	Scene::keyboard->updateMouseMove();
+	Scene::updateGiftMouseMove();
 	PlayerMenu_Spin->setCheckPosition(false);
 	PlayeMenu_Guess->setCheckPosition(false);
+	button_ok->setCheckPosition(false);
 	Next_Stage->setCheckPosition(false);
 	if(g_player->getStatus() == Player::READY_TO_FULL_ANSWER)
 		keyboard->reset();
@@ -339,6 +497,7 @@ void Scene::updateMouseMove(double delta_x,double delta_y,double fx,double fy) {
 
 void Scene::release() {
 	deletePlayer();
+	deleteGift();
 	Letters::release();
 	delete menu;
 	delete background;
@@ -350,4 +509,5 @@ void Scene::release() {
 	delete PlayerMenu_Spin;
 	delete PlayeMenu_Guess;
 	delete Next_Stage;
+	delete button_ok;
 }

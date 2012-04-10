@@ -17,8 +17,9 @@ Wheel::Wheel() : Sprite() {
 	friction = 0.0002;
 	angle = 0;
 	s=0;
+	slice = 15;
 	direction = NONE;
-	teng = "pop";
+	teng = "";
 	g_engine->audio->Load("sound.mp3",teng);
 	start_spin  = false;
 	setStatus(STOP);
@@ -29,8 +30,9 @@ Wheel::Wheel(double sp,double fric) : Sprite() {
 	friction = fric;
 	angle = 0;
 	s = 0;
+	slice = 15;
 	direction = NONE;
-	teng = "pop";
+	teng = "";
 	g_engine->audio->Load("sound.mp3",teng);
 	start_spin = false;
 	setStatus(STOP);
@@ -56,7 +58,7 @@ int Wheel::spin() {
 	}
 	fin:
 	this->setRotation(this->getAngle());
-	if (isSlices15() == true) {
+	if (isSlices() == true) {
 		if(teng!= "")
 			g_engine->audio->Play(teng);
 	}
@@ -76,17 +78,17 @@ int Wheel::spin() {
 	}
 }
 
-bool Wheel::isSlices15() {
+bool Wheel::isSlices() {
 	double angle_in_degree = g_engine->math->toDegrees(this->getAngle());
-	int times = (int)(angle_in_degree/15);
-	return (fabs(angle_in_degree - times*15) < fabs(g_engine->math->toDegrees(s)));
+	int times = (int)(angle_in_degree/slice);
+	return (fabs(angle_in_degree - times*slice) < fabs(g_engine->math->toDegrees(s)));
 }
 
 int Wheel::getTossUp() {
 	double angle_in_degree = g_engine->math->toDegrees(this->getAngle());
 	angle_redundance = (this->getAngle() - (((int)((this->getAngle())/g_engine->math->toRadians(360)))*g_engine->math->toRadians(360)));
-	double delta_15 = fabs(g_engine->math->toDegrees(angle_redundance) - std::floor(g_engine->math->toDegrees(angle_redundance)/15)*15);
-	if (delta_15 < 1.5 || (15 - delta_15) < 1.5)  {
+	double delta_slice = fabs(g_engine->math->toDegrees(angle_redundance) - std::floor(g_engine->math->toDegrees(angle_redundance)/slice)*slice);
+	/*if (delta_15 < 1.5 || (15 - delta_15) < 1.5)  {
 		if (direction == LEFT) {
 			angle_redundance -= g_engine->math->toRadians(2.5);
 			angle -= g_engine->math->toRadians(2.5);
@@ -96,8 +98,8 @@ int Wheel::getTossUp() {
 			angle+= g_engine->math->toRadians(2.5);
 		}
 		this->setRotation(this->getAngle());
-	}
-	double slices = angle_redundance/g_engine->math->toRadians(15);
+	}*/
+	double slices = angle_redundance/g_engine->math->toRadians(slice);
 	int position = (int)(std::floor(slices));
 	if (position < 0) position = 24 + position;
 	return (Wheel::TossUp = position);

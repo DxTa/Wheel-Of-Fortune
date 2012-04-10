@@ -2,6 +2,7 @@
 
 #include "Menu.h"
 #include "wheel.h"
+#include "WheelSpecial.h"
 #include "Keyboard.h"
 #include "Quiz.h"
 #include "Gift.h"
@@ -12,6 +13,7 @@ namespace Scene {
 	std::list<Gift*> giftlist;
 	string chose;
 	string ss;
+	string specialGift;
 	Timer timecheck;
 	Player* g_player;
 	Menu* menu;
@@ -19,23 +21,28 @@ namespace Scene {
 	Texture* background_image;
 	Sprite* arrow;
 	Wheel* wheel;
+	WheelSpecial* wheel_special;
 	Keyboard* keyboard;
 	Quiz* quiz;
 	Button* PlayerMenu_Spin;
 	Button* PlayeMenu_Guess;
 	Button* Next_Stage;
 	Button* button_ok;
+	Button* button_ready;
 	bool sceneplay_start = false;
 	bool sceneplay_on = false;
 	bool scenePlayerMenu_start = false;
 	bool scenePlayerMenu_on = false;
 	bool scenePlayerGift_start = false;
 	bool scenePlayerGift_on = false;
+	bool sceneSpecial_start = false;
+	bool sceneSpecial_on = false;
 	bool checkNextStage = false;
 	bool cleartemp= true;
 	void sceneplay();
 	void scenePlayerMenu();
 	void scenePlayerGift();
+	void sceneSpecial();
 
 	void init();
 	void update();
@@ -85,6 +92,10 @@ void guess() {
 	Scene::PlayerMenu_Spin->setCollidable(false);
 	Scene::PlayeMenu_Guess->setVisible(false);
 	Scene::PlayeMenu_Guess->setCollidable(false);	
+}
+
+void readyspecial() {
+	Scene::wheel_special->setStatus(Wheel::WAIT);
 }
 
 void showButtonOk() {
@@ -166,6 +177,14 @@ void Scene::deleteGift() {
 	}
 }
 
+void play2special() {
+	Scene::sceneplay_start = false;
+	Scene::sceneplay_on = false;
+	Scene::scenePlayerMenu_start  = false;
+	Scene::scenePlayerMenu_on = false;
+	Scene::sceneSpecial_start = true;
+}
+
 void Scene::updatePlayer() {
 	if(isEndStage() == true) {
 		quiz->openAll();
@@ -192,7 +211,7 @@ void Scene::updatePlayer() {
 					if(count > Player::getNumPlayer())
 						return;
 				}
-				if((g_player->getStatus()!= Player::LOSED) && (g_player->getStatus()!= Player::READY_TO_ANSWER) && (g_player->getStatus()!= Player::SPINNING)&& (g_player->getStatus()!= Player::READY_TO_FULL_ANSWER) && (g_player->getStatus() == Player::WIN_STAGE))
+				if((g_player->getStatus()!= Player::LOSED) && (g_player->getStatus()!= Player::READY_TO_ANSWER) && (g_player->getStatus()!= Player::SPINNING)&& (g_player->getStatus()!= Player::READY_TO_FULL_ANSWER) && (g_player->getStatus() == Player::WIN_STAGE) && (g_player->getStatus() == Player::BEGIN_SPECIAL) && (g_player->getStatus() == Player::FULL_SPECIAl))
 					g_player->setStatus(Player::PLAYING);
 				break;
 			}
@@ -213,21 +232,52 @@ void Scene::deletePlayer() {
 
 void Scene::spinPlayer() {
 	Scene::wheel->setHolding(false);
-	if(wheel->getStatus() == Wheel::STOP)
+	Scene::wheel_special->setHolding(false);
+	if(sceneplay_start == true) {
+		if(wheel->getStatus() == Wheel::STOP)
+			return;
+		switch(g_player->spin(wheel)) {
+		case Wheel::G_BANKRUPT :
+			g_player->setScore(0);
+			g_player->end_play(Wheel::G_BANKRUPT);
+			Scene::scenePlayerMenu_start = true;
+			break;
+		case Wheel::G_LOSEATURN :
+			g_player->end_play(Wheel::G_LOSEATURN);
+			Scene::scenePlayerMenu_start = true;
+			break;
+		case Wheel::G_GIFT :
+			Scene::scenePlayerGift_start = true;
+			break;
+			return;
+		}
+	}
+	if(sceneSpecial_start == true) {
+		if(wheel_special->getStatus() == Wheel::STOP)
+			return;
+		switch(g_player->spin(wheel_special)) {
+		case WheelSpecial::G_1mil :
+			specialGift = "$1.000.000 ";
+			Scene::g_player->setStatus(Player::BEGIN_SPECIAL);
+			break;
+		case WheelSpecial::G_PHONE :
+			specialGift = "a iPhone";
+			Scene::g_player->setStatus(Player::BEGIN_SPECIAL);
+			break;
+		case WheelSpecial::G_TABLET :
+			specialGift = "an iPad";
+			Scene::g_player->setStatus(Player::BEGIN_SPECIAL);
+			break;
+		case WheelSpecial::G_TRIP :
+			specialGift = "a Europe Trip";
+			Scene::g_player->setStatus(Player::BEGIN_SPECIAL);
+			break;
+		case WheelSpecial::G_TV :
+			specialGift = "a Tivi";
+			Scene::g_player->setStatus(Player::BEGIN_SPECIAL);
+			break;
+		}
 		return;
-	switch(g_player->spin(wheel)) {
-	case Wheel::G_BANKRUPT :
-		g_player->setScore(0);
-		g_player->end_play(Wheel::G_BANKRUPT);
-		Scene::scenePlayerMenu_start = true;
-		break;
-	case Wheel::G_LOSEATURN :
-		g_player->end_play(Wheel::G_LOSEATURN);
-		Scene::scenePlayerMenu_start = true;
-		break;
-	case Wheel::G_GIFT :
-		Scene::scenePlayerGift_start = true;
-		break;
 	}
 }
 
@@ -290,16 +340,19 @@ void Scene::nextStage() {
 			player = *iter;
 			if(max_id == player->getName()){
 				player->setStatus(Player::WIN_GAME);
-				break;
 			}
+			else 
+				player->setStatus(Player::LOSED);
 			++count;
 			++iter;
 		}
+		play2special();
 		Player::setCurrentPlayer(count);
 	}
-	else 
+	else {
 		Player::setCurrentPlayer(phase);
-	scenePlayerMenu_start = true;
+		scenePlayerMenu_start = true;
+	}
 	checkNextStage = false;
 	Next_Stage->setVisible(false);
 	Next_Stage->setCollidable(false);
@@ -321,6 +374,15 @@ void Scene::init() {
 	wheel->setVisible(false);
 	wheel->setCollidable(false);
 	g_engine->addEntity(wheel);
+
+	wheel_special = new WheelSpecial();
+	wheel_special->loadImage("wheel_special.png");
+	wheel_special->setPosition(0,300);
+	wheel_special->setOR(wheel_special->getX() + wheel_special->getWidth()/2,wheel_special->getY() + wheel_special->getHeight()/2,(wheel_special->getHeight()/2));
+	wheel_special->setObjectType(Wheel::WHEEL_POS_SPECIAL);
+	wheel_special->setVisible(false);
+	wheel_special->setCollidable(false);
+	g_engine->addEntity(wheel_special);
 
 	arrow = new Sprite();
 	arrow->loadImage("arrow.png");
@@ -359,9 +421,15 @@ void Scene::init() {
 	button_ok->setCallback(hideGift);
 	button_ok->setCollidable(false);
 	button_ok->setVisible(false);
-	button_ok->setPosition(g_engine->getScreenWidth()/2-button_ok->getWidth(),g_engine->getScreenHeight()/-button_ok->getHeight());
+	button_ok->setPosition(g_engine->getScreenWidth()/2-button_ok->getWidth(),g_engine->getScreenHeight()/4-button_ok->getHeight());
 	g_engine->addEntity(button_ok);
 
+	button_ready = new Button("ok_button");
+	button_ready->setCallback(readyspecial);
+	button_ready->setCollidable(false);
+	button_ready->setVisible(false);
+	button_ready->setPosition(g_engine->getScreenWidth()/2-button_ready->getWidth(),g_engine->getScreenHeight()/4-button_ready->getHeight());
+	g_engine->addEntity(button_ready);
 
 	Scene::newPlayer();
 	Scene::newPlayer();
@@ -383,7 +451,8 @@ void Scene::init() {
 	quiz->change(0,Player::getNumPlayer());
 	Scene::scenePlayerMenu_start = true;
 	Scene::checkNextStage = false;
-
+	background_image->Load("scene1.png");
+	Scene::background->setImage(Scene::background_image);
 }
 
 void Scene::sceneplay() {
@@ -391,12 +460,26 @@ void Scene::sceneplay() {
 		return;
 	if((sceneplay_start == true) && (sceneplay_on == false)) {
 		menu->close();
-		background_image->Release();
-		background_image->Load("scene1.png");
+	//	background_image->Release();
+	//	background_image->Load("scene1.png");
 		wheel->setVisible(true);
 		wheel->setCollidable(true);
 		arrow->setVisible(true);
 		sceneplay_on = true;
+	}
+}
+
+void Scene::sceneSpecial() {
+	if(sceneSpecial_on == true)
+		return;
+	if((sceneSpecial_start == true) && (sceneSpecial_on == false)) {
+		wheel->setVisible(false);
+		wheel->setCollidable(false);
+		wheel_special->setVisible(true);
+		wheel_special->setCollidable(true);
+		button_ready->setVisible(true);
+		button_ready->setCollidable(true);
+		sceneSpecial_on = true;
 	}
 }
 
@@ -422,9 +505,9 @@ void Scene::scenePlayerGift() {
 }
 
 void Scene::update() {
-	Scene::background->setImage(Scene::background_image);
 	Scene::updatePlayer();
 	sceneplay();
+	sceneSpecial();
 	scenePlayerMenu();
 	scenePlayerGift();
 	Scene::menu->update();
@@ -452,6 +535,7 @@ void Scene::updateGiftMouseButton() {
 }
 void Scene::updateMouseButton() {
 	Scene::wheel->updateMouseButton();
+	Scene::wheel_special->updateMouseButton();
 	Scene::menu->updateMouseButton();
 	Scene::updateGiftMouseButton();
 	if(PlayerMenu_Spin->isPosition() == true)
@@ -462,10 +546,12 @@ void Scene::updateMouseButton() {
 		Next_Stage->pressed();
 	if(button_ok->isPosition() == true)
 		button_ok->pressed();
+	if(button_ready->isPosition() == true)
+		button_ready->pressed();
 	if(timecheck.stopwatch(96)) {
 		ss = g_player->answer(keyboard,quiz);
 		chose += ss;
-		if((ss!= "") && (g_player->getStatus() != Player::READY_TO_FULL_ANSWER)) {
+		if((ss!= "") && (g_player->getStatus() != Player::READY_TO_FULL_ANSWER) && (g_player->getStatus() != Player::FULL_SPECIAl) && (g_player->getStatus() != Player::BEGIN_SPECIAL)) {
 			Scene::scenePlayerMenu_start = true;
 		}
 	}
@@ -484,14 +570,16 @@ void Scene::updateGiftMouseMove() {
 
 void Scene::updateMouseMove(double delta_x,double delta_y,double fx,double fy) {
 	Scene::wheel->updateMouseMove(delta_x,delta_y,fx,fy);
+	Scene::wheel_special->updateMouseMove(delta_x,delta_y,fx,fy);
 	Scene::menu->updateMouseMove();
 	Scene::keyboard->updateMouseMove();
 	Scene::updateGiftMouseMove();
 	PlayerMenu_Spin->setCheckPosition(false);
 	PlayeMenu_Guess->setCheckPosition(false);
 	button_ok->setCheckPosition(false);
+	button_ready->setCheckPosition(false);
 	Next_Stage->setCheckPosition(false);
-	if(g_player->getStatus() == Player::READY_TO_FULL_ANSWER)
+	if((g_player->getStatus() == Player::READY_TO_FULL_ANSWER) || (g_player->getStatus() == Player::FULL_SPECIAl))
 		keyboard->reset();
 }
 
@@ -504,10 +592,12 @@ void Scene::release() {
 	delete background_image;
 	delete arrow;
 	delete wheel;
+	delete wheel_special;
 	delete keyboard;
 	delete quiz;
 	delete PlayerMenu_Spin;
 	delete PlayeMenu_Guess;
 	delete Next_Stage;
 	delete button_ok;
+	delete button_ready;
 }

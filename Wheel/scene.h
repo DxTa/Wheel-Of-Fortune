@@ -238,6 +238,7 @@ void Scene::spinPlayer() {
 	if(sceneplay_start == true) {
 		if(wheel->getStatus() == Wheel::STOP)
 			return;
+		timebar->setVisible(true);
 		switch(g_player->spin(wheel)) {
 		case Wheel::G_BANKRUPT :
 			g_player->setScore(0);
@@ -251,8 +252,8 @@ void Scene::spinPlayer() {
 		case Wheel::G_GIFT :
 			Scene::scenePlayerGift_start = true;
 			break;
-			return;
 		}
+		return;
 	}
 	if(sceneSpecial_start == true) {
 		if(wheel_special->getStatus() == Wheel::STOP)
@@ -427,7 +428,8 @@ void Scene::init() {
 	button_ok->setCallback(hideGift);
 	button_ok->setCollidable(false);
 	button_ok->setVisible(false);
-	button_ok->setPosition(g_engine->getScreenWidth()/2-button_ok->getWidth(),g_engine->getScreenHeight()/4-button_ok->getHeight());
+	//button_ok->setPosition(g_engine->getScreenWidth()/2-button_ok->getWidth(),g_engine->getScreenHeight()/4-button_ok->getHeight());
+	button_ok->setPosition(520,400);
 	g_engine->addEntity(button_ok);
 
 	button_ready = new Button("ready_button");
@@ -545,6 +547,15 @@ void Scene::update() {
 		}
 		if(timebar->getCurrentFrame()==0)
 			g_player->setStatus(Player::LOSED);
+	}
+	if((timebar->getVisible() == true) &&(g_player->getStatus() == Player::READY_TO_ANSWER)) { 
+		if(timecheck.stopwatch(50)) {
+			timebar->setCurrentFrame(timebar->getCurrentFrame()-1);
+		}
+		if(timebar->getCurrentFrame()==0) {
+			timebar->setCurrentFrame(59);
+			g_player->end_play();
+		}
 	}
 }
 

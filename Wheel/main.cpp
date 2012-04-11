@@ -78,8 +78,6 @@ void game_render2d()
 	ss1 << g_player->getName() << " : " << g_player->getStatus() << " : " << Scene::specialGift;
 	system12->Print(0,0,ss1.str(),D3DCOLOR_XRGB(255,255,100));
 	system12->Print(0,300,quiz->getQuestion(),D3DCOLOR_XRGB(255,255,100));
-	wheel->drawPowerBar();
-	wheel_special->drawPowerBar();
 	if((timebar->getVisible()==true) && ((g_player->getStatus() == Player::FULL_SPECIAl) ||g_player->getStatus() == Player::READY_TO_ANSWER))
 		timebar->draw();
 	cursor->draw();	

@@ -555,6 +555,7 @@ void Scene::update() {
 		if(timebar->getCurrentFrame()==0) {
 			timebar->setCurrentFrame(59);
 			g_player->end_play();
+			scenePlayerMenu_start = true;
 		}
 	}
 }
@@ -590,6 +591,7 @@ void Scene::updateMouseButton() {
 		chose += ss;
 		if((ss!= "") && (g_player->getStatus() != Player::READY_TO_FULL_ANSWER) && (g_player->getStatus() != Player::FULL_SPECIAl) && (g_player->getStatus() != Player::BEGIN_SPECIAL)) {
 			Scene::scenePlayerMenu_start = true;
+			Scene::timebar->setCurrentFrame(59);
 		}
 	}
 }

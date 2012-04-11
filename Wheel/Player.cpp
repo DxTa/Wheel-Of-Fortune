@@ -33,6 +33,8 @@ int Player::spin(Wheel* wheel) {
 	if(wheel->spin() == Wheel::STOP) {
 		if(getStatus() == SPINNING) {
 			int out = wheel->getTossUp();
+			if(wheel->getObjectType() == Wheel::WHEEL_POS_SPECIAL)
+				return out;
 			switch(out) {
 			case Wheel::G_100 :
 			case Wheel::G_100_1 :
@@ -160,6 +162,54 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 		}
 		return ss;
 		
+	}
+	if(getStatus() == BEGIN_SPECIAL) {
+		static int turnguess = 0;
+		string ss;
+		keyboard->setStatus(Keyboard::AVAILABLE);
+		ss = keyboard->chose();
+		if(ss!= "") {
+			setStatus(BEGIN_SPECIAL);
+			int result = 0;
+			quiz->check(ss,&result);
+			turnguess++;
+			if(turnguess >= quiz->getAnswer().length()/5)
+				status = Player::FULL_SPECIAl;
+			quiz->indicator(0);
+		}
+		return ss;
+	}
+	if(getStatus() == FULL_SPECIAl) {
+		string ss;
+		keyboard->setStatus(Keyboard::AVAILABLE);
+		ss = keyboard->chose();
+		static int count=0;
+		bool check;
+		quiz->setClearTemp(false);
+		static int result = 0;
+		quiz->indicator(count);
+		if(ss!= "") {
+			quiz->setLetter(count,ss);
+			quiz->indicator(count+1);
+			setStatus(FULL_SPECIAl);
+			check = quiz->check(ss,count);
+			if(check == true) 
+				result++;
+			count++;
+			if(count == (quiz->getSize())) {
+				if(result == count) {
+					this->winStage();
+					quiz->openAll();
+				}
+				else {
+					quiz->indicator(0);
+				}
+				count = 0;
+				result = 0;
+				quiz->setClearTemp(true);
+			}
+		}
+		return ss;
 	}
 	return "";
 }

@@ -7,11 +7,12 @@ using namespace std;
 using namespace Advanced2D;
 
 class Wheel : public Advanced2D::Sprite {
-private:
+protected:
 	Sprite *power_bar;
 	int TossUp;
 	int direction;
 	int status;
+	int slice;
 
 	double speed;
 	double max_speed;
@@ -35,11 +36,10 @@ public:
 	};
 	enum DICRECTION  {LEFT,RIGHT,NONE};
 	enum WHEEL_STATUS {STOP=0,SPINNING=1,WAIT};
-	enum OBJECTYPE {WHEEL_POS=151};
+	enum OBJECTYPE {WHEEL_POS=151,WHEEL_POS_SPECIAL};
 	Wheel();
 	Wheel(double,double);
-
-	int getTossUp();
+	virtual int getTossUp();
 	int getDirection() const {return direction;}
 	int getStatus() const {return status;}
 	bool getStartSpin() const {return start_spin;}
@@ -76,7 +76,7 @@ public:
 	void updateMousePosition(Sprite*);
 
 	int spin();
-	bool isSlices15();
+	bool isSlices();
 
 };
 

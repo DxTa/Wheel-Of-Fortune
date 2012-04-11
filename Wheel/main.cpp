@@ -75,11 +75,14 @@ void game_render2d()
 {	
 	ostringstream ss1;
 	Scene::spinPlayer();
-	ss1 << g_player->getName() << " : " << g_player->getScore() << " : " << g_player->getTotalScore() << " : " <<chose;
+	ss1 << g_player->getName() << " : " << g_player->getStatus() << " : " << Scene::specialGift;
 	system12->Print(0,0,ss1.str(),D3DCOLOR_XRGB(255,255,100));
 	system12->Print(0,300,quiz->getQuestion(),D3DCOLOR_XRGB(255,255,100));
 	wheel->drawPowerBar();
+	wheel_special->drawPowerBar();
+	timebar->draw();
 	cursor->draw();	
+
 }
 
 void game_end() 
@@ -110,6 +113,7 @@ void game_render3d()
     g_engine->ClearScene(D3DCOLOR_XRGB(0,0,80));
 	g_engine->SetIdentity();
 	Scene::wheel->update();
+	Scene::wheel_special->update();
 	
 }
 
@@ -124,6 +128,7 @@ void game_mouseMotion(int x,int y) {
 	cursor->setDeltaX((float)x);
 	cursor->setDeltaY((float)y);
 	Scene::wheel->updateDirection(cursor->getDeltaX(),cursor->getDeltaY(),cursor);
+	Scene::wheel_special->updateDirection(cursor->getDeltaX(),cursor->getDeltaY(),cursor);
 }
 
 void game_mouseMove(int x,int y) {
@@ -147,8 +152,11 @@ void game_entityCollision(Advanced2D::Entity* entity1,Advanced2D::Entity* entity
 			Button* temp = (Button*)entity2;
 			temp->setCheckPosition(true);
 		}
-		if(entity2->getObjectType() == Wheel::WHEEL_POS) {
+		if((entity2->getObjectType() == Wheel::WHEEL_POS)) {
 			wheel->updateMousePosition(cursor);
+		}
+		if((entity2->getObjectType() == Wheel::WHEEL_POS_SPECIAL)) {
+			wheel_special->updateMousePosition(cursor);
 		}
 	}
 }		

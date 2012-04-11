@@ -15,6 +15,7 @@ namespace Scene {
 	string ss;
 	string specialGift;
 	Timer timecheck;
+	Timer buttoncheck;
 	Player* g_player;
 	Menu* menu;
 	Sprite* background;
@@ -67,6 +68,7 @@ namespace Scene {
 
 	bool isEndStage();
 	bool isNextStage();
+	Sprite* timebar;
 }
 
 void g_exit() {
@@ -401,6 +403,7 @@ void Scene::init() {
 	PlayerMenu_Spin->setCollidable(false);
 	PlayerMenu_Spin->setVisible(false);
 	PlayerMenu_Spin->setPosition(400,150);
+	PlayerMenu_Spin->setScale(0.4);
 	g_engine->addEntity(PlayerMenu_Spin);
 
 	PlayeMenu_Guess = new Button("guess_button");
@@ -408,9 +411,11 @@ void Scene::init() {
 	PlayeMenu_Guess->setCollidable(false);
 	PlayeMenu_Guess->setVisible(false);
 	PlayeMenu_Guess->setPosition(520,150);
+	PlayeMenu_Guess->setScale(0.4);
 	g_engine->addEntity(PlayeMenu_Guess);
 
 	Next_Stage = new Button("NextStage_button");
+	Next_Stage->setScale(0.4);
 	Next_Stage->setCallback(nextStage);
 	Next_Stage->setCollidable(false);
 	Next_Stage->setVisible(false);
@@ -418,17 +423,20 @@ void Scene::init() {
 	g_engine->addEntity(Next_Stage);
 
 	button_ok = new Button("ok_button");
+	button_ok->setScale(0.4);
 	button_ok->setCallback(hideGift);
 	button_ok->setCollidable(false);
 	button_ok->setVisible(false);
 	button_ok->setPosition(g_engine->getScreenWidth()/2-button_ok->getWidth(),g_engine->getScreenHeight()/4-button_ok->getHeight());
 	g_engine->addEntity(button_ok);
 
-	button_ready = new Button("ok_button");
+	button_ready = new Button("ready_button");
+	button_ready->setScale(0.4);
 	button_ready->setCallback(readyspecial);
 	button_ready->setCollidable(false);
 	button_ready->setVisible(false);
-	button_ready->setPosition(g_engine->getScreenWidth()/2-button_ready->getWidth(),g_engine->getScreenHeight()/4-button_ready->getHeight());
+//	button_ready->setPosition(g_engine->getScreenWidth()/2-button_ready->getWidth(),g_engine->getScreenHeight()/4-button_ready->getHeight());
+	button_ready->setPosition(520,150);
 	g_engine->addEntity(button_ready);
 
 	Scene::newPlayer();
@@ -453,6 +461,15 @@ void Scene::init() {
 	Scene::checkNextStage = false;
 	background_image->Load("scene1.png");
 	Scene::background->setImage(Scene::background_image);
+
+	Scene::timebar = new Sprite();
+	timebar->loadImage("button/time bar.png");
+	timebar->setTotalFrames(60);
+	timebar->setSize(489,10);
+	timebar->setColumns(1);
+	timebar->setCurrentFrame(0);
+	timebar->setPosition(g_engine->getScreenWidth()-timebar->getWidth(),g_engine->getScreenHeight()-timebar->getHeight());
+	timebar->setVisible(false);
 }
 
 void Scene::sceneplay() {
@@ -479,6 +496,7 @@ void Scene::sceneSpecial() {
 		wheel_special->setCollidable(true);
 		button_ready->setVisible(true);
 		button_ready->setCollidable(true);
+		timebar->setVisible(true);
 		sceneSpecial_on = true;
 	}
 }
@@ -510,7 +528,7 @@ void Scene::update() {
 	sceneSpecial();
 	scenePlayerMenu();
 	scenePlayerGift();
-	Scene::menu->update();
+	//Scene::menu->update();
 	PlayerMenu_Spin->reset();
 	PlayeMenu_Guess->reset();
 	Next_Stage->reset();
@@ -521,7 +539,15 @@ void Scene::update() {
 		if(isNextStage() == true)
 			nextStage();
 	}
+	if((timebar->getVisible() == true) &&(g_player->getStatus() == Player::FULL_SPECIAl)) { 
+		if(timecheck.stopwatch(1000)) {
+			timebar->setCurrentFrame(timebar->getCurrentFrame()+1);
+		}
+		if(timebar->getCurrentFrame()==59)
+			g_player->setStatus(Player::LOSED);
+	}
 }
+
 void Scene::updateGiftMouseButton() {
 	list<Gift*>::iterator iter;
 	iter = giftlist.begin();
@@ -548,7 +574,7 @@ void Scene::updateMouseButton() {
 		button_ok->pressed();
 	if(button_ready->isPosition() == true)
 		button_ready->pressed();
-	if(timecheck.stopwatch(96)) {
+	if(buttoncheck.stopwatch(96)) {
 		ss = g_player->answer(keyboard,quiz);
 		chose += ss;
 		if((ss!= "") && (g_player->getStatus() != Player::READY_TO_FULL_ANSWER) && (g_player->getStatus() != Player::FULL_SPECIAl) && (g_player->getStatus() != Player::BEGIN_SPECIAL)) {

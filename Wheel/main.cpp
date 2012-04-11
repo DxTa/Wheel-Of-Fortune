@@ -80,7 +80,9 @@ void game_render2d()
 	system12->Print(0,300,quiz->getQuestion(),D3DCOLOR_XRGB(255,255,100));
 	wheel->drawPowerBar();
 	wheel_special->drawPowerBar();
+	timebar->draw();
 	cursor->draw();	
+
 }
 
 void game_end() 

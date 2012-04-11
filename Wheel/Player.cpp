@@ -183,7 +183,6 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 		string ss;
 		keyboard->setStatus(Keyboard::AVAILABLE);
 		ss = keyboard->chose();
-		static int turnguess=3;
 		static int count=0;
 		bool check;
 		quiz->setClearTemp(false);
@@ -203,9 +202,6 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 					quiz->openAll();
 				}
 				else {
-					turnguess--;
-					if(turnguess==0)
-						end_play(LOSED);
 					quiz->indicator(0);
 				}
 				count = 0;

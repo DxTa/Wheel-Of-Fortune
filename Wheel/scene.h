@@ -467,7 +467,7 @@ void Scene::init() {
 	timebar->setTotalFrames(60);
 	timebar->setSize(489,10);
 	timebar->setColumns(1);
-	timebar->setCurrentFrame(0);
+	timebar->setCurrentFrame(59);
 	timebar->setPosition(g_engine->getScreenWidth()-timebar->getWidth(),g_engine->getScreenHeight()-timebar->getHeight());
 	timebar->setVisible(false);
 }
@@ -541,9 +541,9 @@ void Scene::update() {
 	}
 	if((timebar->getVisible() == true) &&(g_player->getStatus() == Player::FULL_SPECIAl)) { 
 		if(timecheck.stopwatch(1000)) {
-			timebar->setCurrentFrame(timebar->getCurrentFrame()+1);
+			timebar->setCurrentFrame(timebar->getCurrentFrame()-1);
 		}
-		if(timebar->getCurrentFrame()==59)
+		if(timebar->getCurrentFrame()==0)
 			g_player->setStatus(Player::LOSED);
 	}
 }

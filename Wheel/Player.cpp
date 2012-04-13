@@ -108,8 +108,9 @@ int Player::spin(Wheel* wheel) {
 }
 
 string Player::answer(Keyboard* keyboard,Quiz* quiz) {
-	if(getStatus() == LOSED)
+	if(getStatus() == LOSED) {
 		return "";
+	}
 	if(getStatus() == READY_TO_ANSWER) {
 		string ss;
 		keyboard->setStatus(Keyboard::AVAILABLE);

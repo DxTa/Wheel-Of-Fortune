@@ -19,6 +19,7 @@ namespace Scene {
 	Player* g_player;
 	Menu* menu;
 	Sprite* background;
+	Sprite* question_background;
 	Texture* background_image;
 	Sprite* arrow;
 	Wheel* wheel;
@@ -404,14 +405,14 @@ void Scene::init() {
 	PlayerMenu_Spin->setCallback(spin);
 	PlayerMenu_Spin->setCollidable(false);
 	PlayerMenu_Spin->setVisible(false);
-	PlayerMenu_Spin->setPosition(460,250);
+	PlayerMenu_Spin->setPosition(400,300);
 	g_engine->addEntity(PlayerMenu_Spin);
 
 	PlayeMenu_Guess = new Button("guess_button");
 	PlayeMenu_Guess->setCallback(guess);
 	PlayeMenu_Guess->setCollidable(false);
 	PlayeMenu_Guess->setVisible(false);
-	PlayeMenu_Guess->setPosition(660,250);
+	PlayeMenu_Guess->setPosition(600,300);
 	g_engine->addEntity(PlayeMenu_Guess);
 
 	Next_Stage = new Button("NextStage_button");
@@ -448,7 +449,7 @@ void Scene::init() {
 	Scene::setGiftPosition(button_ok->getPosition().getX()-100,button_ok->getPosition().getY()-200);
 
 	quiz = new Quiz();
-	quiz->setPosition(0,0);
+	quiz->setPosition(0,100);
 	quiz->setWidth(380);
 	quiz->setHeight(200);
 	quiz->inputLog();
@@ -457,6 +458,10 @@ void Scene::init() {
 	Scene::checkNextStage = false;
 	background_image->Load("background.png");
 	Scene::background->setImage(Scene::background_image);
+
+	Scene::question_background = new Sprite();
+	question_background->loadImage("question_background.png");
+	question_background->setPosition(590,-40);
 
 	Scene::timebar = new Sprite();
 	timebar->loadImage("button/time bar.png");
@@ -558,6 +563,9 @@ void Scene::update() {
 			timebar->setCurrentFrame(59);
 			g_player->end_play(Player::LOSED);
 			scenePlayerMenu_start = true;
+			quiz->setClearTemp(true);
+			keyboard->loadState();
+			// sua sau
 		}
 	}
 }
@@ -630,6 +638,7 @@ void Scene::release() {
 	Letters::release();
 	delete menu;
 	delete background;
+	delete question_background;
 	delete background_image;
 	delete arrow;
 	delete wheel;

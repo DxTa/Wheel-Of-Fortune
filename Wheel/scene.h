@@ -86,6 +86,7 @@ void spin() {
 }
 
 void guess() {
+	Scene::timebar->setVisible(true);
 	Scene::keyboard->saveState();
 	Scene::g_player->setStatus(Player::READY_TO_FULL_ANSWER);
 	Scene::scenePlayerMenu_start  = false;
@@ -371,7 +372,7 @@ void Scene::init() {
 
 	wheel = new Wheel();
 	wheel->loadImage("wheel.png");
-	wheel->setPosition(0,300);
+	wheel->setPosition(0,500);
 	wheel->setOR(wheel->getX() + wheel->getWidth()/2,wheel->getY() + wheel->getHeight()/2,(wheel->getHeight()/2));
 	wheel->setObjectType(Wheel::WHEEL_POS);
 	wheel->setVisible(false);
@@ -380,7 +381,7 @@ void Scene::init() {
 
 	wheel_special = new WheelSpecial();
 	wheel_special->loadImage("wheel_special.png");
-	wheel_special->setPosition(0,300);
+	wheel_special->setPosition(0,500);
 	wheel_special->setOR(wheel_special->getX() + wheel_special->getWidth()/2,wheel_special->getY() + wheel_special->getHeight()/2,(wheel_special->getHeight()/2));
 	wheel_special->setObjectType(Wheel::WHEEL_POS_SPECIAL);
 	wheel_special->setVisible(false);
@@ -390,55 +391,48 @@ void Scene::init() {
 	arrow = new Sprite();
 	arrow->loadImage("arrow.png");
 	arrow->setRotation(g_engine->math->toRadians(90));
-	arrow->setPosition(220,230);
+	arrow->setPosition(222.0f,430);
 	arrow->setVisible(false);
 	arrow->setCollidable(false);
 	g_engine->addEntity(arrow);
 
 	keyboard = new Keyboard();
-	keyboard->setPosition(380,0);
+	keyboard->setPosition(550,550);
 	keyboard->addEntity();
 
 	PlayerMenu_Spin = new Button("spin_button");
 	PlayerMenu_Spin->setCallback(spin);
 	PlayerMenu_Spin->setCollidable(false);
 	PlayerMenu_Spin->setVisible(false);
-	PlayerMenu_Spin->setPosition(400,150);
-	PlayerMenu_Spin->setScale(0.4);
+	PlayerMenu_Spin->setPosition(460,250);
 	g_engine->addEntity(PlayerMenu_Spin);
 
 	PlayeMenu_Guess = new Button("guess_button");
 	PlayeMenu_Guess->setCallback(guess);
 	PlayeMenu_Guess->setCollidable(false);
 	PlayeMenu_Guess->setVisible(false);
-	PlayeMenu_Guess->setPosition(520,150);
-	PlayeMenu_Guess->setScale(0.4);
+	PlayeMenu_Guess->setPosition(660,250);
 	g_engine->addEntity(PlayeMenu_Guess);
 
 	Next_Stage = new Button("NextStage_button");
-	Next_Stage->setScale(0.4);
 	Next_Stage->setCallback(nextStage);
 	Next_Stage->setCollidable(false);
 	Next_Stage->setVisible(false);
-	Next_Stage->setPosition(g_engine->getScreenWidth()-Next_Stage->getWidth(),g_engine->getScreenHeight()-Next_Stage->getHeight());
+	Next_Stage->setPosition(g_engine->getScreenWidth()-Next_Stage->getWidth(),g_engine->getScreenHeight()/2-Next_Stage->getHeight()/2);
 	g_engine->addEntity(Next_Stage);
 
 	button_ok = new Button("ok_button");
-	button_ok->setScale(0.4);
 	button_ok->setCallback(hideGift);
 	button_ok->setCollidable(false);
 	button_ok->setVisible(false);
-	//button_ok->setPosition(g_engine->getScreenWidth()/2-button_ok->getWidth(),g_engine->getScreenHeight()/4-button_ok->getHeight());
-	button_ok->setPosition(520,400);
+	button_ok->setPosition(600-75,400);
 	g_engine->addEntity(button_ok);
 
 	button_ready = new Button("ready_button");
-	button_ready->setScale(0.4);
 	button_ready->setCallback(readyspecial);
 	button_ready->setCollidable(false);
 	button_ready->setVisible(false);
-//	button_ready->setPosition(g_engine->getScreenWidth()/2-button_ready->getWidth(),g_engine->getScreenHeight()/4-button_ready->getHeight());
-	button_ready->setPosition(520,150);
+	button_ready->setPosition(g_engine->getScreenWidth()/2-button_ready->getWidth()/2,g_engine->getScreenHeight()/2-button_ready->getHeight()/2);
 	g_engine->addEntity(button_ready);
 
 	Scene::newPlayer();
@@ -451,7 +445,7 @@ void Scene::init() {
 	Scene::newGift("car");
 	Scene::newGift("car");
 	Scene::newGift("car");
-	Scene::setGiftPosition(700,300);
+	Scene::setGiftPosition(button_ok->getPosition().getX()-100,button_ok->getPosition().getY()-200);
 
 	quiz = new Quiz();
 	quiz->setPosition(0,0);
@@ -461,7 +455,7 @@ void Scene::init() {
 	quiz->change(0,Player::getNumPlayer());
 	Scene::scenePlayerMenu_start = true;
 	Scene::checkNextStage = false;
-	background_image->Load("scene1.png");
+	background_image->Load("background.png");
 	Scene::background->setImage(Scene::background_image);
 
 	Scene::timebar = new Sprite();
@@ -470,7 +464,7 @@ void Scene::init() {
 	timebar->setSize(489,10);
 	timebar->setColumns(1);
 	timebar->setCurrentFrame(59);
-	timebar->setPosition(g_engine->getScreenWidth()-timebar->getWidth(),g_engine->getScreenHeight()-timebar->getHeight());
+	timebar->setPosition(g_engine->getScreenWidth()/2-timebar->getWidth()/2,g_engine->getScreenHeight()/2);
 	timebar->setVisible(false);
 }
 
@@ -479,8 +473,6 @@ void Scene::sceneplay() {
 		return;
 	if((sceneplay_start == true) && (sceneplay_on == false)) {
 		menu->close();
-	//	background_image->Release();
-	//	background_image->Load("scene1.png");
 		wheel->setVisible(true);
 		wheel->setCollidable(true);
 		arrow->setVisible(true);
@@ -549,12 +541,22 @@ void Scene::update() {
 			g_player->setStatus(Player::LOSED);
 	}
 	if((timebar->getVisible() == true) &&(g_player->getStatus() == Player::READY_TO_ANSWER)) { 
-		if(timecheck.stopwatch(50)) {
+		if(timecheck.stopwatch(100)) {
 			timebar->setCurrentFrame(timebar->getCurrentFrame()-1);
 		}
 		if(timebar->getCurrentFrame()==0) {
 			timebar->setCurrentFrame(59);
 			g_player->end_play();
+			scenePlayerMenu_start = true;
+		}
+	}
+	if((timebar->getVisible() == true) &&(g_player->getStatus() == Player::READY_TO_FULL_ANSWER)) { 
+		if(timecheck.stopwatch(300)) {
+			timebar->setCurrentFrame(timebar->getCurrentFrame()-1);
+		}
+		if(timebar->getCurrentFrame()==0) {
+			timebar->setCurrentFrame(59);
+			g_player->end_play(Player::LOSED);
 			scenePlayerMenu_start = true;
 		}
 	}
@@ -639,4 +641,5 @@ void Scene::release() {
 	delete Next_Stage;
 	delete button_ok;
 	delete button_ready;
+	delete timebar;
 }

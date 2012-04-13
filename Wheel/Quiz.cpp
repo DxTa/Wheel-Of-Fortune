@@ -142,15 +142,12 @@ int Quiz::inputQuiz(int x,int numberPlayer){
 		randomNumber.erase(randomNumber.begin(),randomNumber.end()); //sau khi đã chọn dc quiz thì giải phóng mảng random
 		randomNumber.clear();
    }
-   j=0;
+   
    Utils::xmlat(pReader,pFileStream,j,L"Question",&question);
    Utils::xmlat(pReader,pFileStream,j,L"Answer",&answer);
    return 0;
 }
 
-/*
-x1,y1 x2,y2 là vùng mà ta muốn sắp xếp ô chữ trong đó
-*/
 void Quiz::setQuizPos(double x1, double y1, double x2, double y2) {
 	double xo = x1,yo = y1,fx,fy;
 	double width_button = letters.front()->getWidth() * letters.front()->getScale();
@@ -406,5 +403,46 @@ void Quiz::setLetter(int i,string label) {
 		setScale(0.7f);
 		g_engine->addEntity(temp);
 		check = i;
+	}
+}
+
+void Quiz::arrangeQuestion(Font* font) {
+	int i = 0,j,count=0;
+	int x = 0,y = 0;
+
+	while (i < question.length()) {
+		j = i;
+		while (question.at(i) != '\n' && question.at(i) != ' ') {
+			i++;
+			if (i >= question.length()) break;
+		}
+		if (((i-j)+count) <= 30) {
+			for (j=j;j<i;j++) {
+				font->setColor(D3DCOLOR_XRGB(0,0,0));
+				font->setCurrentFrame((int)question.at(j));
+				font->setX(x);
+				font->setY(y);
+				font->draw();
+				x += font->getCharWidth() + font->getScale();
+				count++;
+			}
+		}
+		else {
+			x = 0;
+			y += font->getCharHeight()*font->getScale();
+			count = 0;
+			for (j=j;j<i;j++) {
+				font->setColor(D3DCOLOR_XRGB(0,0,0));
+				font->setCurrentFrame((int)question.at(j));
+				font->setX(x);
+				font->setY(y);
+				font->draw();
+				x += font->getCharWidth() + font->getScale();
+				count++;
+			}
+		}
+		i++;
+		x += font->getCharWidth() + font->getScale();
+		count++;
 	}
 }

@@ -10,7 +10,7 @@ Wheel::Wheel() : Sprite() {
 	power_bar->setCurrentFrame(0);
 	power_bar->setCollidable(false);
 	power_bar->setVisible(true);
-	power_bar->setPosition(513,400);
+	power_bar->setPosition(g_engine->getScreenWidth()-power_bar->getWidth()/1.5f,g_engine->getScreenHeight()-power_bar->getHeight());
 	power_bar->setTotalFrames(21);
 	power_bar->setColumns(1);
 			
@@ -39,8 +39,9 @@ Wheel::Wheel(double sp,double fric) : Sprite() {
 }
 
 int Wheel::spin() {
-	this->drawPowerBar();
+	drawPowerBar();
 	if (start_spin  == false) goto fin;
+	
 
 	double speed_temp;
 	speed_temp =speed;
@@ -117,11 +118,8 @@ void Wheel::setOR(double x, double y, double r) {
 void Wheel::update() {
 	if(this->isHolding() ==false) {
 		if (this->getSpeed() > 0) {
-			if (this->getStartSpin() == false) {
-				if(this->getSpeed() < ((2*3.14 + friction)/100)) 
-					this->setSpeed(((2*3.14 + friction)/100));
+			if (this->getStartSpin() == false) 
 				this->setStartSpin(true);
-			}
 		}
 	}
 }
@@ -159,7 +157,10 @@ void Wheel::updateMouseMove(double delta_x,double delta_y,double fx,double fy) {
 		else
 			this->setAngle(this->getAngle() + fabs(atan(x)));
 		double time = Utils::timecount();
-		this->setSpeed(this->getS()*10/time);
+		if(this->getS()*10/time < ((2*3.14 + friction)/100)) 
+			this->setSpeed(((2*3.14 + friction)/100));
+		else 
+			this->setSpeed(this->getS()*10/time);
 	}
 }
 

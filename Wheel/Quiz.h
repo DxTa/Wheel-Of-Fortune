@@ -28,6 +28,7 @@ private:
 	std::list<Letters*> letters; //lưu từng ký tự answers trong này
 	std::vector<int> recent; //lưu 100 câu hỏi gần nhất
 	bool cleartemp;
+	Timer checkvisible;
 public:
 	
 	Quiz();
@@ -39,6 +40,7 @@ public:
 	void setAnswer(string panswer);
 
 	void setQuizPos(double x1, double y1, double x2, double y2);
+	void arrangeQuestion(Font*);
 	void drawQuiz();
 	void inputLog();
 	void outputLog();

@@ -1,6 +1,6 @@
 /*
   Name: Spinning Wheel Test
-  Date: 03/2012
+  Date: 04/2012
   Description:Spinning Wheel Test
 */
 
@@ -27,8 +27,8 @@ enum {CURSOR=150};
 bool game_preload() 
 {
 	g_engine->setAppTitle("TEST WHEEL");
-	g_engine->setScreenWidth(1024);
-	g_engine->setScreenHeight(513);
+	g_engine->setScreenWidth(1200);
+	g_engine->setScreenHeight(700);
 	g_engine->setColorDepth(32);
 	g_engine->setFullscreen(false);
 	ShowCursor(FALSE);
@@ -46,14 +46,14 @@ bool game_init(HWND)
 	
 	Scene::init();
 	system12 = new Font();
-	if (!system12->loadImage("system12.tga")) {
+	if (!system12->loadImage("font.tga")) {
 		g_engine->message("Error loading system12.tga");
 		return false;
 	}
 	system12->setColumns(16);
-	system12->setCharSize(14,16);
+	system12->setCharSize(21,32);
 
-	if (!system12->loadWidthData("system12.dat")) {
+	if (!system12->loadWidthData("font.dat")) {
 		g_engine->message("Error loading system12.dat");
 		return false;
 	}
@@ -75,13 +75,12 @@ void game_render2d()
 {	
 	ostringstream ss1;
 	Scene::spinPlayer();
-	ss1 << g_player->getName() << " : " << g_player->getStatus() << " : " << Scene::specialGift;
-	system12->Print(0,0,ss1.str(),D3DCOLOR_XRGB(255,255,100));
-	system12->Print(0,300,quiz->getQuestion(),D3DCOLOR_XRGB(255,255,100));
-	if((timebar->getVisible()==true) && ((g_player->getStatus() == Player::FULL_SPECIAl) ||g_player->getStatus() == Player::READY_TO_ANSWER))
+//	ss1 << g_player->getName() << " : " << g_player->getStatus() << " \n " << Scene::quiz->getQuestion();
+//	system12->Print(0,0,ss1.str(),D3DCOLOR_XRGB(255,255,100));
+	Scene::quiz->arrangeQuestion(system12);
+	if((timebar->getVisible()==true) && ((g_player->getStatus() == Player::FULL_SPECIAl) ||g_player->getStatus() == Player::READY_TO_ANSWER ||g_player->getStatus() == Player::READY_TO_FULL_ANSWER))
 		timebar->draw();
-	cursor->draw();	
-
+	cursor->draw();
 }
 
 void game_end() 

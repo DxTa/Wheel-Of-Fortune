@@ -24,6 +24,7 @@ public :
 	void saveState();
 	void loadState();
 	void updateMouseMove();
+	void setScale(double scale);
 };
 
 

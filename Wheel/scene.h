@@ -19,7 +19,7 @@ namespace Scene {
 	Player* g_player;
 	Menu* menu;
 	Sprite* background;
-	Sprite* question_background;
+	Sprite* score_background;
 	Texture* background_image;
 	Sprite* arrow;
 	Wheel* wheel;
@@ -419,7 +419,7 @@ void Scene::init() {
 	Next_Stage->setCallback(nextStage);
 	Next_Stage->setCollidable(false);
 	Next_Stage->setVisible(false);
-	Next_Stage->setPosition(g_engine->getScreenWidth()-Next_Stage->getWidth(),g_engine->getScreenHeight()/2-Next_Stage->getHeight()/2);
+	Next_Stage->setPosition(g_engine->getScreenWidth()-Next_Stage->getWidth(),g_engine->getScreenHeight()/2-Next_Stage->getHeight()/2+150);
 	g_engine->addEntity(Next_Stage);
 
 	button_ok = new Button("ok_button");
@@ -459,9 +459,9 @@ void Scene::init() {
 	background_image->Load("background.png");
 	Scene::background->setImage(Scene::background_image);
 
-	Scene::question_background = new Sprite();
-	question_background->loadImage("question_background.png");
-	question_background->setPosition(590,-40);
+	Scene::score_background = new Sprite();
+	score_background->loadImage("score_background.png");
+	score_background->setPosition(590,-40);
 
 	Scene::timebar = new Sprite();
 	timebar->loadImage("button/time bar.png");
@@ -469,7 +469,7 @@ void Scene::init() {
 	timebar->setSize(489,10);
 	timebar->setColumns(1);
 	timebar->setCurrentFrame(59);
-	timebar->setPosition(g_engine->getScreenWidth()/2-timebar->getWidth()/2,g_engine->getScreenHeight()/2);
+	timebar->setPosition(g_engine->getScreenWidth()/2-timebar->getWidth()/2,g_engine->getScreenHeight()/2+100);
 	timebar->setVisible(false);
 }
 
@@ -561,11 +561,10 @@ void Scene::update() {
 		}
 		if(timebar->getCurrentFrame()==0) {
 			timebar->setCurrentFrame(59);
+			g_player->setStatus(Player::LOSED);
+			g_player->answer(keyboard,quiz);
 			g_player->end_play(Player::LOSED);
 			scenePlayerMenu_start = true;
-			quiz->setClearTemp(true);
-			keyboard->loadState();
-			// sua sau
 		}
 	}
 }
@@ -624,10 +623,16 @@ void Scene::updateMouseMove(double delta_x,double delta_y,double fx,double fy) {
 	Scene::keyboard->updateMouseMove();
 	Scene::updateGiftMouseMove();
 	PlayerMenu_Spin->setCheckPosition(false);
+	PlayerMenu_Spin->setScale(1.0);
 	PlayeMenu_Guess->setCheckPosition(false);
+	PlayeMenu_Guess->setScale(1.0);
 	button_ok->setCheckPosition(false);
+	button_ok->setScale(1.0);
 	button_ready->setCheckPosition(false);
+	button_ready->setScale(1.0);
 	Next_Stage->setCheckPosition(false);
+	Next_Stage->setScale(1.0);
+	keyboard->setScale(0.7);
 	if((g_player->getStatus() == Player::READY_TO_FULL_ANSWER) || (g_player->getStatus() == Player::FULL_SPECIAl))
 		keyboard->reset();
 }
@@ -638,7 +643,7 @@ void Scene::release() {
 	Letters::release();
 	delete menu;
 	delete background;
-	delete question_background;
+	delete score_background;
 	delete background_image;
 	delete arrow;
 	delete wheel;

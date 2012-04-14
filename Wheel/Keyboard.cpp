@@ -106,3 +106,8 @@ void Keyboard::loadState() {
 			letter[i]->reset();
 	}
 }
+
+void Keyboard::setScale(double scale) {
+	for(int i = 0;i<26;i++)
+		letter[i]->setScale(scale);
+}

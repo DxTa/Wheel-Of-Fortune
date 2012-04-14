@@ -356,6 +356,19 @@ void Quiz::calSize() {
 
 void Quiz::indicator(int i) {
 	static int check = -1;
+	if(i==-1) {
+		std::list<Letters*>::iterator iter;
+		iter = letters.begin();
+		Letters* letter;
+		while (iter != letters.end()) {
+			letter = *iter;
+			string ss = letter->getLabel();
+			if ((ss.compare("\n") == 0) || (ss.compare("\0") == 0) || (ss.compare("\r") == 0) || (ss.compare(" ") == 0)) {iter++;continue;}
+			letter->setColor(D3DCOLOR_XRGB(255,255,255));
+			iter++;
+		}
+		return;
+	}
 	if(check != i) {
 		int count = 0;
 		std::list<Letters*>::iterator iter;

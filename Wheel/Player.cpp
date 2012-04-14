@@ -184,6 +184,7 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 		string ss;
 		keyboard->setStatus(Keyboard::AVAILABLE);
 		ss = keyboard->chose();
+		keyboard->setStatus(Keyboard::WAIT);
 		if(ss!= "") {
 			setStatus(BEGIN_SPECIAL);
 			int result = 0;
@@ -224,7 +225,7 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 				count = 0;
 				result = 0;
 				quiz->setClearTemp(true);
-				keyboard->setStatus(Keyboard::UNAVAILABLE);
+				keyboard->setStatus(Keyboard::WAIT);
 			}
 		}
 		return ss;
@@ -259,14 +260,12 @@ void Player::end_play(int pstatus) {
 		turn_gift--;
 }
 
-
 void Player::reset() {
 	setStatus(AWAIT);
 	turn_gift = 0;
 	turn_left = 3;
 	score = 0;
 }
-
 
 void Player::winStage() {
 	setStatus(WIN_STAGE);
@@ -275,4 +274,11 @@ void Player::winStage() {
 	else
 		total_score += score;
 	reset();
+}
+
+void Player::showScore(Font* font) {
+	ostringstream ss;
+	ss << this->getScore();
+	font->setRotation(g_engine->math->toRadians(20));
+	font->Print(this->getPosition().getX()+this->getWidth()/2 * this->getScale(),this->getPosition().getY()+40,ss.str(),D3DCOLOR_XRGB(255,33,22));
 }

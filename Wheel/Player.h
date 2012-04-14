@@ -55,9 +55,9 @@ class Player : public Sprite {
 		string fullanswer(Keyboard*,Quiz*);
 		void end_play(int = AWAIT);
 
-		void showGift();
-		void showScore();
-		void showTotalScore();
+		void showGift(Font*);
+		void showScore(Font*);
+		void showTotalScore(Font*);
 };
 
 #endif

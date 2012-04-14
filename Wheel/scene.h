@@ -108,6 +108,7 @@ void guess() {
 
 void readyspecial() {
 	Scene::wheel_special->setStatus(Wheel::WAIT);
+	Scene::keyboard->setStatus(Keyboard::WAIT);
 }
 
 void showButtonOk() {
@@ -123,6 +124,7 @@ void Scene::newPlayer() {
 
 void Scene::newPlayer(string name,double x,double y) {
 	Player* player = new Player(name);
+	player->setID(Player::getNumPlayer());
 	player->setScale(0.25);
 	player->setRotation(g_engine->math->toRadians(-20));
 	player->setPosition(x,y);
@@ -337,8 +339,13 @@ bool Scene::isNextStage() {
 
 void Scene::nextStage() {
 	static int phase=1;
-	if(phase > (Player::getNumPlayer()+1))
+	if(phase > (Player::getNumPlayer()+1)) {
+		scenePlayerMenu_start = false;
+		scenePlayerMenu_on = false;
+		sceneSpecial_start = false;
+		sceneSpecial_on = false;
 		g_engine->Close();
+	}
 	if(!quiz->isFinish())
 		return;
 	phase++;
@@ -453,7 +460,7 @@ void Scene::init() {
 	Next_Stage->setCallback(nextStage);
 	Next_Stage->setCollidable(false);
 	Next_Stage->setVisible(false);
-	Next_Stage->setPosition(g_engine->getScreenWidth()-Next_Stage->getWidth(),g_engine->getScreenHeight()/2-Next_Stage->getHeight()/2+150);
+	Next_Stage->setPosition(g_engine->getScreenWidth()-Next_Stage->getWidth(),g_engine->getScreenHeight()/2-Next_Stage->getHeight()/2+100);
 	g_engine->addEntity(Next_Stage);
 
 	button_ok = new Button("ok_button");
@@ -473,6 +480,12 @@ void Scene::init() {
 	Scene::newPlayer("player1",750,80);
 	Scene::newPlayer("player2",860,80);
 	Scene::newPlayer("player3",980,80);
+	/*
+	Scene::newPlayer("player1",750,100);
+	Scene::newPlayer("player2",830,95);
+	Scene::newPlayer("player3",920,90);
+	Scene::newPlayer("player4",1000,90);
+	*/
 	Player::setCurrentPlayer(1);
 	Scene::newGift("car");
 	Scene::newGift("car");
@@ -484,7 +497,7 @@ void Scene::init() {
 
 	quiz = new Quiz();
 	quiz->setPosition(50,125);
-	quiz->setWidth(380);
+	quiz->setWidth(400);
 	quiz->setHeight(200);
 	quiz->inputLog();
 	quiz->change(0,Player::getNumPlayer());
@@ -637,6 +650,8 @@ void Scene::updateMouseButton() {
 			Scene::timebar->setCurrentFrame(59);
 		}
 	}
+	if(g_player->getStatus() == Player::WIN_GAME)
+		Scene::scenePlayerMenu_start = false;
 }
 
 void Scene::updateGiftMouseMove() {

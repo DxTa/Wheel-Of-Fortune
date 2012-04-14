@@ -34,7 +34,7 @@ void Quiz::addLetter(int i) {
 	ss << answer.at(i);
 
 	Letters* letter = new Letters(ss.str());
-	letter->setScale(1.0f);
+	//letter->setScale(1.0f);
 	//if (answer.at(i) == '\n' || answer.at(i) == '\0' || answer.at(i) == ' ' || answer.at(i) == '\r')
 	//	letter->setStatus(ON);
 	letter->setCollidable(false);
@@ -143,7 +143,7 @@ int Quiz::inputQuiz(int x,int numberPlayer){
 		randomNumber.erase(randomNumber.begin(),randomNumber.end()); //sau khi đã chọn dc quiz thì giải phóng mảng random
 		randomNumber.clear();
    }
-   
+   j = 0;
    Utils::xmlat(pReader,pFileStream,j,L"Question",&question);
    Utils::xmlat(pReader,pFileStream,j,L"Answer",&answer);
    return 0;
@@ -414,7 +414,7 @@ void Quiz::setLetter(int i,string label) {
 		temp->setObjectType(Letters::LETTER_TEMP);
 		temp->setPosition(pos);
 		temp->on();
-		setScale(1.0f);
+		//setScale(1.0f);
 		g_engine->addEntity(temp);
 		check = i;
 	}

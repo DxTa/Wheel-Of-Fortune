@@ -66,12 +66,17 @@ void game_render2d()
 	
 	ostringstream ss1;
 	Scene::spinPlayer();
+	system12->setRotation(0);
+	system12->setScale(1.0f);
 	Scene::score_background->draw();
+	ss1 << g_player->getName();
+	system12->Print(1000,400,ss1.str(),D3DCOLOR_XRGB(255,50,30));
 	Scene::quiz->arrangeQuestion(system12);
 	if((timebar->getVisible()==true) && ((g_player->getStatus() == Player::FULL_SPECIAl) ||g_player->getStatus() == Player::READY_TO_ANSWER ||g_player->getStatus() == Player::READY_TO_FULL_ANSWER))
 		timebar->draw();
 	Scene::cursor->draw();
 	Scene::drawPlayer();
+	Scene::g_player->showScore(system12);
 }
 
 void game_end() 

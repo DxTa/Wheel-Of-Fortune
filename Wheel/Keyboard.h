@@ -11,7 +11,7 @@ private:
 	Button* letter[26];
 	int state[26];
 public :
-	enum K_STATUS {AVAILABLE=50,UNAVAILABLE};
+	enum K_STATUS {AVAILABLE=50,UNAVAILABLE,WAIT};
 	Keyboard();
 	~Keyboard();
 	int getStatus() const {return status;}

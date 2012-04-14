@@ -141,6 +141,7 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 		string ss;
 		keyboard->setStatus(Keyboard::AVAILABLE);
 		ss = keyboard->chose();
+		keyboard->setStatus(Keyboard::WAIT);
 	//	static int count_full=0;
 		bool check;
 		quiz->setClearTemp(false);
@@ -166,6 +167,7 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 				result_full = 0;
 				quiz->setClearTemp(true);
 				keyboard->loadState();
+				keyboard->setStatus(Keyboard::UNAVAILABLE);
 			}
 		}
 		return ss;
@@ -191,6 +193,7 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 		string ss;
 		keyboard->setStatus(Keyboard::AVAILABLE);
 		ss = keyboard->chose();
+		keyboard->setStatus(Keyboard::WAIT);
 		static int count=0;
 		bool check;
 		quiz->setClearTemp(false);
@@ -215,6 +218,7 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 				count = 0;
 				result = 0;
 				quiz->setClearTemp(true);
+				keyboard->setStatus(Keyboard::UNAVAILABLE);
 			}
 		}
 		return ss;

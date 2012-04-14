@@ -6,6 +6,7 @@
 #include "Keyboard.h"
 #include "Quiz.h"
 #include "Gift.h"
+#include "Cursor.h"
 #include "Engine/Advanced2D.h"
 
 namespace Scene {
@@ -18,8 +19,10 @@ namespace Scene {
 	Timer buttoncheck;
 	Player* g_player;
 	Menu* menu;
+	Cursor* cursor;
 	Sprite* background;
 	Sprite* score_background;
+	
 	Texture* background_image;
 	Sprite* arrow;
 	Wheel* wheel;
@@ -70,6 +73,9 @@ namespace Scene {
 	bool isEndStage();
 	bool isNextStage();
 	Sprite* timebar;
+
+
+	enum {CURSOR=150};
 }
 
 void g_exit() {
@@ -371,6 +377,13 @@ void Scene::init() {
 	Scene::background->setCollidable(false);
 	g_engine->addEntity(Scene::background);
 
+	cursor = new Cursor();
+	cursor->loadImage("Cursor_564.png");
+	cursor->setScale(0.5);
+	cursor->setCollisionMethod(COLLISION_RECT);
+	cursor->setObjectType(CURSOR);
+	g_engine->addEntity(cursor);
+
 	wheel = new Wheel();
 	wheel->loadImage("wheel.png");
 	wheel->setPosition(0,500);
@@ -449,7 +462,7 @@ void Scene::init() {
 	Scene::setGiftPosition(button_ok->getPosition().getX()-100,button_ok->getPosition().getY()-200);
 
 	quiz = new Quiz();
-	quiz->setPosition(0,100);
+	quiz->setPosition(50,125);
 	quiz->setWidth(380);
 	quiz->setHeight(200);
 	quiz->inputLog();
@@ -620,19 +633,13 @@ void Scene::updateMouseMove(double delta_x,double delta_y,double fx,double fy) {
 	Scene::wheel->updateMouseMove(delta_x,delta_y,fx,fy);
 	Scene::wheel_special->updateMouseMove(delta_x,delta_y,fx,fy);
 	Scene::menu->updateMouseMove();
-	Scene::keyboard->updateMouseMove();
+	Scene::keyboard->updateMouseMove(cursor);
 	Scene::updateGiftMouseMove();
-	PlayerMenu_Spin->setCheckPosition(false);
-	PlayerMenu_Spin->setScale(1.0);
-	PlayeMenu_Guess->setCheckPosition(false);
-	PlayeMenu_Guess->setScale(1.0);
-	button_ok->setCheckPosition(false);
-	button_ok->setScale(1.0);
-	button_ready->setCheckPosition(false);
-	button_ready->setScale(1.0);
-	Next_Stage->setCheckPosition(false);
-	Next_Stage->setScale(1.0);
-	keyboard->setScale(0.7);
+	PlayerMenu_Spin->updateMouseButton(cursor);
+	PlayeMenu_Guess->updateMouseButton(cursor);
+	button_ok->updateMouseButton(cursor);
+	button_ready->updateMouseButton(cursor);
+	Next_Stage->updateMouseButton(cursor);
 	if((g_player->getStatus() == Player::READY_TO_FULL_ANSWER) || (g_player->getStatus() == Player::FULL_SPECIAl))
 		keyboard->reset();
 }

@@ -18,7 +18,7 @@ Letters::Letters(string plabel) : Sprite() {
 	}
 	
 	image_on = new	Texture();
-	ss << "button/" << label << "_pressed" <<".png";
+	ss << "button/" << label << "_normal" <<".png";
 	image_on->Load(ss.str());
 	off();
 }

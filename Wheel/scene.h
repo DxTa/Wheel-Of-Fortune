@@ -22,7 +22,6 @@ namespace Scene {
 	Cursor* cursor;
 	Sprite* background;
 	Sprite* score_background;
-	
 	Texture* background_image;
 	Sprite* arrow;
 	Wheel* wheel;
@@ -56,11 +55,13 @@ namespace Scene {
 	void release();
 
 	void newPlayer();
+	void newPlayer(string name,double x,double y);
 	void updatePlayer();
 	void deletePlayer();
 	void resetPlayer();
 	void nextStage();
 	void spinPlayer();
+	void drawPlayer();
 
 	void newGift(string );
 	void setGiftPosition(int x,int y);
@@ -84,6 +85,7 @@ void g_exit() {
 
 void spin() {
 	Scene::wheel->setStatus(Wheel::WAIT);
+	Scene::keyboard->setStatus(Keyboard::WAIT);
 	Scene::scenePlayerMenu_start  = false;
 	Scene::scenePlayerMenu_on = false;
 	Scene::PlayerMenu_Spin->setVisible(false);
@@ -117,6 +119,25 @@ void Scene::newPlayer() {
 	Player* player = new Player();
 	player->setID(Player::getNumPlayer());
 	playerlist.push_back(player);
+}
+
+void Scene::newPlayer(string name,double x,double y) {
+	Player* player = new Player(name);
+	player->setScale(0.25);
+	player->setRotation(g_engine->math->toRadians(-20));
+	player->setPosition(x,y);
+	playerlist.push_back(player);
+}
+
+void Scene::drawPlayer() {
+	std::list<Player*>::iterator iter;
+	iter = playerlist.begin();
+	Player*temp;
+	while(iter!= playerlist.end()) {
+		temp = *iter;
+		temp->draw();
+		iter++;
+	}
 }
 
 void Scene::newGift(string name) {
@@ -449,9 +470,9 @@ void Scene::init() {
 	button_ready->setPosition(g_engine->getScreenWidth()/2-button_ready->getWidth()/2,g_engine->getScreenHeight()/2-button_ready->getHeight()/2);
 	g_engine->addEntity(button_ready);
 
-	Scene::newPlayer();
-	Scene::newPlayer();
-	Scene::newPlayer();
+	Scene::newPlayer("player1",750,80);
+	Scene::newPlayer("player2",860,80);
+	Scene::newPlayer("player3",980,80);
 	Player::setCurrentPlayer(1);
 	Scene::newGift("car");
 	Scene::newGift("car");
@@ -477,7 +498,7 @@ void Scene::init() {
 	score_background->setPosition(590,-40);
 
 	Scene::timebar = new Sprite();
-	timebar->loadImage("button/time bar.png");
+	timebar->loadImage("source/button/time bar.png");
 	timebar->setTotalFrames(60);
 	timebar->setSize(489,10);
 	timebar->setColumns(1);
@@ -663,4 +684,5 @@ void Scene::release() {
 	delete button_ok;
 	delete button_ready;
 	delete timebar;
+	delete cursor;
 }

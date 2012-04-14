@@ -34,8 +34,6 @@ bool game_preload()
 
 bool game_init(HWND) 
 {	
-
-	
 	Scene::init();
 	system12 = new Font();
 	if (!system12->loadImage("font.tga")) {
@@ -68,18 +66,16 @@ void game_render2d()
 	
 	ostringstream ss1;
 	Scene::spinPlayer();
-//	ss1 << g_player->getName() << " : " << g_player->getStatus() << " \n " << Scene::quiz->getQuestion();
-//	system12->Print(0,0,ss1.str(),D3DCOLOR_XRGB(255,255,100));
 	Scene::score_background->draw();
 	Scene::quiz->arrangeQuestion(system12);
 	if((timebar->getVisible()==true) && ((g_player->getStatus() == Player::FULL_SPECIAl) ||g_player->getStatus() == Player::READY_TO_ANSWER ||g_player->getStatus() == Player::READY_TO_FULL_ANSWER))
 		timebar->draw();
 	Scene::cursor->draw();
+	Scene::drawPlayer();
 }
 
 void game_end() 
 {
-	delete cursor;
 	Scene::release();
 }
 
@@ -95,7 +91,6 @@ void game_keyRelease(int key)
 			g_engine->Close();
 			break;
 		case DIK_SPACE:
-			Scene::scenePlayerGift_start = true;
 			break;
 	}
 }

@@ -14,6 +14,9 @@ Player::Player() : Sprite() {
 	setStatus(AWAIT);
 	turn_gift = 0;
 	TossUp = 0;
+	ostringstream ss2;
+	ss2 << "source/player/" << name << "_on.png";
+	loadImage(ss2.str());
 }
 
 Player::Player(string na) : Sprite() {
@@ -25,6 +28,9 @@ Player::Player(string na) : Sprite() {
 	turn_left = 3;
 	turn_gift = 0;
 	TossUp = 0;
+	ostringstream ss;
+	ss << "source/player/" << name << "_on.png";
+	loadImage(ss.str());
 }
 
 int Player::spin(Wheel* wheel) {

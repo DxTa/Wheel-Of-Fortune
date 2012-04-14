@@ -26,7 +26,6 @@ class Player : public Sprite {
 		enum P_STATUS {AWAIT=100,PLAYING,READY_TO_SPIN,SPINNING,READY_TO_ANSWER,READY_TO_FULL_ANSWER,LOSED,WIN_STAGE,BEGIN_SPECIAL,FULL_SPECIAl,WIN_GAME};
 		Player();
 		Player(string );
-		~Player() {Sprite::~Sprite();}
 		static int getCurrentPlayer() {return currentPlayer;}
 		static int getNumPlayer() {return numberPlayer;}
 		string getName() const {return name;}
@@ -55,6 +54,10 @@ class Player : public Sprite {
 		string answer(Keyboard*,Quiz*);
 		string fullanswer(Keyboard*,Quiz*);
 		void end_play(int = AWAIT);
+
+		void showGift();
+		void showScore();
+		void showTotalScore();
 };
 
 #endif

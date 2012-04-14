@@ -10,7 +10,7 @@ Wheel::Wheel() : Sprite() {
 	power_bar->setCurrentFrame(0);
 	power_bar->setCollidable(false);
 	power_bar->setVisible(true);
-	power_bar->setPosition(g_engine->getScreenWidth()-power_bar->getWidth()/1.5f,g_engine->getScreenHeight()-power_bar->getHeight());
+	power_bar->setPosition(g_engine->getScreenWidth()-power_bar->getWidth()/1.5f,g_engine->getScreenHeight()-power_bar->getHeight()/1.2);
 	power_bar->setTotalFrames(21);
 	power_bar->setColumns(1);
 			

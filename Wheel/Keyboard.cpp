@@ -49,12 +49,12 @@ void Keyboard::reset() {
 	}
 }
 
-void Keyboard::updateMouseMove() {
+void Keyboard::updateMouseMove(Cursor* cursor) {
 	if(this==NULL)
 		return;
 	int i;
 	for(i=0;i<26;i++) {
-		letter[i]->setCheckPosition(false);
+		letter[i]->updateMouseButton(cursor,0.7);
 	}
 }
 

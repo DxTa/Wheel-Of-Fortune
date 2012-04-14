@@ -108,7 +108,14 @@ int Player::spin(Wheel* wheel) {
 }
 
 string Player::answer(Keyboard* keyboard,Quiz* quiz) {
+	static int count_full = 0;
+	static int result_full = 0;
 	if(getStatus() == LOSED) {
+		count_full = 0;
+		result_full = 0;
+		quiz->setClearTemp(true);
+		quiz->indicator(-1);
+		keyboard->loadState();
 		return "";
 	}
 	if(getStatus() == READY_TO_ANSWER) {
@@ -134,29 +141,29 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 		string ss;
 		keyboard->setStatus(Keyboard::AVAILABLE);
 		ss = keyboard->chose();
-		static int count=0;
+	//	static int count_full=0;
 		bool check;
 		quiz->setClearTemp(false);
-		static int result = 0;
-		quiz->indicator(count);
+		//static int result_full = 0;
+		quiz->indicator(count_full);
 		if(ss!= "") {
-			quiz->setLetter(count,ss);
-			quiz->indicator(count+1);
+			quiz->setLetter(count_full,ss);
+			quiz->indicator(count_full+1);
 			setStatus(READY_TO_FULL_ANSWER);
-			check = quiz->check(ss,count);
+			check = quiz->check(ss,count_full);
 			if(check == true) 
-				result++;
-			count++;
-			if(count == (quiz->getSize())) {
-				if(result == count) {
+				result_full++;
+			count_full++;
+			if(count_full == (quiz->getSize())) {
+				if(result_full == count_full) {
 					this->winStage();
 					quiz->openAll();
 				}
 				else {
 					end_play(LOSED);
 				}
-				count = 0;
-				result = 0;
+				count_full = 0;
+				result_full = 0;
 				quiz->setClearTemp(true);
 				keyboard->loadState();
 			}

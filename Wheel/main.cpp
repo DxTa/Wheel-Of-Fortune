@@ -11,7 +11,6 @@
 #include "Quiz.h"
 #include "Player.h"
 #include "scene.h"
-#include "Cursor.h"
 #include <math.h>
 
 
@@ -19,11 +18,9 @@ using namespace Advanced2D;
 using namespace std;
 using namespace Scene;
 
-Cursor* cursor;
 
 Font* system12;
 
-enum {CURSOR=150};
 bool game_preload() 
 {
 	g_engine->setAppTitle("TEST WHEEL");
@@ -37,12 +34,7 @@ bool game_preload()
 
 bool game_init(HWND) 
 {	
-	cursor = new Cursor();
-	cursor->loadImage("Cursor_564.png");
-	cursor->setScale(0.5);
-	cursor->setCollisionMethod(COLLISION_RECT);
-	cursor->setObjectType(CURSOR);
-	g_engine->addEntity(cursor);
+
 	
 	Scene::init();
 	system12 = new Font();
@@ -82,7 +74,7 @@ void game_render2d()
 	Scene::quiz->arrangeQuestion(system12);
 	if((timebar->getVisible()==true) && ((g_player->getStatus() == Player::FULL_SPECIAl) ||g_player->getStatus() == Player::READY_TO_ANSWER ||g_player->getStatus() == Player::READY_TO_FULL_ANSWER))
 		timebar->draw();
-	cursor->draw();
+	Scene::cursor->draw();
 }
 
 void game_end() 

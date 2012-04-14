@@ -2,6 +2,7 @@
 #define H_BUTTON_H
 
 #include "Engine/Advanced2D.h"
+#include "Cursor.h"
 using namespace Advanced2D;
 using namespace std;
 
@@ -31,6 +32,7 @@ public :
 	void reset();
 	void pressed();
 	void release();
+	bool updateMouseButton(Cursor*,double = 1.0);
 };
 
 

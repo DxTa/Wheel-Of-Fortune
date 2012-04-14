@@ -3,6 +3,7 @@
 
 #include "Engine/Advanced2D.h"
 #include "button.h"
+#include "Cursor.h"
 
 class Keyboard {
 private:
@@ -23,7 +24,7 @@ public :
 	void addEntity();
 	void saveState();
 	void loadState();
-	void updateMouseMove();
+	void updateMouseMove(Cursor*);
 	void setScale(double scale);
 };
 

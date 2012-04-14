@@ -52,3 +52,13 @@ void Button::release() {
 		image_pressed->Release();
 	setAlive(false);
 }
+
+bool Button::updateMouseButton(Cursor* cursor,double scale) {
+	bool temp;
+	temp = g_engine->collision(cursor,this);
+	if(!temp) {
+		this->setCheckPosition(false);
+		this->setScale(scale);
+	}
+	return temp;
+}

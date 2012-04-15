@@ -17,6 +17,7 @@ namespace Scene {
 	string specialGift;
 	Timer timecheck;
 	Timer buttoncheck;
+	Font* system12;
 	Player* g_player;
 	Menu* menu;
 	Cursor* cursor;
@@ -137,9 +138,11 @@ void Scene::drawPlayer() {
 	Player*temp;
 	while(iter!= playerlist.end()) {
 		temp = *iter;
-		temp->draw();
+		temp->draw(system12);
 		iter++;
 	}
+	if(!isEndStage())
+		g_player->showPlay(system12);
 }
 
 void Scene::newGift(string name) {
@@ -411,7 +414,19 @@ void Scene::init() {
 	cursor->setCollisionMethod(COLLISION_RECT);
 	cursor->setObjectType(CURSOR);
 	g_engine->addEntity(cursor);
+	
+	system12 = new Font();
+	if (!system12->loadImage("font.tga")) {
+		g_engine->message("Error loading system12.tga");
+		return;
+	}
+	system12->setColumns(16);
+	system12->setCharSize(21,32);
 
+	if (!system12->loadWidthData("font.dat")) {
+		g_engine->message("Error loading system12.dat");
+		return;
+	}
 	wheel = new Wheel();
 	wheel->loadImage("wheel.png");
 	wheel->setPosition(0,500);
@@ -622,8 +637,11 @@ void Scene::updateGiftMouseButton() {
 	Gift* gift;
 	while(iter!=giftlist.end()) {
 		gift = *iter;
-		if(gift->isPosition()==true)
+		if(gift->isPosition()==true) {
+			if(gift->getStatus() == Button::BUTTON_NORMAL)
+				g_player->setGift(gift->getLabel());	
 			gift->pressed();
+		}	
 		++iter;
 	}
 }

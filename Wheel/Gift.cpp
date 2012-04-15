@@ -3,7 +3,8 @@
 
 Gift::Gift(string plabel) : Button("Gift_off") {
 	ostringstream ss;
-	ss << "source/button/" << plabel << ".png";
+	label = plabel;
+	ss << "source/gift/" << plabel << ".png";
 	image_pressed->Load(ss.str());
 }
 

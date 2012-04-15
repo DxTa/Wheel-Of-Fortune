@@ -14,6 +14,7 @@ Player::Player() : Sprite() {
 	setStatus(AWAIT);
 	turn_gift = 0;
 	TossUp = 0;
+	gift = "";
 	ostringstream ss2;
 	ss2 << "source/player/" << name << "_on.png";
 	loadImage(ss2.str());
@@ -28,6 +29,7 @@ Player::Player(string na) : Sprite() {
 	turn_left = 3;
 	turn_gift = 0;
 	TossUp = 0;
+	gift = "";
 	ostringstream ss;
 	ss << "source/player/" << name << "_on.png";
 	loadImage(ss.str());
@@ -276,9 +278,61 @@ void Player::winStage() {
 	reset();
 }
 
+void Player::draw(Font* font) {
+	Sprite::draw();
+	showScore(font);
+	showGift(font);
+}
+
 void Player::showScore(Font* font) {
-	ostringstream ss;
-	ss << this->getScore();
+	ostringstream ss1,ss2,ss3;
+	ss1 << this->getTotalScore();
+	font->setRotation(g_engine->math->toRadians(10));
+	if(ss1.str().size() >= 4)
+		font->Print(this->getPosition().getX()+this->getWidth()/3 * this->getScale(),this->getPosition().getY()+40,ss1.str(),D3DCOLOR_XRGB(255,33,22));
+	else
+		font->Print(this->getPosition().getX()+this->getWidth()/2 * this->getScale(),this->getPosition().getY()+40,ss1.str(),D3DCOLOR_XRGB(255,33,22));
+	ss2 << "_____";
+	font->Print(this->getPosition().getX()+this->getWidth()/3 * this->getScale(),this->getPosition().getY()+50,ss2.str(),D3DCOLOR_XRGB(255,33,22));
+	ss3	<< this->getScore();
+	string temp = ss3.str();
+	for(int i = 0 ;i<temp.size();i++) {
+		if((temp.at(i) == '1') && (temp.at(i+1) == '0'))
+			temp.insert(i+1," ");
+	}
+	if(temp.size() >=4)
+		font->Print(this->getPosition().getX()+this->getWidth()/3 * this->getScale(),this->getPosition().getY()+75,temp,D3DCOLOR_XRGB(255,33,22));
+	else 
+		font->Print(this->getPosition().getX()+this->getWidth()/2 * this->getScale(),this->getPosition().getY()+75,temp,D3DCOLOR_XRGB(255,33,22));
+}
+
+void Player::showGift(Font* font) {
+	ostringstream ss,ss1;
+	if(turn_gift > 0)
+		ss << "FREETURN";
+	if(turn_gift > 1)
+		ss << " X " << turn_gift;
 	font->setRotation(g_engine->math->toRadians(20));
-	font->Print(this->getPosition().getX()+this->getWidth()/2 * this->getScale(),this->getPosition().getY()+40,ss.str(),D3DCOLOR_XRGB(255,33,22));
+	font->Print(this->getPosition().getX()+this->getWidth()/2 * this->getScale(),this->getPosition().getY()+120,ss.str(),D3DCOLOR_XRGB(255,33,22));
+	if(gift!= "")
+		font->Print(this->getPosition().getX()+this->getWidth()/3 * this->getScale(),this->getPosition().getY()+140,"G I F T :",D3DCOLOR_XRGB(255,33,22));
+	int count = 0;
+	string temp;
+	for(int i = 0;i<gift.size();i++) {
+		if(gift.at(i) != ' ') {
+			temp += gift.at(i);
+		}
+		if(gift.at(i) == ' ') {
+			count++;
+			font->Print(this->getPosition().getX()+this->getWidth()/2.5 * this->getScale()+5*count,this->getPosition().getY()+150+22*count,temp,D3DCOLOR_XRGB(255,33,22));
+			temp.clear();
+		}
+		//font->Print(this->getPosition().getX()+this->getWidth()/3 * this->getScale(),this->getPosition().getY()+160+20*count,gift,D3DCOLOR_XRGB(255,33,22));
+	}
+}
+
+void Player::showPlay(Font* font) {
+	font->setScale(1.5);
+	font->setRotation(g_engine->math->toRadians(0));
+	font->Print(this->getPosition().getX()+this->getWidth()/3 * this->getScale(),this->getPosition().getY()-25,"X",D3DCOLOR_XRGB(255,33,255));
 }

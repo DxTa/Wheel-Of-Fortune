@@ -43,7 +43,7 @@ class Player : public Sprite {
 		void winScore() {total_score += score;}
 		void setScore(int pscore) {score = pscore;}
 		void setStatus(P_STATUS sta) {status = sta;}
-		void setGift(string g) {gift = g;}
+		void setGift(string g) {gift = gift + g + " ";}
 		void setSpecialGift(string g) {specialGift = g;}
 
 		void winStage();
@@ -58,6 +58,8 @@ class Player : public Sprite {
 		void showGift(Font*);
 		void showScore(Font*);
 		void showTotalScore(Font*);
+		void showPlay(Font*);
+		void draw(Font*);
 };
 
 #endif

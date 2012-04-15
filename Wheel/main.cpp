@@ -18,9 +18,6 @@ using namespace Advanced2D;
 using namespace std;
 using namespace Scene;
 
-
-Font* system12;
-
 bool game_preload() 
 {
 	g_engine->setAppTitle("TEST WHEEL");
@@ -35,18 +32,6 @@ bool game_preload()
 bool game_init(HWND) 
 {	
 	Scene::init();
-	system12 = new Font();
-	if (!system12->loadImage("font.tga")) {
-		g_engine->message("Error loading system12.tga");
-		return false;
-	}
-	system12->setColumns(16);
-	system12->setCharSize(21,32);
-
-	if (!system12->loadWidthData("font.dat")) {
-		g_engine->message("Error loading system12.dat");
-		return false;
-	}
 
 	Scene::sceneplay_start = true;
 	return true;
@@ -63,20 +48,15 @@ void game_update()
 
 void game_render2d()
 {	
-	
-	ostringstream ss1;
 	Scene::spinPlayer();
 	system12->setRotation(0);
 	system12->setScale(1.0f);
 	Scene::score_background->draw();
-	ss1 << g_player->getName();
-	system12->Print(1000,400,ss1.str(),D3DCOLOR_XRGB(255,50,30));
 	Scene::quiz->arrangeQuestion(system12);
-	if((timebar->getVisible()==true) && ((g_player->getStatus() == Player::FULL_SPECIAl) ||g_player->getStatus() == Player::READY_TO_ANSWER ||g_player->getStatus() == Player::READY_TO_FULL_ANSWER))
-		timebar->draw();
 	Scene::cursor->draw();
 	Scene::drawPlayer();
-	Scene::g_player->showScore(system12);
+	if((timebar->getVisible()==true) && ((g_player->getStatus() == Player::FULL_SPECIAl) ||g_player->getStatus() == Player::READY_TO_ANSWER ||g_player->getStatus() == Player::READY_TO_FULL_ANSWER))
+		timebar->draw();
 }
 
 void game_end() 

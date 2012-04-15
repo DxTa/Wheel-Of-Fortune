@@ -141,8 +141,16 @@ void Scene::drawPlayer() {
 		temp->draw(system12);
 		iter++;
 	}
-	if(!isEndStage())
+	if((!isEndStage()) && (!quiz->isFinish()))
 		g_player->showPlay(system12);
+	if((g_player->getStatus() == Player::WIN_SPECIAL)) {
+		system12->setScale(1.5f);
+		string temp = "You Have Won " + specialGift; 
+		system12->Print(g_engine->getScreenWidth()/2-150,g_engine->getScreenHeight()/2,temp,D3DCOLOR_XRGB(200,33,54));
+	}
+	if((g_player->getStatus() == Player::LOSED_SPECIAL)) {
+		system12->Print(g_engine->getScreenWidth()/2-150,g_engine->getScreenHeight()/2,"You have lost",D3DCOLOR_XRGB(200,33,54));
+	}
 }
 
 void Scene::newGift(string name) {
@@ -244,16 +252,12 @@ void Scene::updatePlayer() {
 					++iter;
 					if (iter == playerlist.end()) {
 						g_player = *playerlist.begin();
-						Player::setCurrentPlayer(g_player->getID());
-					}
-					else g_player = *iter;
+				        Player::setCurrentPlayer(g_player->getID());
+			        }
+			        else g_player = *iter;
 					count++;
 					if(count > Player::getNumPlayer())
 						return;
-					if (iter == playerlist.end()) {
-						g_player = *playerlist.begin();
-						Player::setCurrentPlayer(g_player->getID());
-					}
 				}
 				if((g_player->getStatus()!= Player::LOSED) && (g_player->getStatus()!= Player::READY_TO_ANSWER) && (g_player->getStatus()!= Player::SPINNING)&& (g_player->getStatus()!= Player::READY_TO_FULL_ANSWER) && (g_player->getStatus() == Player::WIN_STAGE) && (g_player->getStatus() == Player::BEGIN_SPECIAL) && (g_player->getStatus() == Player::FULL_SPECIAl))
 					g_player->setStatus(Player::PLAYING);
@@ -306,7 +310,7 @@ void Scene::spinPlayer() {
 			Scene::g_player->setStatus(Player::BEGIN_SPECIAL);
 			break;
 		case WheelSpecial::G_PHONE :
-			specialGift = "a iPhone";
+			specialGift = "an iPhone";
 			Scene::g_player->setStatus(Player::BEGIN_SPECIAL);
 			break;
 		case WheelSpecial::G_TABLET :
@@ -314,11 +318,15 @@ void Scene::spinPlayer() {
 			Scene::g_player->setStatus(Player::BEGIN_SPECIAL);
 			break;
 		case WheelSpecial::G_TRIP :
-			specialGift = "a Europe Trip";
+			specialGift = "an Europe Trip";
 			Scene::g_player->setStatus(Player::BEGIN_SPECIAL);
 			break;
 		case WheelSpecial::G_TV :
 			specialGift = "a Tivi";
+			Scene::g_player->setStatus(Player::BEGIN_SPECIAL);
+			break;
+		case WheelSpecial::G_CAR :
+			specialGift = "a Car";
 			Scene::g_player->setStatus(Player::BEGIN_SPECIAL);
 			break;
 		}
@@ -374,13 +382,16 @@ void Scene::nextStage() {
 	if(phase == (Player::getNumPlayer()+1)) {
 		string max_id;
 		int max = 0;
+		int fortune;
 		iter = playerlist.begin();
 		while (iter != playerlist.end()) {
-			player = *iter;
-			player->setStatus(Player::LOSED);
-			if(max < player->getTotalScore()) {
-				max = player->getTotalScore();
-				max_id = player->getName();
+			player = *iter; 
+			if(max <= player->getTotalScore()) {
+				fortune = rand() % 2;
+				if(!fortune) {
+					max = player->getTotalScore();
+					max_id = player->getName();
+				}
 			}
 			++iter;
 		}
@@ -391,8 +402,9 @@ void Scene::nextStage() {
 			if(max_id == player->getName()){
 				player->setStatus(Player::WIN_GAME);
 			}
-			else 
-				player->setStatus(Player::LOSED);
+			else {
+				player->loseGame();
+			}
 			++count;
 			++iter;
 		}
@@ -455,7 +467,6 @@ void Scene::init() {
 
 	arrow = new Sprite();
 	arrow->loadImage("arrow.png");
-	arrow->setRotation(g_engine->math->toRadians(90));
 	arrow->setPosition(222.0f,430);
 	arrow->setVisible(false);
 	arrow->setCollidable(false);
@@ -605,15 +616,13 @@ void Scene::update() {
 		Next_Stage->setVisible(true);
 		Next_Stage->setCollidable(true);
 		keyboard->setStatus(Keyboard::UNAVAILABLE);
-		if(isNextStage() == true)
-			nextStage();
 	}
 	if((timebar->getVisible() == true) &&(g_player->getStatus() == Player::FULL_SPECIAl)) { 
 		if(timecheck.stopwatch(1000)) {
 			timebar->setCurrentFrame(timebar->getCurrentFrame()-1);
 		}
 		if(timebar->getCurrentFrame()==0)
-			g_player->setStatus(Player::LOSED);
+			g_player->setStatus(Player::LOSED_SPECIAL);
 	}
 	if((timebar->getVisible() == true) &&(g_player->getStatus() == Player::READY_TO_ANSWER)) { 
 		if(timecheck.stopwatch(100)) {
@@ -677,8 +686,13 @@ void Scene::updateMouseButton() {
 			Scene::timebar->setCurrentFrame(59);
 		}
 	}
-	if(g_player->getStatus() == Player::WIN_GAME)
+	if(g_player->getStatus() == Player::WIN_GAME) {
 		Scene::scenePlayerMenu_start = false;
+	}
+	if(g_player->getStatus() == Player::WIN_SPECIAL) {
+		Scene::scenePlayerMenu_start = false;
+		g_player->setSpecialGift(specialGift);
+	}
 }
 
 void Scene::updateGiftMouseMove() {
@@ -687,7 +701,7 @@ void Scene::updateGiftMouseMove() {
 	Gift* gift;
 	while(iter!=giftlist.end()) {
 		gift = *iter;
-		gift->setCheckPosition(false);
+		gift->updateMouseButton(cursor);
 		++iter;
 	}
 }

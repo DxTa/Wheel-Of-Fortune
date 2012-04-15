@@ -15,6 +15,7 @@ Player::Player() : Sprite() {
 	turn_gift = 0;
 	TossUp = 0;
 	gift = "";
+	specialGift = "";
 	ostringstream ss2;
 	ss2 << "source/player/" << name << "_on.png";
 	loadImage(ss2.str());
@@ -30,6 +31,7 @@ Player::Player(string na) : Sprite() {
 	turn_gift = 0;
 	TossUp = 0;
 	gift = "";
+	specialGift = "";
 	ostringstream ss;
 	ss << "source/player/" << name << "_on.png";
 	loadImage(ss.str());
@@ -218,10 +220,11 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 			count++;
 			if(count == (quiz->getSize())) {
 				if(result == count) {
-					this->winStage();
+					this->setStatus(WIN_SPECIAL);
 					quiz->openAll();
 				}
 				else {
+					//this->setStatus(LOSED_SPECIAL);
 					quiz->indicator(0);
 				}
 				count = 0;
@@ -241,6 +244,11 @@ void Player::end_play(int pstatus) {
 		currentPlayer += 1;
 		if(currentPlayer > numberPlayer)
 			currentPlayer = 1;
+		image->Release();
+		image = new Texture();
+		ostringstream ss;
+		ss << "source/player/" << name << "_off.png";
+		loadImage(ss.str());
 		return;
 	}
 	if(turn_gift == 0) {
@@ -264,9 +272,15 @@ void Player::end_play(int pstatus) {
 
 void Player::reset() {
 	setStatus(AWAIT);
+	image->Release();
+	image = new Texture();
+	ostringstream ss;
+	ss << "source/player/" << name << "_on.png";
+	loadImage(ss.str());
+	return;
 	turn_gift = 0;
 	turn_left = 3;
-	score = 0;
+	setScore(0);
 }
 
 void Player::winStage() {
@@ -335,4 +349,13 @@ void Player::showPlay(Font* font) {
 	font->setScale(1.5);
 	font->setRotation(g_engine->math->toRadians(0));
 	font->Print(this->getPosition().getX()+this->getWidth()/3 * this->getScale(),this->getPosition().getY()-25,"X",D3DCOLOR_XRGB(255,33,255));
+}
+
+void Player::loseGame() {
+	setStatus(LOSED);
+	image->Release();
+	image = new Texture();
+	ostringstream ss;
+	ss << "source/player/" << name << "_off.png";
+	loadImage(ss.str());
 }

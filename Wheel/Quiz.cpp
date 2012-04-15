@@ -231,7 +231,6 @@ void Quiz::reset() {
 		temp = *iter;
 		temp->setAlive(false);
 		iter = letters.erase(iter);
-		//++iter;
 	}
 	letters.clear();
 
@@ -423,7 +422,7 @@ void Quiz::setLetter(int i,string label) {
 
 void Quiz::arrangeQuestion(Font* font) {
 	int i = 0,j,count=0;
-	int x = 0,y = 0;
+	int x = 0,y = 50;
 
 	while (i < question.length()) {
 		j = i;

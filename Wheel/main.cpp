@@ -32,12 +32,9 @@ bool game_preload()
 bool game_init(HWND) 
 {	
 	Scene::init();
-
 	Scene::sceneplay_start = true;
 	return true;
 }
-
-
 
 void game_update() 
 {

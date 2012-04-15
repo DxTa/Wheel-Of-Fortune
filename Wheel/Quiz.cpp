@@ -230,7 +230,8 @@ void Quiz::reset() {
 		//delete(*iter);
 		temp = *iter;
 		temp->setAlive(false);
-		++iter;
+		iter = letters.erase(iter);
+		//++iter;
 	}
 	letters.clear();
 

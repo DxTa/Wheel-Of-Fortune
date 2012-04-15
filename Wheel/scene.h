@@ -242,10 +242,18 @@ void Scene::updatePlayer() {
 				while(g_player->getStatus() == Player::LOSED) {
 					Player::setCurrentPlayer(Player::getCurrentPlayer()+1);
 					++iter;
-					g_player = *iter;
+					if (iter == playerlist.end()) {
+						g_player = *playerlist.begin();
+						Player::setCurrentPlayer(g_player->getID());
+					}
+					else g_player = *iter;
 					count++;
 					if(count > Player::getNumPlayer())
 						return;
+					if (iter == playerlist.end()) {
+						g_player = *playerlist.begin();
+						Player::setCurrentPlayer(g_player->getID());
+					}
 				}
 				if((g_player->getStatus()!= Player::LOSED) && (g_player->getStatus()!= Player::READY_TO_ANSWER) && (g_player->getStatus()!= Player::SPINNING)&& (g_player->getStatus()!= Player::READY_TO_FULL_ANSWER) && (g_player->getStatus() == Player::WIN_STAGE) && (g_player->getStatus() == Player::BEGIN_SPECIAL) && (g_player->getStatus() == Player::FULL_SPECIAl))
 					g_player->setStatus(Player::PLAYING);
@@ -638,9 +646,10 @@ void Scene::updateGiftMouseButton() {
 	while(iter!=giftlist.end()) {
 		gift = *iter;
 		if(gift->isPosition()==true) {
-			if(gift->getStatus() == Button::BUTTON_NORMAL)
+			if(gift->getStatus() == Button::BUTTON_NORMAL) {
 				g_player->setGift(gift->getLabel());	
-			gift->pressed();
+				gift->pressed();
+			}
 		}	
 		++iter;
 	}

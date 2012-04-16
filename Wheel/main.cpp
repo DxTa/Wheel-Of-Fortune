@@ -113,6 +113,10 @@ void game_entityUpdate(Advanced2D::Entity* entity) {
 		Letters *temp =(Letters*)entity;
 		temp->setAlive(false);
 	}
+	if((entity->getObjectType() == Letters::OFF_TEMP)&& (quiz->getClearOff() == true)) {
+		Letters *temp =(Letters*)entity;
+		temp->setAlive(false);
+	}
 }
 void game_entityCollision(Advanced2D::Entity* entity1,Advanced2D::Entity* entity2) {
 	if(entity1->getObjectType() == CURSOR) {

@@ -357,6 +357,16 @@ void Quiz::calSize() {
 
 void Quiz::indicator(int i) {
 	static int check = -1;
+	static int opentemp=0;
+	static Letters* offtemp;
+	if(opentemp==0) {
+		offtemp = new Letters("A");
+		offtemp->setObjectType(Letters::OFF_TEMP);
+		offtemp->setColor(D3DCOLOR_XRGB(255,25,25));
+		g_engine->addEntity(offtemp);
+		opentemp =1;
+	}
+	offtemp->setVisible(false);
 	if(i==-1) {
 		std::list<Letters*>::iterator iter;
 		iter = letters.begin();
@@ -380,6 +390,10 @@ void Quiz::indicator(int i) {
 			string ss = letter->getLabel();
 			if ((ss.compare("\n") == 0) || (ss.compare("\0") == 0) || (ss.compare("\r") == 0) || (ss.compare(" ") == 0)) {iter++;continue;}
 			if(count == i) {
+				if(letter->getStatus() == Letters::ON) {
+					offtemp->setVisible(true);
+					offtemp->setPosition(letter->getPosition());
+				}
 				letter->setColor(D3DCOLOR_XRGB(255,25,25));
 				break;
 			}

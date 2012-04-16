@@ -14,7 +14,7 @@ private:
 	Texture *image_on;
 public :
 	enum L_STATUS {OFF,ON};
-	enum TYPE {LETTER_PER=1000,LETTER_TEMP};
+	enum TYPE {LETTER_PER=1000,LETTER_TEMP,OFF_TEMP};
 	Letters(string );
 	~Letters();
 	inline int getStatus() const {return status;}

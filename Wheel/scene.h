@@ -627,7 +627,7 @@ void Scene::update() {
 		if(arrorcheck.stopwatch(14)) {
 			arrow->setScale(arrow->getScale() - 0.01*cad);
 		}
-		if(arrow->getScale() < 0)
+		if(arrow->getScale() < 0.8)
 			cad = -1;
 		if(arrow->getScale() > 1)
 			cad = 1;
@@ -636,6 +636,8 @@ void Scene::update() {
 		else
 			arrow->setColor( D3DCOLOR_XRGB(255,255,255));
 	}
+	else
+		arrow->setScale(1.0f);
 	if((quiz->isFinish() == true) && (isEndStage() == false)) {
 		Next_Stage->setVisible(true);
 		Next_Stage->setCollidable(true);

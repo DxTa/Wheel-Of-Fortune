@@ -28,6 +28,7 @@ private:
 	std::list<Letters*> letters; //lưu từng ký tự answers trong này
 	std::vector<int> recent; //lưu 100 câu hỏi gần nhất
 	bool cleartemp;
+	bool clearoff;
 	Timer checkvisible;
 public:
 	
@@ -59,6 +60,8 @@ public:
 	bool isFinish();
 	bool getClearTemp() const {return cleartemp;}
 	void setClearTemp(bool t) {cleartemp = t;}
+	bool getClearOff() const {return clearoff;}
+	void setClearOff(bool t) {clearoff = t;}
 };
 
 #endif

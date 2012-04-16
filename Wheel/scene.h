@@ -17,6 +17,7 @@ namespace Scene {
 	string specialGift;
 	Timer timecheck;
 	Timer buttoncheck;
+	Timer arrorcheck;
 	Font* system12;
 	Player* g_player;
 	Menu* menu;
@@ -32,8 +33,8 @@ namespace Scene {
 	Button* PlayerMenu_Spin;
 	Button* PlayeMenu_Guess;
 	Button* Next_Stage;
-	Button* button_ok;
 	Button* button_ready;
+	Button* button_ok;
 	bool sceneplay_start = false;
 	bool sceneplay_on = false;
 	bool scenePlayerMenu_start = false;
@@ -115,6 +116,14 @@ void readyspecial() {
 void showButtonOk() {
 	Scene::button_ok->setVisible(true);
 	Scene::button_ok->setCollidable(true);
+	std::list<Gift*>::iterator iter;
+	iter = Scene::giftlist.begin();
+	Gift* gift;
+	while(iter!=Scene::giftlist.end()) {
+		gift = *iter;
+		gift->setCollidable(false);
+		iter++;
+	}
 }
 
 void Scene::newPlayer() {
@@ -253,6 +262,7 @@ void Scene::updatePlayer() {
 					if (iter == playerlist.end()) {
 						g_player = *playerlist.begin();
 				        Player::setCurrentPlayer(g_player->getID());
+						iter = playerlist.begin();
 			        }
 			        else g_player = *iter;
 					count++;
@@ -612,6 +622,20 @@ void Scene::update() {
 	PlayerMenu_Spin->reset();
 	PlayeMenu_Guess->reset();
 	Next_Stage->reset();
+	static int cad = 1;
+	if(wheel->getStatus() == Wheel::WAIT) {
+		if(arrorcheck.stopwatch(14)) {
+			arrow->setScale(arrow->getScale() - 0.01*cad);
+		}
+		if(arrow->getScale() < 0)
+			cad = -1;
+		if(arrow->getScale() > 1)
+			cad = 1;
+		if(arrow->getColor() == D3DCOLOR_XRGB(255,255,255))
+			arrow->setColor(D3DCOLOR_XRGB(244,32,43));
+		else
+			arrow->setColor( D3DCOLOR_XRGB(255,255,255));
+	}
 	if((quiz->isFinish() == true) && (isEndStage() == false)) {
 		Next_Stage->setVisible(true);
 		Next_Stage->setCollidable(true);
@@ -701,7 +725,7 @@ void Scene::updateGiftMouseMove() {
 	Gift* gift;
 	while(iter!=giftlist.end()) {
 		gift = *iter;
-		gift->updateMouseButton(cursor);
+		gift->updateMouseMove(cursor);
 		++iter;
 	}
 }
@@ -709,14 +733,14 @@ void Scene::updateGiftMouseMove() {
 void Scene::updateMouseMove(double delta_x,double delta_y,double fx,double fy) {
 	Scene::wheel->updateMouseMove(delta_x,delta_y,fx,fy);
 	Scene::wheel_special->updateMouseMove(delta_x,delta_y,fx,fy);
-	Scene::menu->updateMouseMove();
+	Scene::menu->updateMouseMove(cursor);
 	Scene::keyboard->updateMouseMove(cursor);
 	Scene::updateGiftMouseMove();
-	PlayerMenu_Spin->updateMouseButton(cursor);
-	PlayeMenu_Guess->updateMouseButton(cursor);
-	button_ok->updateMouseButton(cursor);
-	button_ready->updateMouseButton(cursor);
-	Next_Stage->updateMouseButton(cursor);
+	PlayerMenu_Spin->updateMouseMove(cursor);
+	PlayeMenu_Guess->updateMouseMove(cursor);
+	button_ok->updateMouseMove(cursor);
+	button_ready->updateMouseMove(cursor);
+	Next_Stage->updateMouseMove(cursor);
 	if((g_player->getStatus() == Player::READY_TO_FULL_ANSWER) || (g_player->getStatus() == Player::FULL_SPECIAl))
 		keyboard->reset();
 }

@@ -3,6 +3,7 @@
 
 #include "Engine/Advanced2D.h"
 #include "button.h"
+#include "Cursor.h"
 
 using namespace std;
 class Menu {
@@ -29,7 +30,7 @@ public:
 	void update();
 	void reset();
 	void updateMouseButton();
-	void updateMouseMove();
+	void updateMouseMove(Cursor*);
 	void close();
 	void addFunction(string,void(*function)());
 };

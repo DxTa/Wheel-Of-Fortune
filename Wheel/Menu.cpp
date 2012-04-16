@@ -76,7 +76,7 @@ void Menu::updateMouseButton() {
 	}
 }
 
-void Menu::updateMouseMove() {
+void Menu::updateMouseMove(Cursor* cursor) {
 	std::list<Button*>::iterator iter;
 	Button* button;
 	iter = menu.begin();
@@ -84,7 +84,7 @@ void Menu::updateMouseMove() {
 	{
 		button = *iter;
 		if(button) {
-			button->setCheckPosition(false);
+			button->updateMouseMove(cursor,1.0f);
 			++iter;
 		}
 	}

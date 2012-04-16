@@ -54,7 +54,7 @@ void Keyboard::updateMouseMove(Cursor* cursor) {
 		return;
 	int i;
 	for(i=0;i<26;i++) {
-		letter[i]->updateMouseButton(cursor,0.7);
+		letter[i]->updateMouseMove(cursor,0.7);
 		if((status == AVAILABLE) || (status == WAIT))
 			letter[i]->setCollidable(true);
 		else

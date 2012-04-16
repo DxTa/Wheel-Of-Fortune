@@ -32,7 +32,7 @@ public :
 	void reset();
 	void pressed();
 	void release();
-	bool updateMouseButton(Cursor*,double = 1.0);
+	bool updateMouseMove(Cursor*,double = 1.0);
 };
 
 

@@ -53,7 +53,7 @@ void Button::release() {
 	setAlive(false);
 }
 
-bool Button::updateMouseButton(Cursor* cursor,double scale) {
+bool Button::updateMouseMove(Cursor* cursor,double scale) {
 	bool temp;
 	temp = g_engine->collision(cursor,this);
 	if(!temp) {

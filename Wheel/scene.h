@@ -146,10 +146,10 @@ void Scene::drawPlayer() {
 	if((g_player->getStatus() == Player::WIN_SPECIAL)) {
 		system12->setScale(1.5f);
 		string temp = "You Have Won " + specialGift; 
-		system12->Print(g_engine->getScreenWidth()/2-150,g_engine->getScreenHeight()/2,temp,D3DCOLOR_XRGB(200,33,54));
+		system12->Print(g_engine->getScreenWidth()/2-200,g_engine->getScreenHeight()/2,temp,D3DCOLOR_XRGB(200,33,54));
 	}
 	if((g_player->getStatus() == Player::LOSED_SPECIAL)) {
-		system12->Print(g_engine->getScreenWidth()/2-150,g_engine->getScreenHeight()/2,"You have lost",D3DCOLOR_XRGB(200,33,54));
+		system12->Print(g_engine->getScreenWidth()/2-200,g_engine->getScreenHeight()/2,"You have lost",D3DCOLOR_XRGB(200,33,54));
 	}
 }
 
@@ -467,7 +467,7 @@ void Scene::init() {
 
 	arrow = new Sprite();
 	arrow->loadImage("arrow.png");
-	arrow->setPosition(222.0f,430);
+	arrow->setPosition(222.0f,440);
 	arrow->setVisible(false);
 	arrow->setCollidable(false);
 	g_engine->addEntity(arrow);
@@ -511,9 +511,9 @@ void Scene::init() {
 	button_ready->setPosition(g_engine->getScreenWidth()/2-button_ready->getWidth()/2,g_engine->getScreenHeight()/2-button_ready->getHeight()/2);
 	g_engine->addEntity(button_ready);
 
-	Scene::newPlayer("player1",750,80);
-	Scene::newPlayer("player2",860,80);
-	Scene::newPlayer("player3",980,80);
+	Scene::newPlayer("player1",740,70);
+	Scene::newPlayer("player2",850,70);
+	Scene::newPlayer("player3",960,70);
 	/*
 	Scene::newPlayer("player1",750,100);
 	Scene::newPlayer("player2",830,95);

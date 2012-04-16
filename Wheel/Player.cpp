@@ -152,10 +152,8 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 		keyboard->setStatus(Keyboard::AVAILABLE);
 		ss = keyboard->chose();
 		keyboard->setStatus(Keyboard::WAIT);
-	//	static int count_full=0;
 		bool check;
 		quiz->setClearTemp(false);
-		//static int result_full = 0;
 		quiz->indicator(count_full);
 		if(ss!= "") {
 			quiz->setLetter(count_full,ss);
@@ -277,19 +275,20 @@ void Player::reset() {
 	ostringstream ss;
 	ss << "source/player/" << name << "_on.png";
 	loadImage(ss.str());
-	return;
 	turn_gift = 0;
 	turn_left = 3;
 	setScore(0);
 }
 
 void Player::winStage() {
-	setStatus(WIN_STAGE);
-	if(score == 0)
-		total_score += 300;
-	else
-		total_score += score;
-	reset();
+	if(getStatus()!= WIN_STAGE) {
+		setStatus(WIN_STAGE);
+		if(score == 0)
+			total_score += 300;
+		else
+			total_score += score;
+		setScore(0);
+	}
 }
 
 void Player::draw(Font* font) {
@@ -301,23 +300,28 @@ void Player::draw(Font* font) {
 void Player::showScore(Font* font) {
 	ostringstream ss1,ss2,ss3;
 	ss1 << this->getTotalScore();
-	font->setRotation(g_engine->math->toRadians(10));
-	if(ss1.str().size() >= 4)
-		font->Print(this->getPosition().getX()+this->getWidth()/3 * this->getScale(),this->getPosition().getY()+40,ss1.str(),D3DCOLOR_XRGB(255,33,22));
-	else
-		font->Print(this->getPosition().getX()+this->getWidth()/2 * this->getScale(),this->getPosition().getY()+40,ss1.str(),D3DCOLOR_XRGB(255,33,22));
-	ss2 << "_____";
-	font->Print(this->getPosition().getX()+this->getWidth()/3 * this->getScale(),this->getPosition().getY()+50,ss2.str(),D3DCOLOR_XRGB(255,33,22));
-	ss3	<< this->getScore();
-	string temp = ss3.str();
+	font->setRotation(g_engine->math->toRadians(20));
+	string temp = ss1.str();
 	for(int i = 0 ;i<temp.size();i++) {
-		if((temp.at(i) == '1') && (temp.at(i+1) == '0'))
+		if((temp.at(i) == '1'))
+			temp.insert(i+1," ");
+	}
+	if(ss1.str().size() >= 4)
+		font->Print(this->getPosition().getX()+this->getWidth()/3 * this->getScale(),this->getPosition().getY()+50,temp,D3DCOLOR_XRGB(255,33,22));
+	else
+		font->Print(this->getPosition().getX()+this->getWidth()/2 * this->getScale(),this->getPosition().getY()+50,temp,D3DCOLOR_XRGB(255,33,22));
+	ss2 << "_____";
+	font->Print(this->getPosition().getX()+this->getWidth()/3 * this->getScale(),this->getPosition().getY()+60,ss2.str(),D3DCOLOR_XRGB(255,33,22));
+	ss3	<< this->getScore();
+	temp = ss3.str();
+	for(int i = 0 ;i<temp.size();i++) {
+		if((temp.at(i) == '1'))
 			temp.insert(i+1," ");
 	}
 	if(temp.size() >=4)
-		font->Print(this->getPosition().getX()+this->getWidth()/3 * this->getScale(),this->getPosition().getY()+75,temp,D3DCOLOR_XRGB(255,33,22));
+		font->Print(this->getPosition().getX()+this->getWidth()/3 * this->getScale(),this->getPosition().getY()+85,temp,D3DCOLOR_XRGB(255,33,22));
 	else 
-		font->Print(this->getPosition().getX()+this->getWidth()/2 * this->getScale(),this->getPosition().getY()+75,temp,D3DCOLOR_XRGB(255,33,22));
+		font->Print(this->getPosition().getX()+this->getWidth()/2 * this->getScale(),this->getPosition().getY()+85,temp,D3DCOLOR_XRGB(255,33,22));
 }
 
 void Player::showGift(Font* font) {
@@ -327,7 +331,7 @@ void Player::showGift(Font* font) {
 	if(turn_gift > 1)
 		ss << " X " << turn_gift;
 	font->setRotation(g_engine->math->toRadians(20));
-	font->Print(this->getPosition().getX()+this->getWidth()/2 * this->getScale(),this->getPosition().getY()+120,ss.str(),D3DCOLOR_XRGB(255,33,22));
+	font->Print(this->getPosition().getX()+this->getWidth() * this->getScale(),this->getPosition().getY()+120,ss.str(),D3DCOLOR_XRGB(255,33,22));
 	if(gift!= "")
 		font->Print(this->getPosition().getX()+this->getWidth()/3 * this->getScale(),this->getPosition().getY()+140,"G I F T :",D3DCOLOR_XRGB(255,33,22));
 	int count = 0;
@@ -348,7 +352,7 @@ void Player::showGift(Font* font) {
 void Player::showPlay(Font* font) {
 	font->setScale(1.5);
 	font->setRotation(g_engine->math->toRadians(0));
-	font->Print(this->getPosition().getX()+this->getWidth()/3 * this->getScale(),this->getPosition().getY()-25,"X",D3DCOLOR_XRGB(255,33,255));
+	font->Print(this->getPosition().getX()+this->getWidth()/3 * this->getScale(),this->getPosition().getY()-15,"X",D3DCOLOR_XRGB(255,33,255));
 }
 
 void Player::loseGame() {

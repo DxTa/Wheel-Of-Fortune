@@ -117,6 +117,21 @@ void game_entityUpdate(Advanced2D::Entity* entity) {
 		Letters *temp =(Letters*)entity;
 		temp->setAlive(false);
 	}
+	if((entity->getObjectType() == Scene::EMOTION) || (entity->getObjectType() == Scene::NEXT)) {
+		static int cad = 1;
+		Sprite *temp = (Sprite*)entity;
+		if(emotioncheck.stopwatch(14)) {
+			temp->setScale(temp->getScale() - 0.01*cad);
+		}
+		if(temp->getScale() < 0.85)
+			cad = -1;
+		if(temp->getScale() > 1)
+			cad = 1;
+		if((entity->getObjectType() == Scene::NEXT)) {
+			if(Next_Stage->getVisible() == false)
+				temp->setAlive(false);
+		}
+	}
 }
 void game_entityCollision(Advanced2D::Entity* entity1,Advanced2D::Entity* entity2) {
 	if(entity1->getObjectType() == CURSOR) {

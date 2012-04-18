@@ -222,7 +222,7 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 					quiz->openAll();
 				}
 				else {
-					//this->setStatus(LOSED_SPECIAL);
+					this->setStatus(LOSED_SPECIAL);
 					quiz->indicator(0);
 				}
 				count = 0;

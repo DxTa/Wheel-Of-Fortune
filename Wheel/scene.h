@@ -18,6 +18,7 @@ namespace Scene {
 	Timer timecheck;
 	Timer buttoncheck;
 	Timer arrorcheck;
+	Timer emotioncheck;
 	Font* system12;
 	Player* g_player;
 	Menu* menu;
@@ -77,7 +78,7 @@ namespace Scene {
 	bool isEndStage();
 	bool isNextStage();
 
-	enum {CURSOR=150};
+	enum {CURSOR=150,EMOTION = 149,NEXT = 148};
 }
 
 void g_exit() {
@@ -184,6 +185,13 @@ void Scene::setGiftPosition(int x,int y) {
 }
 
 void Scene::showGift() {
+	arrow->setVisible(false);
+	Sprite* hehe = new Sprite();
+	hehe->loadImage("source/emotion/chooseagift.png");
+	hehe->setPosition(g_engine->getScreenWidth()/2 -400,g_engine->getScreenHeight()/2-20);
+	hehe->setObjectType(EMOTION);
+	hehe->setLifetime(2000);
+	g_engine->addEntity(hehe);
 	list<Gift*>::iterator iter;
 	iter = giftlist.begin();
 	int i = 0;
@@ -215,6 +223,7 @@ void Scene::hideGift() {
 	scenePlayerGift_start = false;
 	scenePlayerGift_on = false;
 	scenePlayerMenu_start = true;
+	arrow->setVisible(true);
 }
 
 void Scene::deleteGift() {
@@ -241,11 +250,18 @@ void Scene::updatePlayer() {
 	if(isEndStage() == true) {
 		quiz->openAll();
 		keyboard->setStatus(Keyboard::UNAVAILABLE);
+		if((Next_Stage->getVisible()==false) && (g_player->getStatus() != Player::LOSED_SPECIAL)) {
+			Sprite * next = new Sprite();
+			next->loadImage("source/emotion/nextstage.png");
+			next->setPosition(Next_Stage->getPosition().getX()-400,Next_Stage->getPosition().getY()+next->getHeight()/2);
+			next->setObjectType(Scene::NEXT);
+			g_engine->addEntity(next);
+		}
 		Next_Stage->setVisible(true);
 		Next_Stage->setCollidable(true);
-		if(isNextStage() == true) {
+	/*	if(isNextStage() == true) {
 			nextStage();
-		}
+		}*/
 		return;
 	}
 	std::list<Player*>::iterator iter;
@@ -288,21 +304,53 @@ void Scene::deletePlayer() {
 }
 
 void Scene::spinPlayer() {
+	static Sprite* emo;
 	Scene::wheel->setHolding(false);
 	Scene::wheel_special->setHolding(false);
 	if(sceneplay_start == true) {
 		if(wheel->getStatus() == Wheel::STOP)
 			return;
 		timebar->setVisible(true);
-		switch(g_player->spin(wheel)) {
+		int toss = g_player->spin(wheel);
+		if((toss == 700) || (toss == 800) ||(toss == 900)) {
+			int sa = rand()%3;
+			if(sa) {
+				emo = new Sprite();
+				emo->loadImage("source/emotion/bigToss.png");
+				emo->setPosition(20,g_engine->getScreenHeight()/2-50);
+				emo->setLifetime(1000);
+				g_engine->addEntity(emo);
+			}
+		}
+		if((toss == 200) || (toss == 100) || (toss == 300)) {
+			int sa = rand()%3;
+			if(sa) {
+				emo = new Sprite();
+				emo->loadImage("source/emotion/smallToss.png");
+				emo->setPosition(20,g_engine->getScreenHeight()/2-50);
+				emo->setLifetime(1500);
+				g_engine->addEntity(emo);
+			}
+		}
+		switch(toss) {
 		case Wheel::G_BANKRUPT :
 			g_player->setScore(0);
 			g_player->end_play(Wheel::G_BANKRUPT);
 			Scene::scenePlayerMenu_start = true;
+			emo = new Sprite();
+			emo->loadImage("source/emotion/BankRupt.png");
+			emo->setPosition(wheel->getPosition().getX()+30,wheel->getPosition().getY()-200);
+			emo->setLifetime(1000);
+			g_engine->addEntity(emo);
 			break;
 		case Wheel::G_LOSEATURN :
 			g_player->end_play(Wheel::G_LOSEATURN);
 			Scene::scenePlayerMenu_start = true;
+			emo = new Sprite();
+			emo->loadImage("source/emotion/Loseturn.png");
+			emo->setPosition(wheel->getPosition().getX()+wheel->getWidth()-200,wheel->getPosition().getY()-120);
+			emo->setLifetime(1000);
+			g_engine->addEntity(emo);
 			break;
 		case Wheel::G_GIFT :
 			Scene::scenePlayerGift_start = true;
@@ -640,6 +688,13 @@ void Scene::update() {
 		arrow->setScale(1.0f);
 	}
 	if((quiz->isFinish() == true) && (isEndStage() == false)) {
+		if((Next_Stage->getVisible()==false)&& (g_player->getStatus() != Player::WIN_SPECIAL)) {
+			Sprite * next = new Sprite();
+			next->loadImage("source/emotion/nextstage.png");
+			next->setPosition(Next_Stage->getPosition().getX()-400,Next_Stage->getPosition().getY()+next->getHeight()/2);
+			next->setObjectType(Scene::NEXT);
+			g_engine->addEntity(next);
+		}
 		Next_Stage->setVisible(true);
 		Next_Stage->setCollidable(true);
 		keyboard->setStatus(Keyboard::UNAVAILABLE);
@@ -691,6 +746,7 @@ void Scene::updateGiftMouseButton() {
 	}
 }
 void Scene::updateMouseButton() {
+	static int open = 0;
 	Scene::wheel->updateMouseButton();
 	Scene::wheel_special->updateMouseButton();
 	Scene::menu->updateMouseButton();
@@ -711,6 +767,7 @@ void Scene::updateMouseButton() {
 		if((ss!= "") && (g_player->getStatus() != Player::READY_TO_FULL_ANSWER) && (g_player->getStatus() != Player::FULL_SPECIAl) && (g_player->getStatus() != Player::BEGIN_SPECIAL)) {
 			Scene::scenePlayerMenu_start = true;
 			Scene::timebar->setCurrentFrame(59);
+			open = 0;
 		}
 	}
 	if(g_player->getStatus() == Player::WIN_GAME) {
@@ -719,6 +776,25 @@ void Scene::updateMouseButton() {
 	if(g_player->getStatus() == Player::WIN_SPECIAL) {
 		Scene::scenePlayerMenu_start = false;
 		g_player->setSpecialGift(specialGift);
+		if(open == 0) {
+			Sprite * temp = new Sprite();
+			temp->loadImage("source/emotion/winner.png");
+			temp->setPosition(g_engine->getScreenWidth()/2-200,g_engine->getScreenHeight()/2-200);
+			temp->setLifetime(5000);
+			g_engine->addEntity(temp);
+			open = 1;
+		}
+	}
+	if(g_player->getStatus() == Player::LOSED_SPECIAL) {
+		Scene::scenePlayerMenu_start = false;
+		if(open == 0)  {
+			Sprite * temp = new Sprite();
+			temp->loadImage("source/emotion/SoClose.png");
+			temp->setPosition(g_engine->getScreenWidth()/2-200,g_engine->getScreenHeight()/2-200);
+			temp->setLifetime(5000);
+			g_engine->addEntity(temp);
+			open = 1;
+		}
 	}
 }
 

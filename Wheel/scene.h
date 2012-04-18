@@ -24,6 +24,7 @@ namespace Scene {
 	Cursor* cursor;
 	Sprite* background;
 	Sprite* score_background;
+	Sprite* timebar;
 	Texture* background_image;
 	Sprite* arrow;
 	Wheel* wheel;
@@ -75,8 +76,6 @@ namespace Scene {
 
 	bool isEndStage();
 	bool isNextStage();
-	Sprite* timebar;
-
 
 	enum {CURSOR=150};
 }
@@ -531,12 +530,12 @@ void Scene::init() {
 	Scene::newPlayer("player4",1000,90);
 	*/
 	Player::setCurrentPlayer(1);
-	Scene::newGift("car");
-	Scene::newGift("car");
-	Scene::newGift("car");
-	Scene::newGift("car");
-	Scene::newGift("car");
-	Scene::newGift("car");
+	Scene::newGift("globe");
+	Scene::newGift("hat2");
+	Scene::newGift("ipod");
+	Scene::newGift("book");
+	Scene::newGift("glasses");
+	Scene::newGift("shoe");
 	Scene::setGiftPosition(button_ok->getPosition().getX()-100,button_ok->getPosition().getY()-200);
 
 	quiz = new Quiz();
@@ -636,8 +635,10 @@ void Scene::update() {
 		else
 			arrow->setColor( D3DCOLOR_XRGB(255,255,255));
 	}
-	else
+	else {
+		arrow->setColor(D3DCOLOR_XRGB(255,255,255));
 		arrow->setScale(1.0f);
+	}
 	if((quiz->isFinish() == true) && (isEndStage() == false)) {
 		Next_Stage->setVisible(true);
 		Next_Stage->setCollidable(true);

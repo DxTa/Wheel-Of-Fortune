@@ -438,17 +438,22 @@ void Scene::nextStage() {
 	}
 	if(phase == (Player::getNumPlayer()+1)) {
 		string max_id;
-		int max = 0;
+		int max = -1;
 		int fortune;
 		iter = playerlist.begin();
+		
 		while (iter != playerlist.end()) {
 			player = *iter; 
-			if(max <= player->getTotalScore()) {
+			if(max == player->getTotalScore()) {
 				fortune = rand() % 2;
 				if(!fortune) {
 					max = player->getTotalScore();
 					max_id = player->getName();
 				}
+			}
+			else if (max < player->getTotalScore()) {
+				max = player->getTotalScore();
+				max_id = player->getName();
 			}
 			++iter;
 		}

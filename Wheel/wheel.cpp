@@ -159,7 +159,9 @@ void Wheel::updateMouseMove(double delta_x,double delta_y,double fx,double fy) {
 		double time = Utils::timecount();
 		if(this->getS()*10/time < ((2*3.14 + friction)/100)) 
 			this->setSpeed(((2*3.14 + friction)/100));
-		else 
+		else if (this->getS()*10/time > 2.5*((2*3.14 + friction)/100))
+			this->setSpeed(2.5*((2*3.14 + friction)/100));
+		else
 			this->setSpeed(this->getS()*10/time);
 	}
 }

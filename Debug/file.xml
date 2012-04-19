@@ -1,156 +1,293 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <file>
   <entry>
-    <Category>THING</Category>
-    <Question>A LONG, UPHOLSTERED COUCH WITH A BACK AND TWO ARMS OR RAISED ENDS:
-					S_ _ A</Question>
-    <Answer>SOFA</Answer>
+    <Category>AUTOMOBILE</Category>
+    <Question>THIS LUBRICATES YOUR ENGINE</Question>
+    <Answer>OIL</Answer>
   </entry>
   <entry>
-    <Category>LOVE</Category>
-    <Question>A KEY INGREDIENT IN THE SUCCESS OF A LONG DISTANCE RELATIONSHIP: 
-					R_ _ M _ C E</Question>
-    <Answer>ROMANCE</Answer>
-  </entry>
-  <entry>
-    <Category>THING</Category>
-    <Question>THIS IS AN ALLERGIC REACTION:
-					_ _ _
-					_ E _ E R</Question>
-    <Answer>HAY FEVER</Answer>
+    <Category>ANIMAL</Category>
+    <Question>THIS BIRD IS THE SYMBOL OF INTELLIGENCE</Question>
+    <Answer>OWL</Answer>
   </entry>
   <entry>
     <Category>THING</Category>
-    <Question>A 1998 NOVEL BY STEPHEN KING: 
-					B _ G
-					O F / B O N _ S</Question>
-    <Answer>BAG OF BONES</Answer>
+    <Question>ANOTHER WORD FOR QUIET</Question>
+    <Answer>CALM</Answer>
   </entry>
   <entry>
-    <Category>FICTIONAL CHARACTER</Category>
-    <Question>OFTEN CALLED THE PINKY IN AMERICAN ENGLISH:
-					P _ N K _ E
-					F _ N G E R</Question>
-    <Answer>PINKIE FINGER</Answer>
+    <Category>ANIMAL</Category>
+    <Question>THIS BIRD IS A SYMBOL OF PEACE</Question>
+    <Answer>DOVE</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>THIS BIRD CAN SWIM VERY WELL</Question>
+    <Answer>DUCK</Answer>
+  </entry>
+  <entry>
+    <Category>THING</Category>
+    <Question>ITS A WOMANS DRESS WORN ON SPECIAL OCCASIONS</Question>
+    <Answer>GOWN</Answer>
+  </entry>
+  <entry>
+    <Category>THING</Category>
+    <Question>A STORY FROM THE PAST</Question>
+    <Answer>MYTH</Answer>
   </entry>
   <entry>
     <Category>PERSON</Category>
-    <Question>AN AMERICAN ACTRESS AND MODEL
-					 WHOSE BETTER-KNOWN MOVIES 
-					 INCLUDE PRETTY BABY AND THE BLUE LAGOON: 
-					B R _ _ K E
-					S H I E L _ S</Question>
-    <Answer>BROOKE SHIELDS</Answer>
-  </entry>
-  <entry>
-    <Category>PHRASE</Category>
-    <Question>THIS IS THE FLOWER OF ANY OF SEVERAL TREES OF GENUS PRUNUS
-					,PARTICULARLY THE JAPANESE CHERRY: 
-					C _ _ R R Y
-					B L _ S S _ M S</Question>
-    <Answer>CHERRY BLOSSOMS</Answer>
-  </entry>
-  <entry>
-    <Category>PHRASE</Category>
-    <Question>THIS IS THE PHRASE THAT SHOWS YOU BELIEVE SOMETHING IS YOURS
-					S T _ K I N G / _
-					C L _ I M</Question>
-    <Answer>STAKING A CLAIM</Answer>
-  </entry>
-  <entry>
-    <Category>PHRASE</Category>
-    <Question>BY SMALL DEGREES OR INCREMENTS OR GRADUALLY.
-					L _ T T L E
-					B _
-					L _ T T L E</Question>
-    <Answer>LITTLE BY LITTLE</Answer>
-  </entry>
-  <entry>
-    <Category>CLUE</Category>
-    <Question>SOMEONE WHO CAN SECRETLY SEE AND HEAR WHAT HAPPENS: 
-					A / F L _ / _ N
-					T H E / W A L L</Question>
-    <Answer>A FLY ON THE WALL</Answer>
-  </entry>
-  <entry>
-    <Category>PHRASE</Category>
-    <Question>THERE ARE MANY DIFFERENT KINDS OF PEOPLE
-					, AND YOU SHOULD NOT CONDEMN THEM FOR BEING DIFFERENT.
-					_ T / T A _ _ S
-					A L L / _ _ N _ S</Question>
-    <Answer>IT TAKES ALL KINDS</Answer>
-  </entry>
-  <entry>
-    <Category>EVENT</Category>
-    <Question>A SUBSTANCE THAT CAN BE BURNED TO PROVIDE HEAT OR POWER
-					R _ _ O R T I N G
-					F O _ / _ U T Y</Question>
-    <Answer>REPORTING FOR DUTY</Answer>
-  </entry>
-  <entry>
-    <Category>PEOPLE</Category>
-    <Question>A CANADIAN HAIR METAL BAND:
-					S A _ N T S
-					A N D
-					S _ N N _ _ S</Question>
-    <Answer>SAINTS AND SINNERS</Answer>
-  </entry>
-  <entry>
-    <Category>FICTIONAL CHARACTER</Category>
-    <Question>THIS IS A STORY WRITTEN BY PAUL GALDONE:
-					T _ _ / L _ T T L _
-					_ _ _ / _ _ _</Question>
-    <Answer>THE LITTLE RED HEN</Answer>
-  </entry>
-  <entry>
-    <Category>PHRASE</Category>
-    <Question>THIS IS AN IDIOM GATHERING UP EACH PIECE OR PART:
-					P _ C _ _ N G / _ P
-					T H _ / P _ _ C _ S</Question>
-    <Answer>PICKING UP THE PIECES</Answer>
-  </entry>
-  <entry>
-    <Category>LANDMARK</Category>
-    <Question>A SUSPENSION BRIDGE SPANNING THE GOLDEN GATE, 
-					 THE OPENING OF THE SAN FRANCISCO BAY INTO THE PACIFIC OCEAN :
-					T H E / _ _ L D E _
-					_ A T E / _ _ I D _ E</Question>
-    <Answer>THE GOLDEN GATE BRIDGE</Answer>
+    <Question>WHEN YOUR FACE DOES NOT HAVE MUCH COLOUR IT IS_</Question>
+    <Answer>PALE</Answer>
   </entry>
   <entry>
     <Category>THING</Category>
-    <Question>A SUBSTANCE THAT CAN BE BURNED TO PROVIDE HEAT OR POWER
-					C O M B _ S T _ B L E
-					M _ _ E R I A L S</Question>
-    <Answer>COMBUSTIBLE
-					MATERIALS</Answer>
+    <Question>A BOX FOR KEEPING VALUABLE THINGS</Question>
+    <Answer>SAFE</Answer>
   </entry>
   <entry>
-    <Category>FICTIONAL CHARACTER</Category>
-    <Question>AN ARGUMENT, A PROBLEM, OR AN EVENT 
-					 WHICH HAS CAUSED A LOT OF CHANGES
-					 , THE SITUATION BECOMES CALMER: 
-					W A _ T / _ N T _ L
-					T H E / _ _ S T	
-					S E T T L E S</Question>
-    <Answer>WAIT UNTIL THE DUST SETTLES</Answer>
+    <Category>PERSON</Category>
+    <Question>SOMEONE WHO IS NOT STRONG IS</Question>
+    <Answer>WEAK</Answer>
   </entry>
   <entry>
-    <Category>PHRASE</Category>
-    <Question>THIS IS TO GET OUT OF ONE DIFFICULT SITUATION ONLY TO END UP IN ANOTHER:
-					O U T / O F / T H E
-					F _ _ I N _ / _ _ N
-					I N T O / T H E
-					F I _ E</Question>
-    <Answer>OUT OF THE FRYING PAN INTO THE FIRE</Answer>
+    <Category>AUTOMOBILE</Category>
+    <Question>YOU USE THIS WHEN YOU START A COLD ENGINE</Question>
+    <Answer>CHOKE</Answer>
   </entry>
   <entry>
-    <Category>CLUE</Category>
-    <Question>A WATER MOLECULE CONSISTS OF: 
-					T W O / _ T O _ _
-					O _ / H Y D R O _ E N
-					_ N D / O N E / _ T O _
-					O _ / O _ Y _ E N</Question>
-    <Answer>TWO ATOMS OF HYDROGEN AND ONE ATOM OF OXYGEN</Answer>
+    <Category>ANIMAL</Category>
+    <Question>THIS BIRD IS A SYMBOL OF FREEDOM</Question>
+    <Answer>EAGLE</Answer>
+  </entry>
+  <entry>
+    <Category>THING</Category>
+    <Question>WHAT DO YOU CALL SOMEONE WHO WAS BORN IN IRELAND</Question>
+    <Answer>IRISH</Answer>
+  </entry>
+  <entry>
+    <Category>THING</Category>
+    <Question>ITS A LONG TWOLEGGED GARMENT ITS A SYNONYM FOR TROUSERS</Question>
+    <Answer>PANTS</Answer>
+  </entry>
+  <entry>
+    <Category>THING</Category>
+    <Question>ITS WORN AROUND THE NECK OR OVER THE SHOULDERSWOMEN ALSO WEAR IT OVER THE HAIR</Question>
+    <Answer>SCARF</Answer>
+  </entry>
+  <entry>
+    <Category>THING</Category>
+    <Question>ITS A GARMENT WITH LONG OR SHORT SLEEVES USUALLY WORN UNDER A JACKET</Question>
+    <Answer>SHIRT</Answer>
+  </entry>
+  <entry>
+    <Category>THING</Category>
+    <Question>THEY COVER YOUR FEET AND ARE WORN INSIDE A SHOE</Question>
+    <Answer>SOCKS</Answer>
+  </entry>
+  <entry>
+    <Category>THING</Category>
+    <Question>ITS A TWOPIECE GARMENT WORN BY GIRLS AND WOMEN FOR SWIMMING OR SUNBATHING</Question>
+    <Answer>BIKINI</Answer>
+  </entry>
+  <entry>
+    <Category>THING</Category>
+    <Question>WHAT IS THE CAPITAL CITY OF IRELAND</Question>
+    <Answer>DUBLIN</Answer>
+  </entry>
+  <entry>
+    <Category>THING</Category>
+    <Question>THEY ARE COVERING FOR YOUR HANDS WITH SEPARATED FINGERS THEY ARE USUALLY MADE OF LEATHER OR KNITTED WOOL</Question>
+    <Answer>GLOVES</Answer>
+  </entry>
+  <entry>
+    <Category>THING</Category>
+    <Question>ITS A SHORT SLEEVED COAT</Question>
+    <Answer>JACKET</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>THIS BIRD HAS BEAUTIFUL FEATHERS AND LIVES IN THE AMAZON JUNGLE</Question>
+    <Answer>PARROT</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>THESE ANIMALS CAN SPEAK AND ALSO STUDY AND WORK EVERY DAY</Question>
+    <Answer>PEOPLE</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>THESE ANIMALS HAVE ORANGE AND BLACK STRIPESTHEY EAT MEAT AND LIVE IN THE JUNGLE</Question>
+    <Answer>TIGERS</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>THIS BIRD HAS A MULTICOLORED BEAK</Question>
+    <Answer>TOUCAN</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>THESE ANIMALS ARE THE LARGEST ANIMALS IN THE OCEAN AND MAMMALS</Question>
+    <Answer>WHALES</Answer>
+  </entry>
+  <entry>
+    <Category>THING</Category>
+    <Question>WHAT IS THE CAPITAL CITY OF NORTHERN IRELAND</Question>
+    <Answer>BELFAST</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>THIS BIRD IS VERY NOISY AND AGGRESSIVE</Question>
+    <Answer>BLUEJAY</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>THIS ANIMAL CAN RUN VERY FAST AND LIVES IN AFRICA</Question>
+    <Answer>CHEETAH</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>THIS BIRD LAYS EGGS THAT PEOPLE EAT</Question>
+    <Answer>CHICKEN</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>THIS ANIMAL HAS A VERY LONG NECK</Question>
+    <Answer>GIRAFFE</Answer>
+  </entry>
+  <entry>
+    <Category>THING</Category>
+    <Question>AN ELECTRONIC VISUAL DISPLAY FOR COMPUTERS</Question>
+    <Answer>MONITOR</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>THIS BIRD HAS A VERY LONG NECK AND CANNOT FLY</Question>
+    <Answer>OSTRICH</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>THIS BIRD LIVES IN ICY COLD WEATHER</Question>
+    <Answer>PENGUIN</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>A MALE CHICKEN IS CALLED</Question>
+    <Answer>ROOSTER</Answer>
+  </entry>
+  <entry>
+    <Category>THING</Category>
+    <Question>PEOPLE FLY IN THEM</Question>
+    <Answer>AIRPLANE</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>THIS BIRD IS A SYMBOL OF HAPPINESS</Question>
+    <Answer>BLUEBIRD</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>AN AMERICAN BASEBALL TEAM IS NAMED AFTER THIS BEAUTIFUL RED BIRD</Question>
+    <Answer>CARDINAL</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>THIS BIRD CAN LEARN TO DO TRICKS</Question>
+    <Answer>COCKATOO</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>THESE ANIMALS LIVE IN THE OCEAN ARE VERY INTELLIGENT AND PLAYFUL</Question>
+    <Answer>DOLPHINS</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>THIS ANIMAL IS THE LARGEST LAND MAMMAL IN THE WORLD</Question>
+    <Answer>ELEPHANT</Answer>
+  </entry>
+  <entry>
+    <Category>THING</Category>
+    <Question>WHERE IS THE LARGEST ST PATRICKS DAY PARTY HELD</Question>
+    <Answer>NEW YORK</Answer>
+  </entry>
+  <entry>
+    <Category>AUTOMOBILE</Category>
+    <Question>THIS COOLS DOWN YOUR ENGINE</Question>
+    <Answer>RADIATOR</Answer>
+  </entry>
+  <entry>
+    <Category>PERSON</Category>
+    <Question>A PERSON WHO GOES TO THE MOON OR INTO OUTER SPACE</Question>
+    <Answer>ASTRONAUT</Answer>
+  </entry>
+  <entry>
+    <Category>COUNTRY</Category>
+    <Question>A COUNTRY THAT HAS MANY KANGAROOS</Question>
+    <Answer>AUSTRALIA</Answer>
+  </entry>
+  <entry>
+    <Category>AUTOMOBILE</Category>
+    <Question>THIS PROVIDES YOUR BATTERY WITH THE ELECTRICITY IT NEEDS</Question>
+    <Answer>GENERATOR</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>A MAMMAL THAT EATS GRASS AND BARK IS</Question>
+    <Answer>HERBIVORE</Answer>
+  </entry>
+  <entry>
+    <Category>AUTOMOBILE</Category>
+    <Question>YOU TURN THESE ON WHEN IT IS DARK SO YOU CAN SEE THE ROAD</Question>
+    <Answer>HEADLIGHTS</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>THIS BIRD IS KNOWN FOR BEING VERY PLAYFUL</Question>
+    <Answer>ROADRUNNER</Answer>
+  </entry>
+  <entry>
+    <Category>THING</Category>
+    <Question>YOU SEE THE ROAD THROUGH IT</Question>
+    <Answer>WINDSCREEN</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>THIS BIRD MAKES HOLES IN TREES TO MAKE A HOME</Question>
+    <Answer>WOODPECKER</Answer>
+  </entry>
+  <entry>
+    <Category>AUTOMOBILE</Category>
+    <Question>WHEN YOU WANT TO GO FASTER YOU PRESS THIS</Question>
+    <Answer>ACCELERATOR</Answer>
+  </entry>
+  <entry>
+    <Category>THING</Category>
+    <Question>IT WAKES YOU UP IN THE MORNING</Question>
+    <Answer>ALARM CLOCK</Answer>
+  </entry>
+  <entry>
+    <Category>ANIMAL</Category>
+    <Question>THIS TINY BIRD DRINKS THE NECTAR FROM FLOWERS</Question>
+    <Answer>HUMMINGBIRD</Answer>
+  </entry>
+  <entry>
+    <Category>AUTOMOBILE</Category>
+    <Question>WHENEVER YOU WANT TO SHIFT UP OR DOWN YOU PRESS THIS DOWN</Question>
+    <Answer>CLUTCH PEDAL</Answer>
+  </entry>
+  <entry>
+    <Category>THING</Category>
+    <Question>A MACHINE WHICH KEEPS YOU COOL IN SUMMER</Question>
+    <Answer>AIR CONDITIONER</Answer>
+  </entry>
+  <entry>
+    <Category>AUTOMOBILE</Category>
+    <Question>IF THE ROAD IS BUMPY THESE HELP TO DAMPEN THE BUMPS</Question>
+    <Answer>SHOCK ABSORBERS</Answer>
+  </entry>
+  <entry>
+    <Category>AUTOMOBILE</Category>
+    <Question>IF YOU WANT TO TURN LEFT OR RIGHT YOU PUT THESE ON</Question>
+    <Answer>TURN INDICATORS</Answer>
   </entry>
 </file>

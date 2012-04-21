@@ -1,10 +1,12 @@
 #include "Player.h"
 
 int Player::numberPlayer = 0;
+int Player::numberPlaying =0;
 int Player::currentPlayer =0;
 
 Player::Player() : Sprite() {
 	numberPlayer++;
+	numberPlaying = numberPlayer;
 	stringstream ss;
 	ss << numberPlayer;
 	name = "Player" + ss.str();
@@ -23,6 +25,7 @@ Player::Player() : Sprite() {
 
 Player::Player(string na) : Sprite() {
 	numberPlayer++;
+	numberPlaying = numberPlayer;
 	total_score = 0;
 	score = 0;
 	name = na;
@@ -142,8 +145,15 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 				if(TossUp == Wheel::G_FREEATURN)
 					turn_gift++;
 			}
-			else 
+			else {
+				Sprite* hehe = new Sprite();
+				hehe->loadImage("source/emotion/nextplayer.png");
+				hehe->setLifetime(2000);
+				hehe->setObjectType(Player::NEXT_PLAYER);
+				hehe->setPosition(g_engine->getScreenWidth()/2-75,75);
+				g_engine->addEntity(hehe);
 				end_play();
+			}
 		}
 		return ss;
 	}
@@ -169,6 +179,14 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 					quiz->openAll();
 				}
 				else {
+					if(numberPlaying>1) {
+						Sprite* hehe = new Sprite();
+						hehe->loadImage("source/emotion/wrongfullguess.png");
+						hehe->setLifetime(3000);
+						hehe->setObjectType(Player::WRONGFULLGUESS);
+						hehe->setPosition(g_engine->getScreenWidth()/2-75,75);
+						g_engine->addEntity(hehe);
+					}
 					end_play(LOSED);
 				}
 				count_full = 0;
@@ -192,13 +210,14 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 			int result = 0;
 			quiz->check(ss,&result);
 			turnguess++;
-			if(turnguess >= quiz->getAnswer().length()/5)
+			if(turnguess >= quiz->getAnswer().length()/5) 
 				status = Player::FULL_SPECIAl;
 			quiz->indicator(0);
 		}
 		return ss;
 	}
 	if(getStatus() == FULL_SPECIAl) {
+		static int turnfull = 0;
 		string ss;
 		keyboard->setStatus(Keyboard::AVAILABLE);
 		ss = keyboard->chose();
@@ -217,12 +236,20 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 				result++;
 			count++;
 			if(count == (quiz->getSize())) {
+				turnfull++;
 				if(result == count) {
 					this->setStatus(WIN_SPECIAL);
 					quiz->openAll();
 				}
 				else {
-					//this->setStatus(LOSED_SPECIAL);
+					if((turnfull) == quiz->getSize()/2) {
+						Sprite* hehe = new Sprite();
+						hehe->loadImage("source/emotion/wtf.png");
+						hehe->setLifetime(3000);
+						hehe->setObjectType(Player::WTF);
+						hehe->setPosition(g_engine->getScreenWidth()/2-300,g_engine->getScreenHeight()/2-100);
+						g_engine->addEntity(hehe);
+					}
 					quiz->indicator(0);
 				}
 				count = 0;
@@ -242,6 +269,7 @@ void Player::end_play(int pstatus) {
 		currentPlayer += 1;
 		if(currentPlayer > numberPlayer)
 			currentPlayer = 1;
+		numberPlaying--;
 		image->Release();
 		image = new Texture();
 		ostringstream ss;
@@ -254,8 +282,10 @@ void Player::end_play(int pstatus) {
 			;
 		else 
 			--turn_left;
-		if(turn_left <= 0)
+		if(turn_left <= 0) {
+			numberPlaying--;
 			setStatus(LOSED);
+		}
 		else {
 			setStatus(AWAIT);
 		}
@@ -278,6 +308,7 @@ void Player::reset() {
 	turn_gift = 0;
 	turn_left = 3;
 	setScore(0);
+	numberPlaying = numberPlayer;
 }
 
 void Player::winStage() {
@@ -298,6 +329,7 @@ void Player::draw(Font* font) {
 }
 
 void Player::showScore(Font* font) {
+	font->setScale(1.0f);
 	ostringstream ss1,ss2,ss3;
 	ss1 << this->getTotalScore();
 	font->setRotation(g_engine->math->toRadians(20));
@@ -330,8 +362,10 @@ void Player::showGift(Font* font) {
 		ss << "FREETURN";
 	if(turn_gift > 1)
 		ss << " X " << turn_gift;
+
 	font->setRotation(g_engine->math->toRadians(20));
-	font->Print(this->getPosition().getX()+this->getWidth() * this->getScale(),this->getPosition().getY()+120,ss.str(),D3DCOLOR_XRGB(255,33,22));
+	font->setScale(0.7);
+	font->Print(this->getPosition().getX() +this->getWidth()* this->getScale() - 100,this->getPosition().getY()+120,ss.str(),D3DCOLOR_XRGB(255,33,22));
 	if(gift!= "")
 		font->Print(this->getPosition().getX()+this->getWidth()/3 * this->getScale(),this->getPosition().getY()+140,"G I F T :",D3DCOLOR_XRGB(255,33,22));
 	int count = 0;
@@ -342,6 +376,7 @@ void Player::showGift(Font* font) {
 		}
 		if(gift.at(i) == ' ') {
 			count++;
+			font->setScale(1.0f);
 			font->Print(this->getPosition().getX()+this->getWidth()/2.5 * this->getScale()+5*count,this->getPosition().getY()+150+22*count,temp,D3DCOLOR_XRGB(255,33,22));
 			temp.clear();
 		}

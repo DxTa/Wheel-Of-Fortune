@@ -29,9 +29,12 @@ public :
 	void setLabel(string pLabel) {label = pLabel;}
 	void setStatus(int pstatus) {status = pstatus;}
 	
+	void change();
 	void reset();
 	void pressed();
 	void release();
+	void toggle();
+	void toggle(int );
 	bool updateMouseMove(Cursor*,double = 1.0);
 };
 

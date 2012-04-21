@@ -90,7 +90,7 @@ int Quiz::inputQuiz(int x,int numberPlayer){
    CComPtr<IStream> pFileStream;
    CComPtr<IXmlReader> pReader;
 
-   if (Utils::xmlopen(&pFileStream,&pReader,L"file.xml") == false) return -1;
+   if (Utils::xmlopen(&pFileStream,&pReader,L"source/file.xml") == false) return -1;
 
    int i = Utils::xmlcount(pReader,pFileStream,L"entry");
 
@@ -143,7 +143,6 @@ int Quiz::inputQuiz(int x,int numberPlayer){
 		randomNumber.erase(randomNumber.begin(),randomNumber.end()); //sau khi đã chọn dc quiz thì giải phóng mảng random
 		randomNumber.clear();
    }
-   j = 0;
    Utils::xmlat(pReader,pFileStream,j,L"Question",&question);
    Utils::xmlat(pReader,pFileStream,j,L"Answer",&answer);
    return 0;
@@ -366,7 +365,6 @@ void Quiz::indicator(int i) {
 		g_engine->addEntity(offtemp);
 		opentemp =1;
 	}
-	offtemp->setVisible(false);
 	if(i==-1) {
 		std::list<Letters*>::iterator iter;
 		iter = letters.begin();
@@ -381,6 +379,7 @@ void Quiz::indicator(int i) {
 		return;
 	}
 	if(check != i) {
+		offtemp->setVisible(false);
 		int count = 0;
 		std::list<Letters*>::iterator iter;
 		iter = letters.begin();
@@ -394,7 +393,8 @@ void Quiz::indicator(int i) {
 					offtemp->setVisible(true);
 					offtemp->setPosition(letter->getPosition());
 				}
-				letter->setColor(D3DCOLOR_XRGB(255,25,25));
+				else
+					letter->setColor(D3DCOLOR_XRGB(255,25,25));
 				break;
 			}
 			count++;
@@ -436,8 +436,9 @@ void Quiz::setLetter(int i,string label) {
 
 void Quiz::arrangeQuestion(Font* font) {
 	int i = 0,j,count=0;
-	int x = 0,y = 50;
-
+	int x = 0,y = 20;
+	font->setRotation(0);
+	font->setScale(1.0f);
 	while (i < question.length()) {
 		j = i;
 		while (question.at(i) != '\n' && question.at(i) != ' ') {

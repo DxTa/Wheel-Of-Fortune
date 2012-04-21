@@ -115,3 +115,10 @@ void Keyboard::setScale(double scale) {
 	for(int i = 0;i<26;i++)
 		letter[i]->setScale(scale);
 }
+
+void Keyboard::setVisible(bool pstatus) {
+	for(int i = 0;i<26;i++) {
+		letter[i]->setVisible(pstatus);
+		letter[i]->setCollidable(pstatus);
+	}
+}

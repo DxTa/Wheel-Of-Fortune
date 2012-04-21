@@ -118,8 +118,13 @@ void Wheel::setOR(double x, double y, double r) {
 void Wheel::update() {
 	if(this->isHolding() ==false) {
 		if (this->getSpeed() > 0) {
-			if (this->getStartSpin() == false) 
+			if (this->getStartSpin() == false) {
+				if(this->getSpeed() < (1.1*(2*3.14 + friction)/100)) 
+					this->setSpeed((1.1*(2*3.14 + friction)/100));
+				else if (getSpeed() > 2.5*((2*3.14 + friction)/100))
+					this->setSpeed(2.5*((2*3.14 + friction)/100));
 				this->setStartSpin(true);
+			}
 		}
 	}
 }
@@ -157,11 +162,11 @@ void Wheel::updateMouseMove(double delta_x,double delta_y,double fx,double fy) {
 		else
 			this->setAngle(this->getAngle() + fabs(atan(x)));
 		double time = Utils::timecount();
-		if(this->getS()*10/time < ((2*3.14 + friction)/100)) 
-			this->setSpeed(((2*3.14 + friction)/100));
-		else if (this->getS()*10/time > 2.5*((2*3.14 + friction)/100))
-			this->setSpeed(2.5*((2*3.14 + friction)/100));
-		else
+		//if(this->getS()*10/time < (1.2*(2*3.14 + friction)/100)) 
+		//	this->setSpeed((1.2*(2*3.14 + friction)/100));
+		//else if (this->getS()*10/time > 2.5*((2*3.14 + friction)/100))
+		//	this->setSpeed(2.5*((2*3.14 + friction)/100));
+		//else
 			this->setSpeed(this->getS()*10/time);
 	}
 }

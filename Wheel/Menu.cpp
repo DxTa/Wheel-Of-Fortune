@@ -4,11 +4,13 @@
 Menu::Menu() {
 	ID = 1000;
 	status = Menu::ON;
+	buttonType = NORMAL;
 }
 
 Menu::Menu(string pname ...) {
 	ID = 1000;
 	status = Menu::ON;
+	buttonType = NORMAL;
 	menu.clear();
 	va_list ap;
 	va_start (ap,pname);
@@ -50,8 +52,12 @@ void Menu::setPosition(double fx,double fy) {
 }
 
 Menu::~Menu() {
+	if(menu.empty()==true)
+		return;
 	std::list<Button*>::iterator iter;
 	iter = menu.begin();
+	if(*iter!=NULL)
+		return;
 	while (iter != menu.end())
 	{
 		delete(*iter);
@@ -68,7 +74,10 @@ void Menu::updateMouseButton() {
 		button = *iter;
 		if(button) {
 			if(button->isPosition()==true) {
-				button->pressed();
+				if(buttonType == NORMAL)
+					button->pressed();
+				else
+					button->toggle();
 				break;
 			}
 		}
@@ -104,6 +113,8 @@ void Menu::update() {
 }
 
 void Menu::close() {
+	if(menu.empty()==true)
+		return;
 	std::list<Button*>::iterator iter;
 	Button* button;
 	iter = menu.begin();
@@ -118,7 +129,7 @@ void Menu::close() {
 	status = OFF;
 }
 
-void Menu::addFunction(string label,void(*pfunction)()) {
+void Menu::addCallback(string label,void(*pfunction)()) {
 	std::list<Button*>::iterator iter;
 	Button* button;
 	iter = menu.begin();
@@ -132,4 +143,18 @@ void Menu::addFunction(string label,void(*pfunction)()) {
 		++iter;
 	}
 	status = OFF;
+}
+
+Button* Menu::getButton(string label) {
+	std::list<Button*>::iterator iter;
+	Button* button;
+	iter = menu.begin();
+	while (iter != menu.end())
+	{
+		button = *iter;
+		if(button->getLabel() == label) {
+			return *iter;
+		}
+		++iter;
+	}
 }

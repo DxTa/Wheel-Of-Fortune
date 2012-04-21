@@ -23,7 +23,7 @@ string Utils::narrow( const wstring& str ){
 bool Utils::xmlopen(IStream **pFileStream, IXmlReader **pReader,WCHAR* filename) {
 	HRESULT hr;
 
-	if (FAILED(hr = SHCreateStreamOnFile(L"file.xml", STGM_READ, &(*pFileStream)))) {
+	if (FAILED(hr = SHCreateStreamOnFile(filename, STGM_READ, &(*pFileStream)))) {
       wprintf(L"Error creating file reader, error is %08.8lx", hr);
       return false;
    }

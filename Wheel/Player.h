@@ -14,6 +14,7 @@ class Player : public Sprite {
 		string name;
 		static int numberPlayer;
 		static int currentPlayer;
+		static int numberPlaying;
 		string gift;
 		string specialGift;
 		int total_score;
@@ -24,6 +25,7 @@ class Player : public Sprite {
 		int turn_gift;
 	public :
 		enum P_STATUS {AWAIT=100,PLAYING,READY_TO_SPIN,SPINNING,READY_TO_ANSWER,READY_TO_FULL_ANSWER,LOSED,WIN_STAGE,BEGIN_SPECIAL,FULL_SPECIAl,WIN_GAME,WIN_SPECIAL,LOSED_SPECIAL};
+		enum EMO {NEXT_PLAYER=5000,WRONGFULLGUESS,WTF};
 		Player();
 		Player(string );;
 		static int getCurrentPlayer() {return currentPlayer;}
@@ -49,7 +51,6 @@ class Player : public Sprite {
 		void winStage();
 		void loseGame();
 		void reset();
-		int start_play();
 		int spin(Wheel*);
 		string answer(Keyboard*,Quiz*);
 		string fullanswer(Keyboard*,Quiz*);

@@ -11,12 +11,13 @@
 #include "Quiz.h"
 #include "Player.h"
 #include "scene.h"
+#include "game.h"
 #include <math.h>
 
 
 using namespace Advanced2D;
 using namespace std;
-using namespace Scene;
+using namespace Game;
 
 bool game_preload() 
 {
@@ -31,34 +32,24 @@ bool game_preload()
 
 bool game_init(HWND) 
 {	
-	Scene::init();
-	Scene::sceneplay_start = true;
+	Game::init();
+	Scene::sceneNewGame_start = true;
 	return true;
 }
 
 void game_update() 
 {
-	Scene::update();
-	if(g_player->getStatus() != Player::READY_TO_FULL_ANSWER)
-		chose = "";
+	Game::update();
 }
 
 void game_render2d()
 {	
-	Scene::spinPlayer();
-	system12->setRotation(0);
-	system12->setScale(1.0f);
-	Scene::score_background->draw();
-	Scene::quiz->arrangeQuestion(system12);
-	Scene::cursor->draw();
-	Scene::drawPlayer();
-	if((timebar->getVisible()==true) && ((g_player->getStatus() == Player::FULL_SPECIAl) ||g_player->getStatus() == Player::READY_TO_ANSWER ||g_player->getStatus() == Player::READY_TO_FULL_ANSWER))
-		timebar->draw();
+	Game::draw();
 }
 
 void game_end() 
 {
-	Scene::release();
+	Game::release();
 }
 
 void game_keyPress(int key) 
@@ -81,28 +72,26 @@ void game_render3d()
 {
     g_engine->ClearScene(D3DCOLOR_XRGB(0,0,80));
 	g_engine->SetIdentity();
-	Scene::wheel->update();
-	Scene::wheel_special->update();
+	GameController::updateWheel();
 }
 
 void game_mouseButton(int button) {
 	switch(button) {
 	case 0 :	
-			Scene::updateMouseButton();
+			Game::updateMouseButton();
 	}
 }
 
 void game_mouseMotion(int x,int y) {
 	cursor->setDeltaX((float)x);
 	cursor->setDeltaY((float)y);
-	Scene::wheel->updateDirection(cursor->getDeltaX(),cursor->getDeltaY(),cursor);
-	Scene::wheel_special->updateDirection(cursor->getDeltaX(),cursor->getDeltaY(),cursor);
+	GameController::updateWheelMouseMotion();
 }
 
 void game_mouseMove(int x,int y) {
 	double fx= (float)x;
 	double fy = (float)y;
-	Scene::updateMouseMove(cursor->getDeltaX(),cursor->getDeltaY(),fx,fy);
+	Game::updateMouseMove(cursor->getDeltaX(),cursor->getDeltaY(),fx,fy);
 	cursor->setPosition(fx,fy);
 }
 
@@ -117,7 +106,8 @@ void game_entityUpdate(Advanced2D::Entity* entity) {
 		Letters *temp =(Letters*)entity;
 		temp->setAlive(false);
 	}
-	if((entity->getObjectType() == Scene::EMOTION) || (entity->getObjectType() == Scene::NEXT)) {
+	if((entity->getObjectType() == Scene::EMOTION_GIFT) || (entity->getObjectType() == Scene::NEXT_STAGE) 
+		||(entity->getObjectType() == Player::NEXT_PLAYER) || (entity->getObjectType() == Scene::GUESSAWORD) || (entity->getObjectType() == Scene::OVERTIME)) {
 		static int cad = 1;
 		Sprite *temp = (Sprite*)entity;
 		if(emotioncheck.stopwatch(14)) {
@@ -127,12 +117,35 @@ void game_entityUpdate(Advanced2D::Entity* entity) {
 			cad = -1;
 		if(temp->getScale() > 1)
 			cad = 1;
-		if((entity->getObjectType() == Scene::NEXT)) {
+		if(entity->getObjectType() == Scene::EMOTION_GIFT) {
+			if(button_ok->getVisible() == true)
+				temp->setAlive(false);
+		}
+		if((entity->getObjectType() == Scene::NEXT_STAGE)) {
 			if(Next_Stage->getVisible() == false)
 				temp->setAlive(false);
 		}
+		if((entity->getObjectType() == Player::NEXT_PLAYER) || (entity->getObjectType() == Scene::OVERTIME)) {
+			if((wheel->getStatus() == Wheel::WAIT) || (g_player->getStatus() == Player::READY_TO_FULL_ANSWER))
+				temp->setAlive(false);
+		}
+		if(entity->getObjectType() == Scene::GUESSAWORD) {
+			if((g_player->getStatus() == Player::FULL_SPECIAl))
+				temp->setAlive(false);
+		}
+	}	
+	if(entity->getObjectType() == Scene::LOSEALL) {
+		Sprite *temp = (Sprite*)entity;
+		if(Next_Stage->getVisible() == false)
+			temp->setAlive(false);
+	}
+	if(entity->getObjectType() == Player::WRONGFULLGUESS) {
+		Sprite *temp = (Sprite*)entity;
+		if((wheel->getStatus() == Wheel::WAIT) || (g_player->getStatus() == Player::READY_TO_FULL_ANSWER))
+			temp->setAlive(false);
 	}
 }
+
 void game_entityCollision(Advanced2D::Entity* entity1,Advanced2D::Entity* entity2) {
 	if(entity1->getObjectType() == CURSOR) {
 		if(entity2->getObjectType() == Button::BUTTON) {

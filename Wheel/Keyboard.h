@@ -10,6 +10,7 @@ private:
 	int status;
 	Button* letter[26];
 	int state[26];
+
 public :
 	enum K_STATUS {AVAILABLE=50,UNAVAILABLE,WAIT};
 	Keyboard();
@@ -20,12 +21,13 @@ public :
 	void update();
 	void reset();
 	void setPosition(double x,double y);
-	void draw();
 	void addEntity();
+	void draw();
 	void saveState();
 	void loadState();
 	void updateMouseMove(Cursor*);
 	void setScale(double scale);
+	void setVisible(bool );
 };
 
 

@@ -28,6 +28,8 @@ protected:
 	bool checkposition;
 	string teng;
 
+	bool isSlices();
+
 public:
 	enum slices {
 		G_100,G_300,G_700,G_200,G_100_1,G_800,G_LOSEATURN,G_300_1,G_400,G_600,G_BANKRUPT,
@@ -55,6 +57,11 @@ public:
 	double getSpeed() const {return speed;}
 	string getTeng() const {return teng;}
 
+	void setStatus(int pstatus) {status = pstatus;}
+	void setStartSpin(bool stat) {start_spin = stat;}
+	void setSpeed(double sp) {speed = sp;}
+	void setAngle(double angl) {angle = angl;}
+	void setS(double epsilon) {s = epsilon;}
 	void setTeng(string pteng) {teng = pteng;}
 	void setCheckPosition(bool pos) {checkposition = pos;}
 	void setHolding(bool hold) {wheel_holding = hold;}
@@ -62,12 +69,6 @@ public:
 	void setInterval(double i) {interval = i;}
 	void setOR(double x, double y, double r);
 	void setFriction(double fric) {friction = fric;}
-	void setStatus(int pstatus) {status = pstatus;}
-	void setStartSpin(bool stat) {start_spin = stat;}
-	void setSpeed(double sp) {speed = sp;}
-	void setAngle(double angl) {angle = angl;}
-	void setS(double epsilon) {s = epsilon;}
-	
 	void drawPowerBar();
 	void update();
 	void updateDirection(double ,double ,Sprite*);
@@ -76,8 +77,6 @@ public:
 	void updateMousePosition(Sprite*);
 
 	int spin();
-	bool isSlices();
-
 };
 
 #endif

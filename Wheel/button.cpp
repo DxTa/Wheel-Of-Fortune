@@ -44,6 +44,42 @@ void Button::pressed() {
 	}
 }
 
+void Button::toggle() {
+	if(status == BUTTON_NORMAL) {
+		setImage(image_pressed);
+		status = BUTTON_PRESSED;
+		checkpress.sleep(10);
+		if(callback!=NULL)
+			callback();
+		return;
+	}
+	if(status == BUTTON_PRESSED) {
+		setImage(image_normal);
+		status = BUTTON_NORMAL;
+		checkpress.sleep(10);
+		if(callback!=NULL)
+			callback();
+		return;
+	}
+
+}
+
+void Button::toggle(int sta) {
+	if(sta == BUTTON_PRESSED) {
+		setImage(image_pressed);
+		status = BUTTON_PRESSED;
+		checkpress.sleep(10);
+		return;
+	}
+	if(sta == BUTTON_NORMAL) {
+		setImage(image_normal);
+		status = BUTTON_NORMAL;
+		checkpress.sleep(10);
+		return;
+	}
+
+}
+
 void Button::release() {
 	Sprite::~Sprite();
 	if(image_normal!=NULL)

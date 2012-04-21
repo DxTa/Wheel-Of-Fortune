@@ -6,7 +6,7 @@ Letters::Letters(string plabel) : Sprite() {
 	setObjectType(LETTER_PER);
 	label = plabel;
 	status = OFF;
-//	setScale(0.7f);
+	setScale(0.7f);
 	setCollidable(false);
 
 	ostringstream ss;

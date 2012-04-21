@@ -4,7 +4,7 @@
 Wheel::Wheel() : Sprite() {
 	speed = 0;
 	power_bar = new Sprite();
-	power_bar->loadImage("powerbar.png");
+	power_bar->loadImage("source/gameplay/powerbar.png");
 	power_bar->setSize(904,62);
 	power_bar->setScale(0.5);
 	power_bar->setCurrentFrame(0);

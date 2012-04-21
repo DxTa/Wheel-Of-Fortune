@@ -107,7 +107,8 @@ void game_entityUpdate(Advanced2D::Entity* entity) {
 		temp->setAlive(false);
 	}
 	if((entity->getObjectType() == Scene::EMOTION_GIFT) || (entity->getObjectType() == Scene::NEXT_STAGE) 
-		||(entity->getObjectType() == Player::NEXT_PLAYER) || (entity->getObjectType() == Scene::GUESSAWORD) || (entity->getObjectType() == Scene::OVERTIME)) {
+		||(entity->getObjectType() == Player::NEXT_PLAYER) || (entity->getObjectType() == Scene::GUESSAWORD) || (entity->getObjectType() == Scene::OVERTIME)
+		||(entity->getObjectType() == Scene::NOTIFY_GIFT)) {
 		static int cad = 1;
 		Sprite *temp = (Sprite*)entity;
 		if(emotioncheck.stopwatch(14)) {
@@ -133,6 +134,10 @@ void game_entityUpdate(Advanced2D::Entity* entity) {
 			if((g_player->getStatus() == Player::FULL_SPECIAl))
 				temp->setAlive(false);
 		}
+		if(entity->getObjectType() == Scene::NOTIFY_GIFT) {
+			if(sceneplay_start == true)
+				temp->setAlive(false);
+		}
 	}	
 	if(entity->getObjectType() == Scene::LOSEALL) {
 		Sprite *temp = (Sprite*)entity;
@@ -142,6 +147,11 @@ void game_entityUpdate(Advanced2D::Entity* entity) {
 	if(entity->getObjectType() == Player::WRONGFULLGUESS) {
 		Sprite *temp = (Sprite*)entity;
 		if((wheel->getStatus() == Wheel::WAIT) || (g_player->getStatus() == Player::READY_TO_FULL_ANSWER))
+			temp->setAlive(false);
+	}
+	if(entity->getObjectType() == Scene::NEWGAME_TITTLE) {
+		Sprite *temp = (Sprite*)entity;
+		if(sceneplay_start == true)
 			temp->setAlive(false);
 	}
 }

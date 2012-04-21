@@ -27,27 +27,27 @@ void Game::init() {
 
 
 	cursor = new Cursor();
-	cursor->loadImage("source/Cursor_564.png");
+	cursor->loadImage("source/gameplay/Cursor_564.png");
 	cursor->setScale(0.5);
 	cursor->setCollisionMethod(COLLISION_RECT);
 	cursor->setObjectType(Scene::CURSOR);
 	g_engine->addEntity(cursor);
 	
 	system12 = new Font();
-	if (!system12->loadImage("source/font.tga")) {
+	if (!system12->loadImage("source/data/font.tga")) {
 		g_engine->message("Error loading font.tga");
 		return;
 	}
 	system12->setColumns(16);
 	system12->setCharSize(21,32);
 
-	if (!system12->loadWidthData("source/font.dat")) {
+	if (!system12->loadWidthData("source/data/font.dat")) {
 		g_engine->message("Error loading font.dat");
 		return;
 	}
 
 	wheel = new Wheel();
-	wheel->loadImage("source/wheel.png");
+	wheel->loadImage("source/gameplay/wheel.png");
 	wheel->setPosition(0,500);
 	wheel->setOR(wheel->getX() + wheel->getWidth()/2,wheel->getY() + wheel->getHeight()/2,(wheel->getHeight()/2));
 	wheel->setObjectType(Wheel::WHEEL_POS);
@@ -56,7 +56,7 @@ void Game::init() {
 	g_engine->addEntity(wheel);
 
 	wheel_special = new WheelSpecial();
-	wheel_special->loadImage("source/wheel_special.png");
+	wheel_special->loadImage("source/gameplay/wheel_special.png");
 	wheel_special->setPosition(0,500);
 	wheel_special->setOR(wheel_special->getX() + wheel_special->getWidth()/2,wheel_special->getY() + wheel_special->getHeight()/2,(wheel_special->getHeight()/2));
 	wheel_special->setObjectType(Wheel::WHEEL_POS_SPECIAL);
@@ -65,7 +65,7 @@ void Game::init() {
 	g_engine->addEntity(wheel_special);
 
 	arrow = new Sprite();
-	arrow->loadImage("source/arrow.png");
+	arrow->loadImage("source/gameplay/arrow.png");
 	arrow->setPosition(222.0f,440);
 	arrow->setVisible(false);
 	arrow->setCollidable(false);
@@ -118,12 +118,12 @@ void Game::init() {
 	startGame->setPosition(1200-startGame->getWidth(),700-startGame->getHeight());
 	g_engine->addEntity(startGame);
 
-	back = new Button("NextStage_button");
-	back->setCollidable(false);
-	back->setVisible(false);
-	back->setPosition(0,700-startGame->getHeight());
-	back->setRotation(g_engine->math->toRadians(180));
-	g_engine->addEntity(back);
+	back_button = new Button("back");
+	back_button->setCollidable(false);
+	back_button->setVisible(false);
+	back_button->setPosition(0,700-back_button->getHeight());
+	//back->setCallback(ConfigController::config2main);
+	g_engine->addEntity(back_button);
 
 	/*
 	Scene::newPlayer("player1",750,100);
@@ -141,14 +141,14 @@ void Game::init() {
 	Scene::checkNextStage = false;
 	
 	Scene::score_background = new Sprite();
-	score_background->loadImage("source/score_background.png");
+	score_background->loadImage("source/gameplay/score_background.png");
 	score_background->setPosition(590,-40);
 	score_background->setVisible(false);
 	score_background->setCollidable(false);
 	g_engine->addEntity(score_background);
 
 	Scene::timebar = new Sprite();
-	timebar->loadImage("source/time bar.png");
+	timebar->loadImage("source/gameplay/timebar.png");
 	timebar->setTotalFrames(60);
 	timebar->setSize(489,10);
 	timebar->setColumns(1);
@@ -273,7 +273,11 @@ void Game::updateMouseButton() {
 		ConfigController::updatePlayerControllerMouseButton();
 		if(Scene::startGame->isPosition() == true) {
 			Scene::startGame->pressed();
-			GameController::updatePlayer();
+			if((sceneplay_start == true))
+				GameController::updatePlayer();
+		}
+		if(Scene::back_button->isPosition() == true) {
+			Scene::back_button->pressed();
 		}
 	}
 	if((sceneplay_start == true) || (sceneSpecial_start == true)) {
@@ -315,6 +319,7 @@ void Game::updateMouseMove(double delta_x,double delta_y,double fx,double fy) {
 	Scene::button_ready->updateMouseMove(Scene::cursor);
 	Scene::Next_Stage->updateMouseMove(Scene::cursor);
 	Scene::startGame->updateMouseMove(Scene::cursor);
+	Scene::back_button->updateMouseMove(cursor);
 	if((Scene::sceneplay_start == true) || (Scene::sceneSpecial_start == true))
 		if((Scene::g_player->getStatus() == Player::READY_TO_FULL_ANSWER) || (Scene::g_player->getStatus() == Player::FULL_SPECIAl))
 			Scene::keyboard->reset();

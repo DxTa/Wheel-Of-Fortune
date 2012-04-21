@@ -90,7 +90,7 @@ int Quiz::inputQuiz(int x,int numberPlayer){
    CComPtr<IStream> pFileStream;
    CComPtr<IXmlReader> pReader;
 
-   if (Utils::xmlopen(&pFileStream,&pReader,L"source/file.xml") == false) return -1;
+   if (Utils::xmlopen(&pFileStream,&pReader,L"source/data/file.xml") == false) return -1;
 
    int i = Utils::xmlcount(pReader,pFileStream,L"entry");
 

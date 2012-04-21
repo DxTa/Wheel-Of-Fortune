@@ -47,7 +47,7 @@ namespace Scene {
 	Button* button_ready;
 	Button* button_ok;
 	Button* startGame;
-	Button* back;
+	Button* back_button;
 
 	int openspecial = 0;
 	int numGift;
@@ -85,7 +85,7 @@ namespace Scene {
 	bool isNextStage();
 	void nextStage();
 
-	enum {CURSOR=150,EMOTION_GIFT = 11000,NEXT_STAGE,GUESSAWORD,LOSEALL,OVERTIME};
+	enum {CURSOR=150,EMOTION_GIFT = 11000,NEXT_STAGE,GUESSAWORD,LOSEALL,OVERTIME,NOTIFY_GIFT,NEWGAME_TITTLE};
 }
 
 void g_exit() {

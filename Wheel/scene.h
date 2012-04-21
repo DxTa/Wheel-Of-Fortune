@@ -48,6 +48,9 @@ namespace Scene {
 	Button* button_ok;
 	Button* startGame;
 	Button* back_button;
+	Button* play_button;
+	Button* help_button;
+	Button* exit_button;
 
 	int openspecial = 0;
 	int numGift;

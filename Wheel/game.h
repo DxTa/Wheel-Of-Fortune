@@ -38,6 +38,7 @@ void Game::init() {
 		g_engine->message("Error loading font.tga");
 		return;
 	}
+
 	system12->setColumns(16);
 	system12->setCharSize(21,32);
 

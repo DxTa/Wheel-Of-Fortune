@@ -262,6 +262,7 @@ void Game::update() {
 }
 
 void Game::updateMouseButton() {
+	static Timer keyboardcheck;
 	Scene::wheel->updateMouseButton();
 	Scene::wheel_special->updateMouseButton();
 	if(menucheck.stopwatch(96))
@@ -275,7 +276,7 @@ void Game::updateMouseButton() {
 			GameController::updatePlayer();
 		}
 	}
-	if(sceneplay_start == true || sceneSpecial_start == true) {
+	if((sceneplay_start == true) || (sceneSpecial_start == true)) {
 		if(Scene::PlayerMenu_Spin->isPosition() == true)
 			Scene::PlayerMenu_Spin->pressed();
 		if(Scene::PlayeMenu_Guess->isPosition() == true)
@@ -286,7 +287,7 @@ void Game::updateMouseButton() {
 			Scene::button_ok->pressed();
 		if(Scene::button_ready->isPosition() == true)
 			Scene::button_ready->pressed();
-		if(Scene::buttoncheck.stopwatch(96)) {
+		if(keyboardcheck.stopwatch(96)) {
 			ss = Scene::g_player->answer(Scene::keyboard,Scene::quiz);
 			if((ss!= "") && (Scene::g_player->getStatus() != Player::READY_TO_FULL_ANSWER) && (Scene::g_player->getStatus() != Player::FULL_SPECIAl) && (Scene::g_player->getStatus() != Player::BEGIN_SPECIAL)) {
 				Scene::scenePlayerMenu_start = true;

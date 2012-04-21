@@ -3,6 +3,7 @@
 #include "GameController.h"
 #include "ConfigController.h"
 using namespace GameController;
+using namespace ConfigController;
 
 namespace Game {
 	void init();
@@ -18,10 +19,8 @@ void Game::init() {
 	menu = new Menu();
 
 	background_image = new Texture();
-	background_image->Load("source/background.png");
 
 	background = new Sprite();
-	background->setImage(background_image);
 	background->setCollidable(false);
 	g_engine->addEntity(background);
 
@@ -123,15 +122,8 @@ void Game::init() {
 	back_button->setCollidable(false);
 	back_button->setVisible(false);
 	back_button->setPosition(0,700-back_button->getHeight());
-	//back->setCallback(ConfigController::config2main);
+	back_button->setCallback(newgame2main);
 	g_engine->addEntity(back_button);
-
-	/*
-	Scene::newPlayer("player1",750,100);
-	Scene::newPlayer("player2",830,95);
-	Scene::newPlayer("player3",920,90);
-	Scene::newPlayer("player4",1000,90);
-	*/
 
 	quiz = new Quiz();
 	quiz->setPosition(50,125);
@@ -148,7 +140,7 @@ void Game::init() {
 	score_background->setCollidable(false);
 	g_engine->addEntity(score_background);
 
-	Scene::timebar = new Sprite();
+	Scene::timebar = new Timebar();
 	timebar->loadImage("source/gameplay/timebar.png");
 	timebar->setTotalFrames(60);
 	timebar->setSize(489,10);
@@ -162,6 +154,8 @@ void Game::update() {
 	Scene::sceneplay();
 	Scene::sceneSpecial();
 	Scene::sceneNewGame();
+	Scene::sceneMain();
+//	Scene::sceneHelp();
 	if((Scene::sceneplay_start == true) || (Scene::sceneSpecial_start == true)) {
 		GameController::updatePlayer();
 		GameController::PlayerMenu();
@@ -202,27 +196,18 @@ void Game::update() {
 			Scene::keyboard->setStatus(Keyboard::UNAVAILABLE);
 		}
 		if((Scene::timebar->getVisible() == true) &&(Scene::g_player->getStatus() == Player::FULL_SPECIAl)) { 
-			if(timecheck.stopwatch(1000)) {
-				Scene::timebar->setCurrentFrame(Scene::timebar->getCurrentFrame()-1);
-			}
-			if(Scene::timebar->getCurrentFrame()==0)
+			if(timebar->specialTimeUp())
 				Scene::g_player->setStatus(Player::LOSED_SPECIAL);
 		}
 		if((Scene::timebar->getVisible() == true) &&(Scene::g_player->getStatus() == Player::READY_TO_ANSWER)) { 
-			if(timecheck.stopwatch(100)) {
-				Scene::timebar->setCurrentFrame(Scene::timebar->getCurrentFrame()-1);
-			}
-			if(Scene::timebar->getCurrentFrame()==0) {
+			if(Scene::timebar->guessTimeUp()) {
 				Scene::timebar->setCurrentFrame(59);
 				Scene::g_player->end_play();
 				scenePlayerMenu_start = true;
 			}
 		}
 		if((Scene::timebar->getVisible() == true) &&(Scene::g_player->getStatus() == Player::READY_TO_FULL_ANSWER)) { 
-			if(timecheck.stopwatch(1000)) {
-				Scene::timebar->setCurrentFrame(Scene::timebar->getCurrentFrame()-1);
-			}
-			if(Scene::timebar->getCurrentFrame()==0) {
+			if(Scene::timebar->answerTimeUp()) {
 				Sprite * over = new Sprite();
 				over->loadImage("source/emotion/overtime.png");
 				over->setObjectType(Scene::OVERTIME);
@@ -280,14 +265,14 @@ void Game::updateMouseButton() {
 		if(Scene::back_button->isPosition() == true) {
 			Scene::back_button->pressed();
 		}
+		if(Scene::Next_Stage->isPosition() == true)
+			Scene::Next_Stage->pressed();
 	}
 	if((sceneplay_start == true) || (sceneSpecial_start == true)) {
 		if(Scene::PlayerMenu_Spin->isPosition() == true)
 			Scene::PlayerMenu_Spin->pressed();
 		if(Scene::PlayeMenu_Guess->isPosition() == true)
 			Scene::PlayeMenu_Guess->pressed();
-		if(Scene::Next_Stage->isPosition() == true)
-			Scene::Next_Stage->pressed();
 		if(Scene::button_ok->isPosition() == true)
 			Scene::button_ok->pressed();
 		if(Scene::button_ready->isPosition() == true)

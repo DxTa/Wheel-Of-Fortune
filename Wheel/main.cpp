@@ -1,7 +1,7 @@
 /*
-  Name: Spinning Wheel Test
+  Name: Wheel of Fortune
   Date: 04/2012
-  Description:Spinning Wheel Test
+  Description:Project OOP ICT 2012
 */
 
 #include "Engine/Advanced2D.h"
@@ -21,7 +21,7 @@ using namespace Game;
 
 bool game_preload() 
 {
-	g_engine->setAppTitle("TEST WHEEL");
+	g_engine->setAppTitle("WHEEL OF FORTUNE");
 	g_engine->setScreenWidth(1200);
 	g_engine->setScreenHeight(700);
 	g_engine->setColorDepth(32);
@@ -33,7 +33,8 @@ bool game_preload()
 bool game_init(HWND) 
 {	
 	Game::init();
-	Scene::sceneNewGame_start = true;
+	//Scene::sceneNewGame_start = true;
+	Scene::sceneMain_start = true;
 	return true;
 }
 
@@ -50,6 +51,7 @@ void game_render2d()
 void game_end() 
 {
 	Game::release();
+	g_engine->Close();
 }
 
 void game_keyPress(int key) 
@@ -135,7 +137,7 @@ void game_entityUpdate(Advanced2D::Entity* entity) {
 				temp->setAlive(false);
 		}
 		if(entity->getObjectType() == Scene::NOTIFY_GIFT) {
-			if(sceneplay_start == true)
+			if(sceneNewGame_start != true)
 				temp->setAlive(false);
 		}
 	}	
@@ -151,7 +153,7 @@ void game_entityUpdate(Advanced2D::Entity* entity) {
 	}
 	if(entity->getObjectType() == Scene::NEWGAME_TITTLE) {
 		Sprite *temp = (Sprite*)entity;
-		if(sceneplay_start == true)
+		if(sceneNewGame_start != true)
 			temp->setAlive(false);
 	}
 }

@@ -9,6 +9,7 @@
 #include "Gift.h"
 #include "Cursor.h"
 #include "Player.h"
+#include "timebar.h"
 #include "Engine/Advanced2D.h"
 
 namespace Scene {
@@ -29,7 +30,7 @@ namespace Scene {
 	Texture* background_image;
 	Sprite* background;
 	Sprite* score_background;
-	Sprite* timebar;
+	Timebar* timebar;
 	Sprite* arrow;
 
 	Player* g_player;
@@ -40,7 +41,6 @@ namespace Scene {
 	Menu* menu;
 	Cursor* cursor;
 	
-
 	Button* PlayerMenu_Spin;
 	Button* PlayeMenu_Guess;
 	Button* Next_Stage;
@@ -91,8 +91,29 @@ namespace Scene {
 	enum {CURSOR=150,EMOTION_GIFT = 11000,NEXT_STAGE,GUESSAWORD,LOSEALL,OVERTIME,NOTIFY_GIFT,NEWGAME_TITTLE};
 }
 
-void g_exit() {
-	g_engine->Close();
+void main2newgame() {
+	Scene::sceneNewGame_start = true;
+	Scene::sceneMain_start = false;
+	Scene::sceneMain_on = false;
+}
+
+void main2help() {
+	Scene::sceneHelp_start = true;
+	Scene::sceneMain_start = false;
+	Scene::sceneMain_on = false;
+}
+
+void help2main() {
+	Scene::sceneMain_start = true;
+	Scene::sceneHelp_start =false;
+	Scene::sceneHelp_on = false;
+}
+
+void newgame2play() {
+	Scene::sceneplay_start = true;
+	Scene::sceneNewGame_start = false;
+	Scene::sceneNewGame_on = false;
+	Player::setCurrentPlayer(1);
 }
 
 void play2special() {
@@ -103,11 +124,24 @@ void play2special() {
 	Scene::sceneSpecial_start = true;
 }
 
-void config2play() {
-	Scene::sceneplay_start = true;
-	Scene::sceneNewGame_start = false;
-	Scene::sceneNewGame_on = false;
-	Player::setCurrentPlayer(1);
+void special2main() {
+	Scene::keyboard->setVisible(false);
+	Scene::wheel_special->setVisible(false);
+	Scene::wheel_special->setCollidable(false);
+	Scene::arrow->setVisible(false);
+	Scene::quiz->reset();
+	Scene::score_background->setVisible(false);
+	
+	Scene::sceneMain_start = true;
+	Scene::sceneSpecial_start = false;
+	Scene::sceneSpecial_on = false;
+	Scene::scenePlayerMenu_start = false;
+	Scene::scenePlayerMenu_on = false;
+
+}
+
+void g_exit() {
+	g_engine->Close();
 }
 
 void spin() {
@@ -200,72 +234,87 @@ bool Scene::isNextStage() {
 
 void Scene::nextStage() {
 	static int phase=1;
-	if(phase > (Player::getNumPlayer()+1)) {
-		scenePlayerMenu_start = false;
-		scenePlayerMenu_on = false;
-		sceneSpecial_start = false;
-		sceneSpecial_on = false;
-		g_engine->Close();
-	}
-	if(!quiz->isFinish())
-		return;
 	phase++;
-	g_player->winScore();
-	quiz->change(0,Player::getNumPlayer());
-	keyboard->reset();
-	Player* player;
-	std::list<Player*>::iterator iter;
-	iter = playerlist.begin();
-	while (iter != playerlist.end()) {
-		player = *iter;
-		player->reset();
-		++iter;
+	if(phase > (Player::getNumPlayer()+1)) {
+		special2main();
 	}
-	if(phase == (Player::getNumPlayer()+1)) {
-		string max_id;
-		int max = -1;
-		int fortune;
-		iter = playerlist.begin();
-		
-		while (iter != playerlist.end()) {
-			player = *iter; 
-			if(max == player->getTotalScore()) {
-				fortune = rand() % 2;
-				if(!fortune) {
-					max = player->getTotalScore();
-					max_id = player->getName();
-				}
-			}
-			else if (max < player->getTotalScore()) {
-				max = player->getTotalScore();
-				max_id = player->getName();
-			}
-			++iter;
-		}
-		int count = 1;
+	else {
+		if(!quiz->isFinish())
+			return;
+		g_player->winScore();
+		quiz->change(0,Player::getNumPlayer());
+		keyboard->reset();
+		Player* player;
+		std::list<Player*>::iterator iter;
 		iter = playerlist.begin();
 		while (iter != playerlist.end()) {
 			player = *iter;
-			if(max_id == player->getName()){
-				player->setStatus(Player::WIN_GAME);
-			}
-			else {
-				player->loseGame();
-			}
-			++count;
+			player->reset();
 			++iter;
 		}
-		play2special();
-		Player::setCurrentPlayer(count);
+		if(phase == (Player::getNumPlayer()+1)) {
+			string max_id;
+			int max = -1;
+			int fortune;
+			iter = playerlist.begin();
+		
+			while (iter != playerlist.end()) {
+				player = *iter; 
+				if(max == player->getTotalScore()) {
+					fortune = rand() % 2;
+					if(!fortune) {
+						max = player->getTotalScore();
+						max_id = player->getName();
+					}
+				}
+				else if (max < player->getTotalScore()) {
+					max = player->getTotalScore();
+					max_id = player->getName();
+				}
+				++iter;
+			}
+			int count = 1;
+			iter = playerlist.begin();
+			while (iter != playerlist.end()) {
+				player = *iter;
+				if(max_id == player->getName()){
+					player->setStatus(Player::WIN_GAME);
+				}
+				else {
+					player->loseGame();
+				}
+				++count;
+				++iter;
+			}
+			play2special();
+			Player::setCurrentPlayer(count);
+		}
+		else {
+			Player::setCurrentPlayer(phase);
+			scenePlayerMenu_start = true;
+		}
+		checkNextStage = false;
+		Next_Stage->setVisible(false);
+		Next_Stage->setCollidable(false);
+		cleartemp = true;
 	}
-	else {
-		Player::setCurrentPlayer(phase);
-		scenePlayerMenu_start = true;
+}
+
+void Scene::sceneMain() {
+	if(sceneMain_on ==true)
+		return;
+	if((sceneMain_start==true) &&  (sceneMain_on == false)) {
+		menu->close();
+		background_image->Release();
+		background_image->Load("source/mainmenu/mainmenu.png");
+		background->setImage(background_image);
+		menu = new Menu("mainmenu","play_button","help_button","exit_button",NULL);
+		menu->addCallback("play_button",main2newgame);
+		menu->addCallback("help_button",main2help);
+		menu->addCallback("exit_button",g_exit);
+		menu->setPosition(550,350);
+		sceneMain_on = true;
 	}
-	checkNextStage = false;
-	Next_Stage->setVisible(false);
-	Next_Stage->setCollidable(false);
-	cleartemp = true;
 }
 
 void Scene::sceneplay() {

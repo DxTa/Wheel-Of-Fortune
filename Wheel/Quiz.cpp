@@ -232,7 +232,8 @@ void Quiz::reset() {
 		iter = letters.erase(iter);
 	}
 	letters.clear();
-
+	question = "";
+	answer = "";
 	number_of_words = 0;
 	if (count_words.empty() == false) {
 		count_words.erase(count_words.begin(),count_words.end());

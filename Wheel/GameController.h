@@ -13,7 +13,6 @@ namespace GameController {
 	void updatePlayer();
 	void deletePlayer();
 	void resetPlayer();
-	void nextStage();
 	void spinPlayer();
 	void drawPlayer();
 
@@ -47,7 +46,7 @@ void GameController::drawPlayer() {
 		system12->Print(g_engine->getScreenWidth()/2-200,g_engine->getScreenHeight()/2,temp,D3DCOLOR_XRGB(200,33,54));
 	}
 	if((Scene::g_player->getStatus() == Player::LOSED_SPECIAL)) {
-		system12->Print(g_engine->getScreenWidth()/2-200,g_engine->getScreenHeight()/2,"You have lost",D3DCOLOR_XRGB(200,33,54));
+		system12->Print(g_engine->getScreenWidth()/2-200,g_engine->getScreenHeight()/2,"You have l ost",D3DCOLOR_XRGB(200,33,54));
 	}
 	if((timebar->getVisible()==true) && ((g_player->getStatus() == Player::FULL_SPECIAl) ||g_player->getStatus() == Player::READY_TO_ANSWER ||g_player->getStatus() == Player::READY_TO_FULL_ANSWER))
 		timebar->draw();
@@ -356,6 +355,5 @@ void GameController::release() {
 	deletePlayer();
 	deleteGift();
 }
-
 
 #endif

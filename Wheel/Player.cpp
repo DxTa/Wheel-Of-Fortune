@@ -385,9 +385,9 @@ void Player::showGift(Font* font) {
 }
 
 void Player::showPlay(Font* font) {
-	font->setScale(1.5);
+	font->setScale(1.2);
 	font->setRotation(g_engine->math->toRadians(0));
-	font->Print(this->getPosition().getX()+this->getWidth()/3 * this->getScale(),this->getPosition().getY()-15,"X",D3DCOLOR_XRGB(255,33,255));
+	font->Print(this->getPosition().getX()+this->getWidth()/5 * this->getScale(),this->getPosition().getY()-10,"^o^",D3DCOLOR_XRGB(255,33,255));
 }
 
 void Player::loseGame() {

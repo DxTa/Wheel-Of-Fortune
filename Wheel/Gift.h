@@ -9,7 +9,6 @@ using namespace std;
 class Gift : public Button {
 public :
 	Gift(string );
-	~Gift();
 };
 
 #endif

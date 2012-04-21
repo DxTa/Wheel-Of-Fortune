@@ -155,12 +155,10 @@ void Game::update() {
 	Scene::sceneSpecial();
 	Scene::sceneNewGame();
 	Scene::sceneMain();
-//	Scene::sceneHelp();
 	if((Scene::sceneplay_start == true) || (Scene::sceneSpecial_start == true)) {
 		GameController::updatePlayer();
 		GameController::PlayerMenu();
 		GameController::PlayerGift();
-		//Scene::menu->update();
 		Scene::PlayerMenu_Spin->reset();
 		Scene::PlayeMenu_Guess->reset();
 		Scene::Next_Stage->reset();
@@ -228,6 +226,7 @@ void Game::update() {
 				Sprite * temp = new Sprite();
 				temp->loadImage("source/emotion/winner.png");
 				temp->setPosition(g_engine->getScreenWidth()/2-200,g_engine->getScreenHeight()/2-200);
+				temp->setObjectType(Scene::EMO_SPECIAL);
 				temp->setLifetime(5000);
 				g_engine->addEntity(temp);
 				openspecial = 1;
@@ -239,8 +238,11 @@ void Game::update() {
 				Sprite * temp = new Sprite();
 				temp->loadImage("source/emotion/SoClose.png");
 				temp->setPosition(g_engine->getScreenWidth()/2-200,g_engine->getScreenHeight()/2-200);
+				temp->setObjectType(Scene::EMO_SPECIAL);
 				temp->setLifetime(5000);
 				g_engine->addEntity(temp);
+				Next_Stage->setVisible(true);
+				Next_Stage->setCollidable(true);
 				openspecial = 1;
 			}
 		}

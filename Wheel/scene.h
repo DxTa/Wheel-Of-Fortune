@@ -88,7 +88,7 @@ namespace Scene {
 	bool isNextStage();
 	void nextStage();
 
-	enum {CURSOR=150,EMOTION_GIFT = 11000,NEXT_STAGE,GUESSAWORD,LOSEALL,OVERTIME,NOTIFY_GIFT,NEWGAME_TITTLE};
+	enum {CURSOR=150,EMOTION_GIFT = 11000,NEXT_STAGE,GUESSAWORD,LOSEALL,OVERTIME,NOTIFY_GIFT,NEWGAME_TITTLE,EMO_SPECIAL};
 }
 
 void main2newgame() {
@@ -111,6 +111,8 @@ void help2main() {
 
 void newgame2play() {
 	Scene::sceneplay_start = true;
+	Scene::sceneMain_start = false;
+	Scene::sceneMain_on = false;
 	Scene::sceneNewGame_start = false;
 	Scene::sceneNewGame_on = false;
 	Player::setCurrentPlayer(1);
@@ -131,6 +133,8 @@ void special2main() {
 	Scene::arrow->setVisible(false);
 	Scene::quiz->reset();
 	Scene::score_background->setVisible(false);
+	Scene::Next_Stage->setVisible(false);
+	Scene::Next_Stage->setCollidable(false);
 	
 	Scene::sceneMain_start = true;
 	Scene::sceneSpecial_start = false;
@@ -237,6 +241,7 @@ void Scene::nextStage() {
 	phase++;
 	if(phase > (Player::getNumPlayer()+1)) {
 		special2main();
+		phase = 1;
 	}
 	else {
 		if(!quiz->isFinish())
@@ -322,12 +327,15 @@ void Scene::sceneplay() {
 		return;
 	if((sceneplay_start == true) && (sceneplay_on == false)) {
 		quiz->change(0,Player::getNumPlayer());
+		specialGift = "";
 		score_background->setVisible(true);
 		keyboard->setVisible(true);
+		keyboard->reset();
 		wheel->setVisible(true);
 		wheel->setCollidable(true);
 		arrow->setVisible(true);
 		sceneplay_on = true;
+		scenePlayerMenu_start = true;
 	}
 }
 
@@ -339,6 +347,7 @@ void Scene::sceneSpecial() {
 		wheel->setCollidable(false);
 		wheel_special->setVisible(true);
 		wheel_special->setCollidable(true);
+		button_ready->reset();
 		button_ready->setVisible(true);
 		button_ready->setCollidable(true);
 		timebar->setVisible(true);

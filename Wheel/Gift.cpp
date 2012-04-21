@@ -8,6 +8,3 @@ Gift::Gift(string plabel) : Button("Gift_off") {
 	image_pressed->Load(ss.str());
 }
 
-Gift::~Gift() {
-	Button::~Button();
-}

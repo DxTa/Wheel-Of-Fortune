@@ -98,19 +98,26 @@ void game_mouseMove(int x,int y) {
 }
 
 void game_mouseWheel(int wheel) {}
+
 void game_entityRender(Advanced2D::Entity* entity) { }
+
 void game_entityUpdate(Advanced2D::Entity* entity) {
-	if((entity->getObjectType() == Letters::LETTER_TEMP)&& (quiz->getClearTemp() == true) && (Scene::cleartemp == true)) {
+	if((entity->getObjectType() == Letters::LETTER_TEMP)) {
 		Letters *temp =(Letters*)entity;
-		temp->setAlive(false);
+		if((quiz->getClearTemp() == true) && (Scene::cleartemp == true))
+			temp->setAlive(false);
+		if(sceneMain_start == true)
+			temp->setAlive(false);
 	}
 	if((entity->getObjectType() == Letters::OFF_TEMP)&& (quiz->getClearOff() == true)) {
 		Letters *temp =(Letters*)entity;
 		temp->setAlive(false);
+		if(sceneMain_start == true)
+			temp->setAlive(false);
 	}
 	if((entity->getObjectType() == Scene::EMOTION_GIFT) || (entity->getObjectType() == Scene::NEXT_STAGE) 
 		||(entity->getObjectType() == Player::NEXT_PLAYER) || (entity->getObjectType() == Scene::GUESSAWORD) || (entity->getObjectType() == Scene::OVERTIME)
-		||(entity->getObjectType() == Scene::NOTIFY_GIFT)) {
+		||(entity->getObjectType() == Scene::NOTIFY_GIFT) || (entity->getObjectType() == Scene::EMO_SPECIAL)) {
 		static int cad = 1;
 		Sprite *temp = (Sprite*)entity;
 		if(emotioncheck.stopwatch(14)) {
@@ -138,6 +145,10 @@ void game_entityUpdate(Advanced2D::Entity* entity) {
 		}
 		if(entity->getObjectType() == Scene::NOTIFY_GIFT) {
 			if(sceneNewGame_start != true)
+				temp->setAlive(false);
+		}
+		if(entity->getObjectType() == Scene::EMO_SPECIAL) {
+			if(sceneSpecial_start == false)
 				temp->setAlive(false);
 		}
 	}	

@@ -40,14 +40,16 @@ void GameController::drawPlayer() {
 	}
 	if((!isEndStage()) && (!Scene::quiz->isFinish()))
 		Scene::g_player->showPlay(system12);
-	if((Scene::g_player->getStatus() == Player::WIN_SPECIAL)) {
-		system12->setScale(1.5f);
-		string temp = "You Have Won " + specialGift; 
-		system12->Print(g_engine->getScreenWidth()/2-200,g_engine->getScreenHeight()/2,temp,D3DCOLOR_XRGB(200,33,54));
+	if(specialGift != "" ) {
+		if((Scene::g_player->getStatus() == Player::WIN_SPECIAL)) {
+			system12->setScale(1.5f);
+			string temp = "You Have Won " + specialGift; 
+			system12->Print(g_engine->getScreenWidth()/2-200,g_engine->getScreenHeight()/2,temp,D3DCOLOR_XRGB(200,33,54));
+		}
 	}
 	if((Scene::g_player->getStatus() == Player::LOSED_SPECIAL)) {
 		system12->Print(g_engine->getScreenWidth()/2-200,g_engine->getScreenHeight()/2,"You have l ost",D3DCOLOR_XRGB(200,33,54));
-	}
+		}
 	if((timebar->getVisible()==true) && ((g_player->getStatus() == Player::FULL_SPECIAl) ||g_player->getStatus() == Player::READY_TO_ANSWER ||g_player->getStatus() == Player::READY_TO_FULL_ANSWER))
 		timebar->draw();
 }
@@ -103,6 +105,8 @@ void GameController::updatePlayer() {
 }
 
 void GameController::deletePlayer() {
+	if(playerlist.empty() == true)
+		return;
 	std::list<Player*>::iterator iter;
 	iter = Scene::playerlist.begin();
 	while (iter != Scene::playerlist.end()) {
@@ -110,6 +114,8 @@ void GameController::deletePlayer() {
 		delete Scene::g_player;
 		iter = Scene::playerlist.erase(iter);
 	}
+	playerlist.clear();
+	Player::setNumPlayer(0);
 }
 
 void GameController::spinPlayer() {

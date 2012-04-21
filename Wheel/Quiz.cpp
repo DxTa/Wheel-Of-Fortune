@@ -143,6 +143,7 @@ int Quiz::inputQuiz(int x,int numberPlayer){
 		randomNumber.erase(randomNumber.begin(),randomNumber.end()); //sau khi đã chọn dc quiz thì giải phóng mảng random
 		randomNumber.clear();
    }
+   j = 0;
    Utils::xmlat(pReader,pFileStream,j,L"Question",&question);
    Utils::xmlat(pReader,pFileStream,j,L"Answer",&answer);
    return 0;
@@ -222,6 +223,8 @@ void Quiz::drawQuiz() {
 }
 
 void Quiz::reset() {
+	if(letters.empty()==true)
+		return;
 	std::list<Letters*>::iterator iter;
 	iter = letters.begin();
 	Letters* temp;
@@ -233,7 +236,6 @@ void Quiz::reset() {
 	}
 	letters.clear();
 	question = "";
-	answer = "";
 	number_of_words = 0;
 	if (count_words.empty() == false) {
 		count_words.erase(count_words.begin(),count_words.end());

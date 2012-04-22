@@ -57,6 +57,7 @@ namespace Scene {
 	int numGift;
 	int numPlayer;
 	int timeGuess;
+	int phase=1;
 	string chose,ss;
 	string specialGift;
 
@@ -93,6 +94,10 @@ namespace Scene {
 	void nextStage();
 
 	enum {CURSOR=150,EMOTION_GIFT = 11000,NEXT_STAGE,GUESSAWORD,LOSEALL,OVERTIME,NOTIFY_GIFT,NEWGAME_TITTLE,EMO_SPECIAL,PAUSE_LAYER};
+}
+
+void g_exit() {
+	g_engine->Close();
 }
 
 void main2newgame() {
@@ -139,6 +144,8 @@ void special2main() {
 	Scene::PlayeMenu_Guess->setVisible(false);
 	Scene::PlayerMenu_Spin->setCollidable(false);
 	Scene::PlayerMenu_Spin->setVisible(false);
+	Scene::quiz->setClearOff(true);
+	Scene::phase = 1;
 	
 	Scene::sceneMain_start = true;
 
@@ -151,17 +158,18 @@ void special2main() {
 }
 
 void stop2pause() {
-	if((Scene::sceneplay_start == false) && (Scene::sceneSpecial_start == false)) {
+	if(((Scene::sceneplay_start == false) && (Scene::sceneSpecial_start == false)) || ((Scene::sceneSpecial_start == true) && (Scene::Next_Stage->getVisible()==true))) {
 		Scene::pause_button->reset();
 		return;
 	}
-	if((Scene::g_player->getStatus() == Player::READY_TO_FULL_ANSWER) || (Scene::g_player->getStatus() == Player::FULL_SPECIAl) || (Scene::g_player->getStatus() == Player::READY_TO_ANSWER) || (Scene::g_player->getStatus() == Player::SPINNING)) {
+	if((Scene::g_player->getStatus() == Player::SPINNING) || (Scene::g_player->getStatus() == Player::BEGIN_SPECIAL)) {
 		Scene::pause_button->reset();
 		return;
 	}
 	Scene::scenePause_start = true;
 	Scene::PlayeMenu_Guess->setCollidable(false);
 	Scene::PlayerMenu_Spin->setCollidable(false);
+	Scene::button_ready->setCollidable(false);
 }
 
 void pause2resume() {
@@ -172,6 +180,13 @@ void pause2resume() {
 		Scene::PlayerMenu_Spin->setCollidable(true);
 		Scene::menu->close();
 		Scene::pause_button->reset();
+		if(Scene::sceneSpecial_start == true) {
+			Scene::wheel_special->setCollidable(true);
+			if(Scene::button_ready->getStatus() == Button::BUTTON_NORMAL)
+				Scene::button_ready->setCollidable(true);
+		}
+		if(Scene::Next_Stage->getVisible()==true)
+			Scene::Next_Stage->setCollidable(true);
 	}
 }
 
@@ -181,10 +196,6 @@ void pause2main() {
 	Scene::pause_button->setVisible(false);
 	Scene::pause_button->setCollidable(false);
 	special2main();
-}
-
-void g_exit() {
-	g_engine->Close();
 }
 
 void spin() {
@@ -278,7 +289,6 @@ bool Scene::isNextStage() {
 void Scene::nextStage()  {
 	if((!isEndStage() && !quiz->isFinish() && g_player->getStatus() != Player::WIN_SPECIAL && g_player->getStatus() != Player::LOSED_SPECIAL) || (sceneMain_start == true))
 		return;
-	static int phase=1;
 	phase++;
 	if(phase > (Player::getNumPlayer()+1)) {
 		special2main();

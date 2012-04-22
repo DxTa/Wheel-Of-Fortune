@@ -255,10 +255,10 @@ void Game::update() {
 		if(Scene::g_player->getStatus() == Player::LOSED_SPECIAL) {
 			Scene::scenePlayerMenu_start = false;
 		}
-		if(Scene::sceneMain_start == true) {
-			Scene::pause_button->setVisible(false);
-			Scene::pause_button->setCollidable(false);
-		}
+	}
+	if(Scene::sceneMain_start == true) {
+		Scene::pause_button->setVisible(false);
+		Scene::pause_button->setCollidable(false);
 	}
 }
 

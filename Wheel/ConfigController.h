@@ -261,6 +261,7 @@ void ConfigController::enableConfigure() {
 		notify->loadImage("source/emotion/giftnotify.png");
 		notify->setPosition(g_engine->getScreenWidth()/2-notify->getWidth()/2,g_engine->getScreenHeight() -notify->getHeight()+30);
 		notify->setLifetime(5000);
+		notify->setCollisionMethod(COLLISION_DIST);
 		notify->setObjectType(Scene::NOTIFY_GIFT);
 		g_engine->addEntity(notify);
 		startGame->reset();

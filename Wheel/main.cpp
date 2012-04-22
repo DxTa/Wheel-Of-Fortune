@@ -118,11 +118,10 @@ void game_entityUpdate(Advanced2D::Entity* entity) {
 		if(sceneMain_start == true)
 			temp->setAlive(false);
 	}
-	if((entity->getObjectType() == Letters::OFF_TEMP)&& (quiz->getClearOff() == true)) {
+	if((entity->getObjectType() == Letters::OFF_TEMP)) {
 		Letters *temp =(Letters*)entity;
-		temp->setAlive(false);
-		if(sceneMain_start == true)
-			temp->setAlive(false);
+		if((sceneMain_start == true) || (quiz->getClearOff() == true))
+			temp->setVisible(false);
 	}
 	if((entity->getObjectType() == Scene::EMOTION_GIFT) || (entity->getObjectType() == Scene::NEXT_STAGE) 
 		||(entity->getObjectType() == Player::NEXT_PLAYER) || (entity->getObjectType() == Scene::GUESSAWORD) || (entity->getObjectType() == Scene::OVERTIME)
@@ -136,7 +135,7 @@ void game_entityUpdate(Advanced2D::Entity* entity) {
 			cad = -1;
 		if(temp->getScale() > 1)
 			cad = 1;
-		if(Scene::scenePause_start == true)
+		if(Scene::sceneMain_start == true)
 			temp->setAlive(false);
 		if(entity->getObjectType() == Scene::EMOTION_GIFT) {
 			if(button_ok->getVisible() == true)
@@ -201,6 +200,21 @@ void game_entityCollision(Advanced2D::Entity* entity1,Advanced2D::Entity* entity
 		}
 	}
 	if(entity1->getObjectType() == OVERTIME && entity2->getObjectType() == LOSEALL) {
+		Sprite* meme  = new Sprite();
+		meme = (Sprite*)entity1;
+		meme->setAlive(false);
+	}
+	if(entity1->getObjectType() == Player::WTF && entity2->getObjectType() == Scene::EMO_SPECIAL) {
+		Sprite* meme  = new Sprite();
+		meme = (Sprite*)entity1;
+		meme->setAlive(false);
+	}
+	if(entity1->getObjectType() == Player::NEXT_PLAYER && entity2->getObjectType() == Scene::LOSEALL) {
+		Sprite* meme  = new Sprite();
+		meme = (Sprite*)entity1;
+		meme->setAlive(false);
+	}
+	if(entity1->getObjectType() == Scene::NOTIFY_GIFT && entity2->getObjectType() == Scene::NOTIFY_GIFT) {
 		Sprite* meme  = new Sprite();
 		meme = (Sprite*)entity1;
 		meme->setAlive(false);

@@ -150,6 +150,7 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 				hehe->loadImage("source/emotion/nextplayer.png");
 				hehe->setLifetime(2000);
 				hehe->setObjectType(Player::NEXT_PLAYER);
+				hehe->setCollisionMethod(COLLISION_DIST);
 				hehe->setPosition(g_engine->getScreenWidth()/2-75,75);
 				g_engine->addEntity(hehe);
 				end_play();
@@ -245,7 +246,7 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 					if((turnfull) == quiz->getSize()/2) {
 						Sprite* hehe = new Sprite();
 						hehe->loadImage("source/emotion/wtf.png");
-						hehe->setLifetime(3000);
+						hehe->setLifetime(2000);
 						hehe->setObjectType(Player::WTF);
 						hehe->setPosition(g_engine->getScreenWidth()/2-300,g_engine->getScreenHeight()/2-100);
 						g_engine->addEntity(hehe);

@@ -66,6 +66,7 @@ void GameController::updatePlayer() {
 			g_engine->addEntity(next);
 			next= new Sprite();
 			next->loadImage("source/emotion/Loseall.png");
+			next->setCollisionMethod(COLLISION_DIST);
 			next->setPosition(g_engine->getScreenWidth()/2-200,g_engine->getScreenHeight()/2-200);
 			next->setObjectType(Scene::LOSEALL);
 			next->setLifetime(4000);

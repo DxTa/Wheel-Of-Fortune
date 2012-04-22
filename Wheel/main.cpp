@@ -63,9 +63,18 @@ void game_keyRelease(int key)
 	Timer checkpress;
 	switch (key) {
 		case DIK_ESCAPE:
-			g_engine->Close();
+			if((sceneHelp_start == true) || (sceneNewGame_start == true))
+				back2main();
+			if((scenePause_start == false) && ((sceneplay_start == true) || (sceneSpecial_start == true))) {
+				stop2pause();
+				break;
+			}
+			if(scenePause_start == true)
+				pause2resume();
 			break;
 		case DIK_SPACE:
+			if(scenePause_start == true)
+				pause2main();
 			break;
 	}
 }
@@ -117,7 +126,7 @@ void game_entityUpdate(Advanced2D::Entity* entity) {
 	}
 	if((entity->getObjectType() == Scene::EMOTION_GIFT) || (entity->getObjectType() == Scene::NEXT_STAGE) 
 		||(entity->getObjectType() == Player::NEXT_PLAYER) || (entity->getObjectType() == Scene::GUESSAWORD) || (entity->getObjectType() == Scene::OVERTIME)
-		||(entity->getObjectType() == Scene::NOTIFY_GIFT) || (entity->getObjectType() == Scene::EMO_SPECIAL)) {
+		||(entity->getObjectType() == Scene::NOTIFY_GIFT)) {
 		static int cad = 1;
 		Sprite *temp = (Sprite*)entity;
 		if(emotioncheck.stopwatch(14)) {
@@ -127,6 +136,8 @@ void game_entityUpdate(Advanced2D::Entity* entity) {
 			cad = -1;
 		if(temp->getScale() > 1)
 			cad = 1;
+		if(Scene::scenePause_start == true)
+			temp->setAlive(false);
 		if(entity->getObjectType() == Scene::EMOTION_GIFT) {
 			if(button_ok->getVisible() == true)
 				temp->setAlive(false);
@@ -147,11 +158,12 @@ void game_entityUpdate(Advanced2D::Entity* entity) {
 			if(sceneNewGame_start != true)
 				temp->setAlive(false);
 		}
-		if(entity->getObjectType() == Scene::EMO_SPECIAL) {
-			if(sceneSpecial_start == false)
-				temp->setAlive(false);
-		}
 	}	
+	if(entity->getObjectType() == Scene::EMO_SPECIAL) {
+		Sprite *temp = (Sprite*)entity;
+		if(sceneSpecial_start == false)
+			temp->setAlive(false);
+	}
 	if(entity->getObjectType() == Scene::LOSEALL) {
 		Sprite *temp = (Sprite*)entity;
 		if(Next_Stage->getVisible() == false)
@@ -165,6 +177,11 @@ void game_entityUpdate(Advanced2D::Entity* entity) {
 	if(entity->getObjectType() == Scene::NEWGAME_TITTLE) {
 		Sprite *temp = (Sprite*)entity;
 		if(sceneNewGame_start != true)
+			temp->setAlive(false);
+	}
+	if(entity->getObjectType() == Scene::PAUSE_LAYER) {
+		Sprite *temp = (Sprite*)entity;
+		if(scenePause_start != true)
 			temp->setAlive(false);
 	}
 }
@@ -182,5 +199,10 @@ void game_entityCollision(Advanced2D::Entity* entity1,Advanced2D::Entity* entity
 		if((entity2->getObjectType() == Wheel::WHEEL_POS_SPECIAL)) {
 			wheel_special->updateMousePosition(cursor);
 		}
+	}
+	if(entity1->getObjectType() == OVERTIME && entity2->getObjectType() == LOSEALL) {
+		Sprite* meme  = new Sprite();
+		meme = (Sprite*)entity1;
+		meme->setAlive(false);
 	}
 }		

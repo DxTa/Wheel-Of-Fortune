@@ -47,6 +47,7 @@ namespace Scene {
 	Button* button_ready;
 	Button* button_ok;
 	Button* startGame;
+	Button* pause_button;
 	Button* back_button;
 	Button* play_button;
 	Button* help_button;
@@ -74,6 +75,8 @@ namespace Scene {
 	bool sceneHelp_start = false;
 	bool sceneHelp_on = false;
 	bool checkNextStage = false;
+	bool scenePause_start = false;
+	bool scenePause_on = false;
 	bool cleartemp= true;
 
 	void sceneplay();
@@ -81,6 +84,7 @@ namespace Scene {
 	void sceneMain();
 	void sceneNewGame();
 	void sceneHelp();
+	void scenePause();
 
 	void release();
 
@@ -88,7 +92,7 @@ namespace Scene {
 	bool isNextStage();
 	void nextStage();
 
-	enum {CURSOR=150,EMOTION_GIFT = 11000,NEXT_STAGE,GUESSAWORD,LOSEALL,OVERTIME,NOTIFY_GIFT,NEWGAME_TITTLE,EMO_SPECIAL};
+	enum {CURSOR=150,EMOTION_GIFT = 11000,NEXT_STAGE,GUESSAWORD,LOSEALL,OVERTIME,NOTIFY_GIFT,NEWGAME_TITTLE,EMO_SPECIAL,PAUSE_LAYER};
 }
 
 void main2newgame() {
@@ -101,12 +105,6 @@ void main2help() {
 	Scene::sceneHelp_start = true;
 	Scene::sceneMain_start = false;
 	Scene::sceneMain_on = false;
-}
-
-void help2main() {
-	Scene::sceneMain_start = true;
-	Scene::sceneHelp_start =false;
-	Scene::sceneHelp_on = false;
 }
 
 void newgame2play() {
@@ -128,6 +126,8 @@ void play2special() {
 
 void special2main() {
 	Scene::keyboard->setVisible(false);
+	Scene::wheel->setVisible(false);
+	Scene::wheel->setCollidable(false);
 	Scene::wheel_special->setVisible(false);
 	Scene::wheel_special->setCollidable(false);
 	Scene::arrow->setVisible(false);
@@ -135,13 +135,52 @@ void special2main() {
 	Scene::score_background->setVisible(false);
 	Scene::Next_Stage->setVisible(false);
 	Scene::Next_Stage->setCollidable(false);
+	Scene::PlayeMenu_Guess->setCollidable(false);
+	Scene::PlayeMenu_Guess->setVisible(false);
+	Scene::PlayerMenu_Spin->setCollidable(false);
+	Scene::PlayerMenu_Spin->setVisible(false);
 	
 	Scene::sceneMain_start = true;
+
+	Scene::sceneplay_start = false;
+	Scene::sceneplay_on = false;
 	Scene::sceneSpecial_start = false;
 	Scene::sceneSpecial_on = false;
 	Scene::scenePlayerMenu_start = false;
 	Scene::scenePlayerMenu_on = false;
+}
 
+void stop2pause() {
+	if((Scene::sceneplay_start == false) && (Scene::sceneSpecial_start == false)) {
+		Scene::pause_button->reset();
+		return;
+	}
+	if((Scene::g_player->getStatus() == Player::READY_TO_FULL_ANSWER) || (Scene::g_player->getStatus() == Player::FULL_SPECIAl) || (Scene::g_player->getStatus() == Player::READY_TO_ANSWER) || (Scene::g_player->getStatus() == Player::SPINNING)) {
+		Scene::pause_button->reset();
+		return;
+	}
+	Scene::scenePause_start = true;
+	Scene::PlayeMenu_Guess->setCollidable(false);
+	Scene::PlayerMenu_Spin->setCollidable(false);
+}
+
+void pause2resume() {
+	if(Scene::scenePause_start == true) {
+		Scene::scenePause_start = false;
+		Scene::scenePause_on = false;
+		Scene::PlayeMenu_Guess->setCollidable(true);
+		Scene::PlayerMenu_Spin->setCollidable(true);
+		Scene::menu->close();
+		Scene::pause_button->reset();
+	}
+}
+
+void pause2main() {
+	Scene::scenePause_start = false;
+	Scene::scenePause_on =false;
+	Scene::pause_button->setVisible(false);
+	Scene::pause_button->setCollidable(false);
+	special2main();
 }
 
 void g_exit() {
@@ -236,7 +275,9 @@ bool Scene::isNextStage() {
 	return checkNextStage;
 }
 
-void Scene::nextStage() {
+void Scene::nextStage()  {
+	if((!isEndStage() && !quiz->isFinish() && g_player->getStatus() != Player::WIN_SPECIAL && g_player->getStatus() != Player::LOSED_SPECIAL) || (sceneMain_start == true))
+		return;
 	static int phase=1;
 	phase++;
 	if(phase > (Player::getNumPlayer()+1)) {
@@ -326,6 +367,9 @@ void Scene::sceneplay() {
 	if(sceneplay_on == true)
 		return;
 	if((sceneplay_start == true) && (sceneplay_on == false)) {
+		menu->close();
+		pause_button->setVisible(true);
+		pause_button->setCollidable(true);
 		quiz->change(0,Player::getNumPlayer());
 		specialGift = "";
 		score_background->setVisible(true);
@@ -355,6 +399,44 @@ void Scene::sceneSpecial() {
 	}
 }
 
+void Scene::sceneHelp() {
+	if(sceneHelp_on == true)
+		return;
+	if((sceneHelp_start == true) && (sceneHelp_on == false)) {
+		menu->close();
+		back_button->reset();
+		back_button->setVisible(true);
+		background_image->Release();
+		background_image->Load("source/helpscene.png");
+		background->setImage(background_image);
+		sceneHelp_on = true;
+	}
+}
+
+void Scene::scenePause() {
+	if(scenePause_on ==true)
+		return;
+	if((scenePause_start == true) && (scenePause_on == false)) {
+		Sprite* layer = new Sprite();
+		layer->loadImage("source/pauselayer.png");
+		layer->setObjectType(Scene::PAUSE_LAYER);
+		g_engine->addEntity(layer);
+		wheel->setCollidable(false);
+		wheel_special->setCollidable(false);
+		keyboard->setCollidable(false);
+		pause_button->reset();
+		pause_button->setVisible(true);
+		pause_button->setCollidable(true);
+
+		menu->close();
+		menu = new Menu("pausescene","resume","quit",NULL);
+		menu->addCallback("resume",pause2resume);
+		menu->addCallback("quit",pause2main);
+		menu->setPosition(g_engine->getScreenWidth()/2-75,75);
+		scenePause_on = true;
+	}
+}
+
 void Scene::release() {
 	Letters::release();
 	delete menu;
@@ -372,6 +454,11 @@ void Scene::release() {
 	delete button_ok;
 	delete button_ready;
 	delete startGame;
+	delete back_button;
+	delete pause_button;
+	delete play_button;
+	delete help_button;
+	delete exit_button;
 	delete timebar;
 	delete cursor;
 }

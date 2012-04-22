@@ -122,3 +122,9 @@ void Keyboard::setVisible(bool pstatus) {
 		letter[i]->setCollidable(pstatus);
 	}
 }
+
+void Keyboard::setCollidable(bool pstatus) {
+	for(int i = 0;i<26;i++) {
+		letter[i]->setCollidable(pstatus);
+	}
+}	

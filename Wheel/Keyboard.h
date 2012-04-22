@@ -28,6 +28,7 @@ public :
 	void updateMouseMove(Cursor*);
 	void setScale(double scale);
 	void setVisible(bool );
+	void setCollidable(bool );
 };
 
 

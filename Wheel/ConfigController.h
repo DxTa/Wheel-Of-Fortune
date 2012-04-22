@@ -63,6 +63,8 @@ void ConfigController::initConfigController() {
 		g_engine->addEntity(temp);
 	}
 	numPlayer = 3;
+
+	Scene::timeGuess = 10;
 }
 
 void ConfigController::newGift(string name) {
@@ -75,6 +77,8 @@ void ConfigController::newGift(string name) {
 }
 
 void ConfigController::clearGift() {
+	if(giftlist.empty() == true)
+		return;
 	list<Gift*>::iterator iter;
 	iter = Scene::giftlist.begin();
 	int i = 0;
@@ -174,7 +178,10 @@ void ConfigController::updatePlayerControllerMouseButton() {
 	while(iter!=Scene::playerconfig.end()) {
 		player = *iter;
 		if(player->isPosition()==true) {
-			player->toggle();		
+			if((player->getStatus() == Button::BUTTON_NORMAL) && (Scene::numPlayer == 1))
+				return;
+			else 
+				player->toggle();		
 			if(player->getStatus() == Button::BUTTON_PRESSED)
 				Scene::numPlayer--;
 			else
@@ -185,9 +192,9 @@ void ConfigController::updatePlayerControllerMouseButton() {
 }
 
 bool ConfigController::configGift() {
-	clearGift();
 	if(numGift != 6)
 		return false;
+	clearGift();
 	list<Button*>::iterator iter;
 	iter = Scene::giftconfig.begin();
 	Button* gift;
@@ -205,6 +212,7 @@ bool ConfigController::configGift() {
 bool ConfigController::configPlayer() {
 	if(Scene::numPlayer <= 0)
 		return false;
+	GameController::deletePlayer();
 	list<Button*>::iterator iter;
 	iter = Scene::playerconfig.begin();
 	Button* player;
@@ -212,7 +220,10 @@ bool ConfigController::configPlayer() {
 	while(iter!=Scene::playerconfig.end()) {
 		player = *iter;
 		if(player->getStatus() == Button::BUTTON_NORMAL) {
-			newPlayer(player->getLabel(),740+110*count,70);
+			if(Scene::numPlayer < 4)
+				newPlayer(player->getLabel(),740+110*count,70);
+			else
+				newPlayer(player->getLabel(),735+90*count,80);
 			count++;
 		}
 		iter++;
@@ -229,22 +240,29 @@ void ConfigController::newPlayer() {
 void ConfigController::newPlayer(string name,double x,double y) {
 	Player* player = new Player(name);
 	player->setID(Player::getNumPlayer());
-	player->setScale(0.25);
+	if(Scene::numPlayer <4)
+		player->setScale(0.25);
+	else
+		player->setScale(0.18);
 	player->setRotation(g_engine->math->toRadians(-20));
 	player->setPosition(x,y);
 	Scene::playerlist.push_back(player);
 }
 
 void ConfigController::enableConfigure() {
-	if(configGift() && configPlayer()) {
-		config2play();
+	if((configGift()) && (configPlayer())) {
+		newgame2play();
+		timebar->setTimeGuess(Scene::timeGuess*1000/60);
 		ConfigController::release();
-	}	
+		back_button->setVisible(false);
+	}
 	else {
-		if(back->getVisible() == true)
-			back->setVisible(false);
-		else
-			back->setVisible(true);
+		Sprite* notify = new Sprite();
+		notify->loadImage("source/emotion/giftnotify.png");
+		notify->setPosition(g_engine->getScreenWidth()/2-notify->getWidth()/2,g_engine->getScreenHeight() -notify->getHeight()+30);
+		notify->setLifetime(5000);
+		notify->setObjectType(Scene::NOTIFY_GIFT);
+		g_engine->addEntity(notify);
 		startGame->reset();
 	}
 }
@@ -260,10 +278,38 @@ void Scene::sceneNewGame() {
 		return;
 	if((sceneNewGame_start == true) && (sceneNewGame_on == false)) {
 		menu->close();
+		background_image->Release();
+		background_image->Load("source/background.png");
+		background->setImage(background_image);
 		ConfigController::initConfigController();
+		startGame->reset();
+		back_button->reset();
 		startGame->setVisible(true);
 		startGame->setCollidable(true);
+		back_button->setVisible(true);
+		back_button->setCollidable(true);
+		Sprite* newgame = new Sprite();
+		newgame->loadImage("source/mainmenu/newgame.png");
+		newgame->setObjectType(Scene::NEWGAME_TITTLE);
+		g_engine->addEntity(newgame);
 		sceneNewGame_on = true;
+	}
+}
+
+void back2main() {
+	if(sceneNewGame_start == true) {
+		ConfigController::release();
+		startGame->setVisible(false);
+		back_button->setVisible(false);
+		Scene::sceneMain_start = true;
+		Scene::sceneNewGame_start = false;
+		Scene::sceneNewGame_on = false;
+	}
+	if(sceneHelp_start == true) {
+		back_button->setVisible(false);
+		Scene::sceneMain_start = true;
+		Scene::sceneHelp_start =false;
+		Scene::sceneHelp_on = false;
 	}
 }
 

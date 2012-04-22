@@ -5,7 +5,7 @@ Button::Button(string plabel) : Sprite() {
 	label = plabel;
 	status = BUTTON_NORMAL;
 	checkposition = false;
-	setScale(0.8f);
+//	setScale(0.8f);
 	setCollisionMethod(COLLISION_RECT);
 	setObjectType(BUTTON);
 

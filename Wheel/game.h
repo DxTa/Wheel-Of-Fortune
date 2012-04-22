@@ -24,7 +24,6 @@ void Game::init() {
 	background->setCollidable(false);
 	g_engine->addEntity(background);
 
-
 	cursor = new Cursor();
 	cursor->loadImage("source/gameplay/Cursor_564.png");
 	cursor->setScale(0.5);
@@ -76,6 +75,11 @@ void Game::init() {
 	keyboard->setVisible(false);
 	keyboard->addEntity();
 
+	quiz = new Quiz();
+	quiz->setPosition(50,125);
+	quiz->setSize(400,200);
+	quiz->inputLog();
+
 	PlayerMenu_Spin = new Button("spin_button");
 	PlayerMenu_Spin->setCallback(spin);
 	PlayerMenu_Spin->setCollidable(false);
@@ -111,6 +115,20 @@ void Game::init() {
 	button_ready->setPosition(g_engine->getScreenWidth()/2-button_ready->getWidth()/2,g_engine->getScreenHeight()/2-button_ready->getHeight()/2);
 	g_engine->addEntity(button_ready);
 
+	back_button = new Button("back");
+	back_button->setCollidable(false);
+	back_button->setVisible(false);
+	back_button->setPosition(0,700-back_button->getHeight());
+	back_button->setCallback(back2main);
+	g_engine->addEntity(back_button);
+
+	pause_button = new Button("pause_button");
+	pause_button->setCollidable(false);
+	pause_button->setVisible(false);
+	pause_button->setPosition(g_engine->getScreenWidth()-pause_button->getWidth()-20,10);
+	pause_button->setCallback(stop2pause);
+	g_engine->addEntity(pause_button);
+
 	startGame = new Button("start_game");
 	startGame->setCollidable(false);
 	startGame->setVisible(false);
@@ -118,21 +136,6 @@ void Game::init() {
 	startGame->setPosition(1200-startGame->getWidth(),700-startGame->getHeight());
 	g_engine->addEntity(startGame);
 
-	back_button = new Button("back");
-	back_button->setCollidable(false);
-	back_button->setVisible(false);
-	back_button->setPosition(0,700-back_button->getHeight());
-	back_button->setCallback(newgame2main);
-	g_engine->addEntity(back_button);
-
-	quiz = new Quiz();
-	quiz->setPosition(50,125);
-	quiz->setSize(400,200);
-	quiz->inputLog();
-
-	Scene::scenePlayerMenu_start = true;
-	Scene::checkNextStage = false;
-	
 	Scene::score_background = new Sprite();
 	score_background->loadImage("source/gameplay/score_background.png");
 	score_background->setPosition(590,-40);
@@ -148,6 +151,9 @@ void Game::init() {
 	timebar->setCurrentFrame(59);
 	timebar->setPosition(g_engine->getScreenWidth()/2-timebar->getWidth()/2,g_engine->getScreenHeight()/2+100);
 	timebar->setVisible(false);
+
+	Scene::scenePlayerMenu_start = true;
+	Scene::checkNextStage = false;
 }
 
 void Game::update() {
@@ -155,6 +161,8 @@ void Game::update() {
 	Scene::sceneSpecial();
 	Scene::sceneNewGame();
 	Scene::sceneMain();
+	Scene::sceneHelp();
+	Scene::scenePause();
 	if((Scene::sceneplay_start == true) || (Scene::sceneSpecial_start == true)) {
 		GameController::updatePlayer();
 		GameController::PlayerMenu();
@@ -186,7 +194,6 @@ void Game::update() {
 				next->loadImage("source/emotion/nextstage.png");
 				next->setPosition(Scene::Next_Stage->getPosition().getX()-400,Scene::Next_Stage->getPosition().getY()+next->getHeight()/2);
 				next->setObjectType(Scene::NEXT_STAGE);
-				next->setLifetime(3000);
 				g_engine->addEntity(next);
 			}
 			Scene::Next_Stage->setVisible(true);
@@ -194,8 +201,20 @@ void Game::update() {
 			Scene::keyboard->setStatus(Keyboard::UNAVAILABLE);
 		}
 		if((Scene::timebar->getVisible() == true) &&(Scene::g_player->getStatus() == Player::FULL_SPECIAl)) { 
-			if(timebar->specialTimeUp())
+			if(timebar->specialTimeUp()) {
 				Scene::g_player->setStatus(Player::LOSED_SPECIAL);
+				if(openspecial == 0)  {
+					Sprite * temp = new Sprite();
+					temp->loadImage("source/emotion/SoClose.png");
+					temp->setPosition(g_engine->getScreenWidth()/2-200,g_engine->getScreenHeight()/2-200);
+					temp->setObjectType(Scene::EMO_SPECIAL);
+					g_engine->addEntity(temp);
+					Next_Stage->setVisible(true);
+					Next_Stage->setCollidable(true);
+					Scene::quiz->setClearOff(true);
+					openspecial = 1;
+				}
+			}
 		}
 		if((Scene::timebar->getVisible() == true) &&(Scene::g_player->getStatus() == Player::READY_TO_ANSWER)) { 
 			if(Scene::timebar->guessTimeUp()) {
@@ -209,6 +228,7 @@ void Game::update() {
 				Sprite * over = new Sprite();
 				over->loadImage("source/emotion/overtime.png");
 				over->setObjectType(Scene::OVERTIME);
+				over->setCollisionMethod(COLLISION_DIST);
 				over->setPosition(g_engine->getScreenWidth()/2-75,75);
 				over->setLifetime(3000);
 				g_engine->addEntity(over);
@@ -234,17 +254,10 @@ void Game::update() {
 		}
 		if(Scene::g_player->getStatus() == Player::LOSED_SPECIAL) {
 			Scene::scenePlayerMenu_start = false;
-			if(openspecial == 0)  {
-				Sprite * temp = new Sprite();
-				temp->loadImage("source/emotion/SoClose.png");
-				temp->setPosition(g_engine->getScreenWidth()/2-200,g_engine->getScreenHeight()/2-200);
-				temp->setObjectType(Scene::EMO_SPECIAL);
-				temp->setLifetime(5000);
-				g_engine->addEntity(temp);
-				Next_Stage->setVisible(true);
-				Next_Stage->setCollidable(true);
-				openspecial = 1;
-			}
+		}
+		if(Scene::sceneMain_start == true) {
+			Scene::pause_button->setVisible(false);
+			Scene::pause_button->setCollidable(false);
 		}
 	}
 }
@@ -269,6 +282,8 @@ void Game::updateMouseButton() {
 		}
 		if(Scene::Next_Stage->isPosition() == true)
 			Scene::Next_Stage->pressed();
+		if(Scene::pause_button->isPosition() == true)
+			Scene::pause_button->pressed();
 	}
 	if((sceneplay_start == true) || (sceneSpecial_start == true)) {
 		if(Scene::PlayerMenu_Spin->isPosition() == true)
@@ -308,6 +323,7 @@ void Game::updateMouseMove(double delta_x,double delta_y,double fx,double fy) {
 	Scene::Next_Stage->updateMouseMove(Scene::cursor);
 	Scene::startGame->updateMouseMove(Scene::cursor);
 	Scene::back_button->updateMouseMove(cursor);
+	Scene::pause_button->updateMouseMove(cursor);
 	if((Scene::sceneplay_start == true) || (Scene::sceneSpecial_start == true))
 		if((Scene::g_player->getStatus() == Player::READY_TO_FULL_ANSWER) || (Scene::g_player->getStatus() == Player::FULL_SPECIAl))
 			Scene::keyboard->reset();

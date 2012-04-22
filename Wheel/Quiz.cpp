@@ -365,6 +365,7 @@ void Quiz::indicator(int i) {
 		offtemp = new Letters("A");
 		offtemp->setObjectType(Letters::OFF_TEMP);
 		offtemp->setColor(D3DCOLOR_XRGB(255,25,25));
+		offtemp->setPosition(-100,-100);
 		g_engine->addEntity(offtemp);
 		openofftemp =false;
 	}
@@ -379,6 +380,10 @@ void Quiz::indicator(int i) {
 			letter->setColor(D3DCOLOR_XRGB(255,255,255));
 			iter++;
 		}
+		return;
+	}
+	if(i>= size) {
+		check = -1;
 		return;
 	}
 	if(check != i) {

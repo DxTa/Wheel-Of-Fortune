@@ -162,7 +162,7 @@ void stop2pause() {
 		Scene::pause_button->reset();
 		return;
 	}
-	if((Scene::g_player->getStatus() == Player::SPINNING) || (Scene::g_player->getStatus() == Player::BEGIN_SPECIAL)) {
+	if((Scene::g_player->getStatus() == Player::SPINNING) || (Scene::g_player->getStatus() == Player::BEGIN_SPECIAL) || (Scene::g_player->getStatus() == Player::WIN_GAME)) {
 		Scene::pause_button->reset();
 		return;
 	}
@@ -405,6 +405,7 @@ void Scene::sceneSpecial() {
 		button_ready->setVisible(true);
 		button_ready->setCollidable(true);
 		timebar->setVisible(true);
+		quiz->setClearOff(false);
 		sceneSpecial_on = true;
 	}
 }

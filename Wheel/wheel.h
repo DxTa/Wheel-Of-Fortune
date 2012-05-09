@@ -40,7 +40,6 @@ public:
 	enum WHEEL_STATUS {STOP=0,SPINNING=1,WAIT};
 	enum OBJECTYPE {WHEEL_POS=151,WHEEL_POS_SPECIAL};
 	Wheel();
-	Wheel(double,double);
 	virtual int getTossUp();
 	int getDirection() const {return direction;}
 	int getStatus() const {return status;}

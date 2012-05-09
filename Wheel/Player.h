@@ -25,9 +25,9 @@ class Player : public Sprite {
 		int turn_gift;
 	public :
 		enum P_STATUS {AWAIT=100,PLAYING,READY_TO_SPIN,SPINNING,READY_TO_ANSWER,READY_TO_FULL_ANSWER,LOSED,WIN_STAGE,BEGIN_SPECIAL,FULL_SPECIAl,WIN_GAME,WIN_SPECIAL,LOSED_SPECIAL};
-		enum EMO {NEXT_PLAYER=5000,WRONGFULLGUESS,WTF};
+		enum EMO {NEXT_PLAYER=5000,FULLGUESSTRUE,FULLGUESSWRONG,WTF};
 		Player();
-		Player(string );;
+		Player(string );
 		static int getCurrentPlayer() {return currentPlayer;}
 		static int getNumPlayer() {return numberPlayer;}
 		string getName() const {return name;}
@@ -41,7 +41,6 @@ class Player : public Sprite {
 
 		static void setCurrentPlayer(int current) {currentPlayer = current > numberPlayer ? 1 : current;}
 		static void setNumPlayer(int num) {numberPlayer = num;}
-		void setName(string na) {name = na;}
 		void winScore() {total_score += score;}
 		void setScore(int pscore) {score = pscore;}
 		void setStatus(P_STATUS sta) {status = sta;}
@@ -58,7 +57,6 @@ class Player : public Sprite {
 
 		void showGift(Font*);
 		void showScore(Font*);
-		void showTotalScore(Font*);
 		void showPlay(Font*);
 
 		void draw(Font*);

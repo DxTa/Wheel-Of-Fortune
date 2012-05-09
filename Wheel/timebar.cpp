@@ -1,7 +1,8 @@
 #include "timebar.h"
 
 Timebar::Timebar() : Sprite() {
-	this->loadImage("source/gameplay/timebar.png");
+	static int i = 0;
+	this->loadImage("source/gameplay/timebar.tga");
 	this->setTotalFrames(60);
 	this->setSize(489,10);
 	this->setColumns(1);
@@ -15,6 +16,7 @@ Timebar::Timebar() : Sprite() {
 bool Timebar::guessTimeUp() {
 	if(timecheck.stopwatch(timeguess)) {
 		this->setCurrentFrame(this->getCurrentFrame()-1);
+		g_engine->audio->Play("clock");
 	}
 	if(this->getCurrentFrame()==0)
 		return true;
@@ -25,6 +27,7 @@ bool Timebar::guessTimeUp() {
 bool Timebar::answerTimeUp() {
 	if(timecheck.stopwatch(timeanswer)) {
 		this->setCurrentFrame(this->getCurrentFrame()-1);
+		g_engine->audio->Play("clock");
 	}
 	if(this->getCurrentFrame()==0)
 		return true;
@@ -35,6 +38,7 @@ bool Timebar::answerTimeUp() {
 bool Timebar::specialTimeUp() {
 	if(timecheck.stopwatch(timespecial)) {
 		this->setCurrentFrame(this->getCurrentFrame()-1);
+		g_engine->audio->Play("clock");
 	}
 	if(this->getCurrentFrame()==0)
 		return true;

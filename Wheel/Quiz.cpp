@@ -34,11 +34,7 @@ void Quiz::addLetter(int i) {
 	ss << answer.at(i);
 
 	Letters* letter = new Letters(ss.str());
-	//letter->setScale(1.0f);
-	//if (answer.at(i) == '\n' || answer.at(i) == '\0' || answer.at(i) == ' ' || answer.at(i) == '\r')
-	//	letter->setStatus(ON);
 	letter->setCollidable(false);
-	//letter->setColor(D3DCOLOR_XRGB(0,255,255));
 	letter->setID(i);
 	letter->off();
 	letters.push_back(letter);
@@ -46,7 +42,6 @@ void Quiz::addLetter(int i) {
 
 void Quiz::arrangeLetter() {
 	std::list<Letters*>::iterator iter;
-	//letters.clear();
 	int strlen = answer.length();
 	if (strlen <= 0 ) return;
 	for(int i = 0;i<strlen;i++) {
@@ -143,7 +138,7 @@ int Quiz::inputQuiz(int x,int numberPlayer){
 		randomNumber.erase(randomNumber.begin(),randomNumber.end()); //sau khi đã chọn dc quiz thì giải phóng mảng random
 		randomNumber.clear();
    }
-   j = 0;
+  // j= 0;
    Utils::xmlat(pReader,pFileStream,j,L"Question",&question);
    Utils::xmlat(pReader,pFileStream,j,L"Answer",&answer);
    return 0;
@@ -229,7 +224,6 @@ void Quiz::reset() {
 	iter = letters.begin();
 	Letters* temp;
 	while (iter != letters.end()) {
-		//delete(*iter);
 		temp = *iter;
 		temp->setAlive(false);
 		iter = letters.erase(iter);
@@ -244,13 +238,16 @@ void Quiz::reset() {
 	}
 }
 
-void Quiz::change(int x, int num_player) {
+int Quiz::change(int x, int num_player) {
 	reset();
-	inputQuiz(x,num_player);
+	int i = inputQuiz(x,num_player);
+	if(i == -1)
+		return i;
 	arrangeLetter();
 	setQuizPos(this->getX(),this->getY(),this->getX() + this->getWidth(),this->getY() + this->getHeight());
 	drawQuiz();
 	calSize();
+	return i;
 }
 
 bool Quiz::check(string panswer, int *result) {
@@ -359,16 +356,6 @@ void Quiz::calSize() {
 
 void Quiz::indicator(int i) {
 	static int check = -1;
-	static Letters* offtemp;
-	static bool openofftemp = true;
-	if(openofftemp==true) {
-		offtemp = new Letters("A");
-		offtemp->setObjectType(Letters::OFF_TEMP);
-		offtemp->setColor(D3DCOLOR_XRGB(255,25,25));
-		offtemp->setPosition(-100,-100);
-		g_engine->addEntity(offtemp);
-		openofftemp =false;
-	}
 	if(i==-1) {
 		std::list<Letters*>::iterator iter;
 		iter = letters.begin();
@@ -387,7 +374,6 @@ void Quiz::indicator(int i) {
 		return;
 	}
 	if(check != i) {
-		offtemp->setVisible(false);
 		int count = 0;
 		std::list<Letters*>::iterator iter;
 		iter = letters.begin();
@@ -397,12 +383,7 @@ void Quiz::indicator(int i) {
 			string ss = letter->getLabel();
 			if ((ss.compare("\n") == 0) || (ss.compare("\0") == 0) || (ss.compare("\r") == 0) || (ss.compare(" ") == 0)) {iter++;continue;}
 			if(count == i) {
-				if(letter->getStatus() == Letters::ON) {
-					offtemp->setVisible(true);
-					offtemp->setPosition(letter->getPosition());
-				}
-				else
-					letter->setColor(D3DCOLOR_XRGB(255,25,25));
+				letter->setColor(D3DCOLOR_XRGB(255,25,25));
 				break;
 			}
 			count++;
@@ -481,5 +462,26 @@ void Quiz::arrangeQuestion(Font* font) {
 		i++;
 		x += font->getCharWidth() + font->getScale();
 		count++;
+	}
+}
+
+bool Quiz::checkLetter(int position) {
+	int count=0;
+	if (letters.empty() == true) return false;
+	std::list<Letters*>::iterator iter;
+	iter = letters.begin();
+	Letters* letter;
+	while (iter != letters.end()) {
+		letter = *iter;
+		string ss = letter->getLabel();
+		if ((ss.compare("\n") == 0) || (ss.compare("\0") == 0) || (ss.compare("\r") == 0) || (ss.compare(" ") == 0)) {iter++;continue;}
+		if(count == position) {
+			if(letter->getStatus() == Letters::ON)
+				return true;
+			else
+				return false;
+		}
+		count++;
+		iter++;
 	}
 }

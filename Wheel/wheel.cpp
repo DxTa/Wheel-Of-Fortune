@@ -2,9 +2,10 @@
 #include "math.h"
 
 Wheel::Wheel() : Sprite() {
+	static int i = 0;
 	speed = 0;
 	power_bar = new Sprite();
-	power_bar->loadImage("source/gameplay/powerbar.png");
+	power_bar->loadImage("source/gameplay/powerbar.tga");
 	power_bar->setSize(904,62);
 	power_bar->setScale(0.5);
 	power_bar->setCurrentFrame(0);
@@ -19,22 +20,12 @@ Wheel::Wheel() : Sprite() {
 	s=0;
 	slice = 15;
 	direction = NONE;
-	teng = "";
-	g_engine->audio->Load("sound.mp3",teng);
+	teng = "slice";
+	if(i==0) {
+		g_engine->audio->Load("source/audio/slice.mp3",teng);
+		i  = 1;
+	}
 	start_spin  = false;
-	setStatus(STOP);
-}
-
-Wheel::Wheel(double sp,double fric) : Sprite() {
-	speed = sp;
-	friction = fric;
-	angle = 0;
-	s = 0;
-	slice = 15;
-	direction = NONE;
-	teng = "";
-	g_engine->audio->Load("sound.mp3",teng);
-	start_spin = false;
 	setStatus(STOP);
 }
 

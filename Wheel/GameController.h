@@ -60,12 +60,12 @@ void GameController::updatePlayer() {
 		Scene::keyboard->setStatus(Keyboard::UNAVAILABLE);
 		if((Next_Stage->getVisible()==false) && (Scene::g_player->getStatus() != Player::LOSED_SPECIAL)) {
 			Sprite * next = new Sprite();
-			next->loadImage("source/emotion/nextstage.png");
+			next->loadImage("source/emotion/nextstage.tga");
 			next->setPosition(Next_Stage->getPosition().getX()-400,Next_Stage->getPosition().getY()+next->getHeight()/2);
 			next->setObjectType(Scene::NEXT_STAGE);
 			g_engine->addEntity(next);
 			next= new Sprite();
-			next->loadImage("source/emotion/Loseall.png");
+			next->loadImage("source/emotion/Loseall.tga");
 			next->setCollisionMethod(COLLISION_DIST);
 			next->setPosition(g_engine->getScreenWidth()/2-200,g_engine->getScreenHeight()/2-200);
 			next->setObjectType(Scene::LOSEALL);
@@ -132,7 +132,7 @@ void GameController::spinPlayer() {
 			int sa = rand()%3;
 			if(sa) {
 				emo = new Sprite();
-				emo->loadImage("source/emotion/bigToss.png");
+				emo->loadImage("source/emotion/bigToss.tga");
 				emo->setPosition(20,g_engine->getScreenHeight()/2-50);
 				emo->setLifetime(1000);
 				g_engine->addEntity(emo);
@@ -142,7 +142,7 @@ void GameController::spinPlayer() {
 			int sa = rand()%3;
 			if(sa) {
 				emo = new Sprite();
-				emo->loadImage("source/emotion/smallToss.png");
+				emo->loadImage("source/emotion/smallToss.tga");
 				emo->setPosition(20,g_engine->getScreenHeight()/2-50);
 				emo->setLifetime(1500);
 				g_engine->addEntity(emo);
@@ -153,8 +153,9 @@ void GameController::spinPlayer() {
 			Scene::g_player->setScore(0);
 			Scene::g_player->end_play(Wheel::G_BANKRUPT);
 			Scene::scenePlayerMenu_start = true;
+			g_engine->audio->Play("bankrupt");
 			emo = new Sprite();
-			emo->loadImage("source/emotion/BankRupt.png");
+			emo->loadImage("source/emotion/BankRupt.tga");
 			emo->setPosition(wheel->getPosition().getX()+30,wheel->getPosition().getY()-200);
 			emo->setLifetime(1000);
 			g_engine->addEntity(emo);
@@ -163,7 +164,7 @@ void GameController::spinPlayer() {
 			Scene::g_player->end_play(Wheel::G_LOSEATURN);
 			Scene::scenePlayerMenu_start = true;
 			emo = new Sprite();
-			emo->loadImage("source/emotion/Loseturn.png");
+			emo->loadImage("source/emotion/Loseturn.tga");
 			emo->setPosition(wheel->getPosition().getX()+wheel->getWidth()-200,wheel->getPosition().getY()-120);
 			emo->setLifetime(1000);
 			g_engine->addEntity(emo);
@@ -182,7 +183,7 @@ void GameController::spinPlayer() {
 			specialGift = "$1.000.000 ";
 			Scene::g_player->setStatus(Player::BEGIN_SPECIAL);
 			emo = new Sprite();
-			emo->loadImage("source/emotion/guessaword.png");
+			emo->loadImage("source/emotion/guessaword.tga");
 			emo->setPosition(button_ready->getPosition());
 			emo->setObjectType(Scene::GUESSAWORD);
 			g_engine->addEntity(emo);
@@ -191,7 +192,7 @@ void GameController::spinPlayer() {
 			specialGift = "an iPhone";
 			Scene::g_player->setStatus(Player::BEGIN_SPECIAL);
 			emo = new Sprite();
-			emo->loadImage("source/emotion/guessaword.png");
+			emo->loadImage("source/emotion/guessaword.tga");
 			emo->setPosition(button_ready->getPosition());
 			emo->setObjectType(Scene::GUESSAWORD);
 			g_engine->addEntity(emo);
@@ -200,7 +201,7 @@ void GameController::spinPlayer() {
 			specialGift = "an iPad";
 			Scene::g_player->setStatus(Player::BEGIN_SPECIAL);
 			emo = new Sprite();
-			emo->loadImage("source/emotion/guessaword.png");
+			emo->loadImage("source/emotion/guessaword.tga");
 			emo->setPosition(button_ready->getPosition());
 			emo->setObjectType(Scene::GUESSAWORD);
 			g_engine->addEntity(emo);
@@ -209,7 +210,7 @@ void GameController::spinPlayer() {
 			specialGift = "an Europe Trip";
 			Scene::g_player->setStatus(Player::BEGIN_SPECIAL);
 			emo = new Sprite();
-			emo->loadImage("source/emotion/guessaword.png");
+			emo->loadImage("source/emotion/guessaword.tga");
 			emo->setPosition(button_ready->getPosition());
 			emo->setObjectType(Scene::GUESSAWORD);
 			g_engine->addEntity(emo);
@@ -218,7 +219,7 @@ void GameController::spinPlayer() {
 			specialGift = "a Tivi";
 			Scene::g_player->setStatus(Player::BEGIN_SPECIAL);
 			emo = new Sprite();
-			emo->loadImage("source/emotion/guessaword.png");
+			emo->loadImage("source/emotion/guessaword.tga");
 			emo->setPosition(button_ready->getPosition());
 			emo->setObjectType(Scene::GUESSAWORD);
 			g_engine->addEntity(emo);
@@ -227,7 +228,7 @@ void GameController::spinPlayer() {
 			specialGift = "a Car";
 			Scene::g_player->setStatus(Player::BEGIN_SPECIAL);
 			emo = new Sprite();
-			emo->loadImage("source/emotion/guessaword.png");
+			emo->loadImage("source/emotion/guessaword.tga");
 			emo->setPosition(button_ready->getPosition());
 			emo->setObjectType(Scene::GUESSAWORD);
 			g_engine->addEntity(emo);
@@ -261,7 +262,7 @@ void GameController::PlayerGift() {
 void GameController::showGift() {
 	Scene::arrow->setVisible(false);
 	Sprite* hehe = new Sprite();
-	hehe->loadImage("source/emotion/chooseagift.png");
+	hehe->loadImage("source/emotion/chooseagift.tga");
 	hehe->setPosition(g_engine->getScreenWidth()/2 -400,g_engine->getScreenHeight()/2-20);
 	hehe->setObjectType(EMOTION_GIFT);
 	hehe->setLifetime(5000);

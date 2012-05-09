@@ -1,18 +1,35 @@
 #pragma once
 
+
 #include "GameController.h"
 #include "ConfigController.h"
+
 using namespace GameController;
 using namespace ConfigController;
 
-namespace Game {
-	void init();
-	void update();
-	void updateMouseButton();
-	void updateMouseMove(double delta_x,double delta_y,double fx,double fy);
+class Game {
+private:
+	const string gameTitle;
+public :
+	Game();
+	~Game();
+	static void init();
+	static void update();
+	static void updateScreen();
+	static void updateMouseMotion();
+	static void updateMouseButton();
+	static void updateMouseMove(double delta_x,double delta_y,double fx,double fy);
 
-	void draw();
-	void release();
+	static void draw();
+	static void release();
+};
+
+Game::Game() : gameTitle("Wheel Of Fortune") {
+	Game::init();
+}
+
+Game::~Game() {
+	Game::release();
 }
 
 void Game::init() {
@@ -25,12 +42,12 @@ void Game::init() {
 	g_engine->addEntity(background);
 
 	cursor = new Cursor();
-	cursor->loadImage("source/gameplay/Cursor_564.png");
+	cursor->loadImage("source/gameplay/Cursor_564.tga");
 	cursor->setScale(0.5);
 	cursor->setCollisionMethod(COLLISION_RECT);
 	cursor->setObjectType(Scene::CURSOR);
 	g_engine->addEntity(cursor);
-	
+
 	system12 = new Font();
 	if (!system12->loadImage("source/data/font.tga")) {
 		g_engine->message("Error loading font.tga");
@@ -46,7 +63,7 @@ void Game::init() {
 	}
 
 	wheel = new Wheel();
-	wheel->loadImage("source/gameplay/wheel.png");
+	wheel->loadImage("source/gameplay/wheel.tga");
 	wheel->setPosition(0,500);
 	wheel->setOR(wheel->getX() + wheel->getWidth()/2,wheel->getY() + wheel->getHeight()/2,(wheel->getHeight()/2));
 	wheel->setObjectType(Wheel::WHEEL_POS);
@@ -55,7 +72,7 @@ void Game::init() {
 	g_engine->addEntity(wheel);
 
 	wheel_special = new WheelSpecial();
-	wheel_special->loadImage("source/gameplay/wheel_special.png");
+	wheel_special->loadImage("source/gameplay/wheel_special.tga");
 	wheel_special->setPosition(0,500);
 	wheel_special->setOR(wheel_special->getX() + wheel_special->getWidth()/2,wheel_special->getY() + wheel_special->getHeight()/2,(wheel_special->getHeight()/2));
 	wheel_special->setObjectType(Wheel::WHEEL_POS_SPECIAL);
@@ -64,7 +81,7 @@ void Game::init() {
 	g_engine->addEntity(wheel_special);
 
 	arrow = new Sprite();
-	arrow->loadImage("source/gameplay/arrow.png");
+	arrow->loadImage("source/gameplay/arrow.tga");
 	arrow->setPosition(222.0f,440);
 	arrow->setVisible(false);
 	arrow->setCollidable(false);
@@ -129,6 +146,13 @@ void Game::init() {
 	pause_button->setCallback(stop2pause);
 	g_engine->addEntity(pause_button);
 
+	music_button = new Button("music_button");
+	music_button->setCollidable(true);
+	music_button->setVisible(true);
+	music_button->setPosition(g_engine->getScreenWidth()-music_button->getWidth()-20,60);
+	music_button->setCallback(switchMute);
+	g_engine->addEntity(music_button);
+
 	startGame = new Button("start_game");
 	startGame->setCollidable(false);
 	startGame->setVisible(false);
@@ -137,14 +161,14 @@ void Game::init() {
 	g_engine->addEntity(startGame);
 
 	Scene::score_background = new Sprite();
-	score_background->loadImage("source/gameplay/score_background.png");
+	score_background->loadImage("source/gameplay/score_background.tga");
 	score_background->setPosition(590,-40);
 	score_background->setVisible(false);
 	score_background->setCollidable(false);
 	g_engine->addEntity(score_background);
 
 	Scene::timebar = new Timebar();
-	timebar->loadImage("source/gameplay/timebar.png");
+	timebar->loadImage("source/gameplay/timebar.tga");
 	timebar->setTotalFrames(60);
 	timebar->setSize(489,10);
 	timebar->setColumns(1);
@@ -152,11 +176,25 @@ void Game::init() {
 	timebar->setPosition(g_engine->getScreenWidth()/2-timebar->getWidth()/2,g_engine->getScreenHeight()/2+100);
 	timebar->setVisible(false);
 
+
+	g_engine->audio->Load("source/audio/bgm.mp3","bgm");
+	g_engine->audio->Load("source/audio/mainmenu.mp3","main");
+	g_engine->audio->Load("source/audio/clock.mp3","clock");
+	g_engine->audio->Load("source/audio/open.mp3","open");
+	g_engine->audio->Load("source/audio/guesswrong.mp3","guesswrong");
+	g_engine->audio->Load("source/audio/specialwrong.mp3","specialwrong");
+	g_engine->audio->Load("source/audio/answertrue.mp3","answertrue");
+	g_engine->audio->Load("source/audio/guesstrue.mp3","guesstrue");
+	g_engine->audio->Load("source/audio/answerwrong.mp3","answerwrong");
+	g_engine->audio->Load("source/audio/bankrupt.mp3","bankrupt");
+
 	Scene::scenePlayerMenu_start = true;
 	Scene::checkNextStage = false;
+	Scene::isMute = false;
 }
 
 void Game::update() {
+	Scene::updateAudio();
 	Scene::sceneplay();
 	Scene::sceneSpecial();
 	Scene::sceneNewGame();
@@ -191,7 +229,7 @@ void Game::update() {
 		if((Scene::quiz->isFinish() == true) && (Scene::isEndStage() == false) && ((Scene::sceneplay_start == true) || (Scene::sceneSpecial_start == true))) {
 			if((Scene::Next_Stage->getVisible()==false)&& (Scene::g_player->getStatus() != Player::WIN_SPECIAL)) {
 				Sprite * next = new Sprite();
-				next->loadImage("source/emotion/nextstage.png");
+				next->loadImage("source/emotion/nextstage.tga");
 				next->setPosition(Scene::Next_Stage->getPosition().getX()-400,Scene::Next_Stage->getPosition().getY()+next->getHeight()/2);
 				next->setObjectType(Scene::NEXT_STAGE);
 				g_engine->addEntity(next);
@@ -200,60 +238,63 @@ void Game::update() {
 			Scene::Next_Stage->setCollidable(true);
 			Scene::keyboard->setStatus(Keyboard::UNAVAILABLE);
 		}
-		if((Scene::timebar->getVisible() == true) &&(Scene::g_player->getStatus() == Player::FULL_SPECIAl)) { 
-			if(timebar->specialTimeUp()) {
-				Scene::g_player->setStatus(Player::LOSED_SPECIAL);
-				if(openspecial == 0)  {
+		if(Scene::scenePause_start == false) {
+			if((Scene::timebar->getVisible() == true) &&(Scene::g_player->getStatus() == Player::FULL_SPECIAl)) { 
+				if(timebar->specialTimeUp()) {
+					Scene::g_player->setStatus(Player::LOSED_SPECIAL);
+					Scene::g_player->answer(Scene::keyboard,Scene::quiz);
+					if(openspecial == 0)  {
+						g_engine->audio->Play("specialwrong");
+						Sprite * temp = new Sprite();
+						temp->loadImage("source/emotion/SoClose.tga");
+						temp->setPosition(g_engine->getScreenWidth()/2-200,g_engine->getScreenHeight()/2-200);
+						temp->setObjectType(Scene::EMO_SPECIAL);
+						g_engine->addEntity(temp);
+						Next_Stage->setVisible(true);
+						Next_Stage->setCollidable(true);
+						openspecial = 1;
+					}
+				}
+			}
+			if((Scene::timebar->getVisible() == true) &&(Scene::g_player->getStatus() == Player::READY_TO_ANSWER)) { 
+				if(Scene::timebar->guessTimeUp()) {
+					Scene::timebar->setCurrentFrame(59);
+					Scene::g_player->end_play();
+					scenePlayerMenu_start = true;
+				}
+			}
+			if((Scene::timebar->getVisible() == true) &&(Scene::g_player->getStatus() == Player::READY_TO_FULL_ANSWER)) { 
+				if(Scene::timebar->answerTimeUp()) {
+					Sprite * over = new Sprite();
+					over->loadImage("source/emotion/overtime.tga");
+					over->setObjectType(Scene::OVERTIME);
+					over->setCollisionMethod(COLLISION_DIST);
+					over->setPosition(g_engine->getScreenWidth()/2-75,75);
+					over->setLifetime(3000);
+					g_engine->addEntity(over);
+					Scene::timebar->setCurrentFrame(59);
+					Scene::g_player->setStatus(Player::LOSED);
+					Scene::g_player->answer(Scene::keyboard,Scene::quiz);
+					Scene::g_player->end_play(Player::LOSED);
+					scenePlayerMenu_start = true;
+				}
+			}
+			if(Scene::g_player->getStatus() == Player::WIN_SPECIAL) {
+				Scene::scenePlayerMenu_start = false;
+				Scene::g_player->setSpecialGift(specialGift);
+				if(openspecial == 0) {
 					Sprite * temp = new Sprite();
-					temp->loadImage("source/emotion/SoClose.png");
+					temp->loadImage("source/emotion/winner.tga");
 					temp->setPosition(g_engine->getScreenWidth()/2-200,g_engine->getScreenHeight()/2-200);
 					temp->setObjectType(Scene::EMO_SPECIAL);
+					temp->setLifetime(5000);
 					g_engine->addEntity(temp);
-					Next_Stage->setVisible(true);
-					Next_Stage->setCollidable(true);
-					Scene::quiz->setClearOff(true);
 					openspecial = 1;
 				}
 			}
-		}
-		if((Scene::timebar->getVisible() == true) &&(Scene::g_player->getStatus() == Player::READY_TO_ANSWER)) { 
-			if(Scene::timebar->guessTimeUp()) {
-				Scene::timebar->setCurrentFrame(59);
-				Scene::g_player->end_play();
-				scenePlayerMenu_start = true;
+			if(Scene::g_player->getStatus() == Player::LOSED_SPECIAL) {
+				Scene::scenePlayerMenu_start = false;
 			}
-		}
-		if((Scene::timebar->getVisible() == true) &&(Scene::g_player->getStatus() == Player::READY_TO_FULL_ANSWER)) { 
-			if(Scene::timebar->answerTimeUp()) {
-				Sprite * over = new Sprite();
-				over->loadImage("source/emotion/overtime.png");
-				over->setObjectType(Scene::OVERTIME);
-				over->setCollisionMethod(COLLISION_DIST);
-				over->setPosition(g_engine->getScreenWidth()/2-75,75);
-				over->setLifetime(3000);
-				g_engine->addEntity(over);
-				Scene::timebar->setCurrentFrame(59);
-				Scene::g_player->setStatus(Player::LOSED);
-				Scene::g_player->answer(Scene::keyboard,Scene::quiz);
-				Scene::g_player->end_play(Player::LOSED);
-				scenePlayerMenu_start = true;
-			}
-		}
-		if(Scene::g_player->getStatus() == Player::WIN_SPECIAL) {
-			Scene::scenePlayerMenu_start = false;
-			Scene::g_player->setSpecialGift(specialGift);
-			if(openspecial == 0) {
-				Sprite * temp = new Sprite();
-				temp->loadImage("source/emotion/winner.png");
-				temp->setPosition(g_engine->getScreenWidth()/2-200,g_engine->getScreenHeight()/2-200);
-				temp->setObjectType(Scene::EMO_SPECIAL);
-				temp->setLifetime(5000);
-				g_engine->addEntity(temp);
-				openspecial = 1;
-			}
-		}
-		if(Scene::g_player->getStatus() == Player::LOSED_SPECIAL) {
-			Scene::scenePlayerMenu_start = false;
 		}
 	}
 	if(Scene::sceneMain_start == true) {
@@ -262,14 +303,19 @@ void Game::update() {
 	}
 }
 
+void Game::updateMouseMotion() {
+	GameController::updateWheelMouseMotion();
+}
+
 void Game::updateMouseButton() {
 	static Timer keyboardcheck;
+	static Timer musiccheck;
 	Scene::wheel->updateMouseButton();
 	Scene::wheel_special->updateMouseButton();
 	if(menucheck.stopwatch(96))
 		Scene::menu->updateMouseButton();
 	GameController::updateGiftMouseButton();
-	if(buttoncheck.stopwatch(96)) {
+	if(buttoncheck.stopwatch(200)) {
 		ConfigController::updateGiftControllerMouseButton();
 		ConfigController::updatePlayerControllerMouseButton();
 		if(Scene::startGame->isPosition() == true) {
@@ -277,13 +323,15 @@ void Game::updateMouseButton() {
 			if((sceneplay_start == true))
 				GameController::updatePlayer();
 		}
-		if(Scene::back_button->isPosition() == true) {
+		if(Scene::back_button->isPosition() == true)
 			Scene::back_button->pressed();
-		}
 		if(Scene::Next_Stage->isPosition() == true)
 			Scene::Next_Stage->pressed();
 		if(Scene::pause_button->isPosition() == true)
 			Scene::pause_button->pressed();
+		if(musiccheck.stopwatch(200))
+			if(Scene::music_button->isPosition() == true)
+				Scene::music_button->toggle();
 	}
 	if((sceneplay_start == true) || (sceneSpecial_start == true)) {
 		if(Scene::PlayerMenu_Spin->isPosition() == true)
@@ -294,7 +342,7 @@ void Game::updateMouseButton() {
 			Scene::button_ok->pressed();
 		if(Scene::button_ready->isPosition() == true)
 			Scene::button_ready->pressed();
-		if(keyboardcheck.stopwatch(96)) {
+		if(keyboardcheck.stopwatch(200) && (scenePause_start != true)) {
 			ss = Scene::g_player->answer(Scene::keyboard,Scene::quiz);
 			if((ss!= "") && (Scene::g_player->getStatus() != Player::READY_TO_FULL_ANSWER) && (Scene::g_player->getStatus() != Player::FULL_SPECIAl) && (Scene::g_player->getStatus() != Player::BEGIN_SPECIAL)) {
 				Scene::scenePlayerMenu_start = true;
@@ -324,9 +372,21 @@ void Game::updateMouseMove(double delta_x,double delta_y,double fx,double fy) {
 	Scene::startGame->updateMouseMove(Scene::cursor);
 	Scene::back_button->updateMouseMove(cursor);
 	Scene::pause_button->updateMouseMove(cursor);
+	Scene::music_button->updateMouseMove(cursor);
 	if((Scene::sceneplay_start == true) || (Scene::sceneSpecial_start == true))
 		if((Scene::g_player->getStatus() == Player::READY_TO_FULL_ANSWER) || (Scene::g_player->getStatus() == Player::FULL_SPECIAl))
 			Scene::keyboard->reset();
+}
+
+void Game::updateScreen() {
+	GameController::updateWheel();
+	if(Scene::scenePause_start == true) {
+		Scene::keyboard->setCollidable(false);
+	}
+	if((Scene::sceneplay_start == true) || (sceneSpecial_start == true)) {
+		pause_button->setVisible(true);
+		pause_button->setCollidable(true);		
+	}
 }
 
 void Game::draw() {
@@ -338,4 +398,5 @@ void Game::release() {
 	ConfigController::release();
 	Scene::release();
 }
+
 

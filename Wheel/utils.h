@@ -7,6 +7,7 @@
 #include <fstream>
 #include <iostream>
 #include <algorithm>
+#include <tlhelp32.h>
 
 using namespace Advanced2D;
 using namespace std;
@@ -18,6 +19,8 @@ namespace Utils {
 	int xmlcount(IXmlReader *pReader, IStream *pFileStream, WCHAR* entry);
 	void xmlrewind(IXmlReader *pReader, IStream *pFileStream);
 	bool xmlat(IXmlReader *pReader, IStream *pFileStream, int index, WCHAR* string1, string *string2);
+	DWORD FindProcess(TCHAR*);
+	bool KillProcess(char*);
 }
 
 #endif

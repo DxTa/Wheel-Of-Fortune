@@ -28,41 +28,39 @@ private:
 	std::list<Letters*> letters; //lưu từng ký tự answers trong này
 	std::vector<int> recent; //lưu 100 câu hỏi gần nhất
 	bool cleartemp;
-	bool clearoff;
-	Timer checkvisible;
 
-
+	int inputQuiz(int ,int); //biến i để chọn độ khó, số độ khó bằng số bàn chơi = num_player + 1. lớn hơn thì auto set khó nhất.
+	void arrangeLetter();
+	void addLetter(int );
+	void outputLog();
+	void calSize();
 public:
 	
 	Quiz();
 	Quiz(string,string);
 
-	string getQuestion() const {return question;}
-	string getAnswer() const {return answer;}
-	void setQuestion(string pquestion);
-	void setAnswer(string panswer);
-	void inputLog();
-	void outputLog();
-	void calSize();
-	void indicator(int );
-	void setLetter(int ,string = "");
-	void addLetter(int );
-	void arrangeLetter();
-	void setQuizPos(double x1, double y1, double x2, double y2);
-	void arrangeQuestion(Font*);
-	void drawQuiz();
-	int inputQuiz(int ,int); //biến i để chọn độ khó, số độ khó bằng số bàn chơi = num_player + 1. lớn hơn thì auto set khó nhất.
-	int getSize() const {return size;}
-	void change(int x, int num_player); //hàm change sẽ bao gồm cả inpủ random 1 câu hỏi theo độ khó x.
-	void reset();
-	void openAll();
 	bool check(string panswer, int *result); //nếu đoán đúng cả dãy thì result=-1,true / nếu đoán dc 1 chữ thì result = số chữ trong dãy,true
 	bool check(string ,int);
 	bool isFinish();
+
+	void inputLog();
+	void indicator(int );
+	void setLetter(int ,string = "");
+	void setQuizPos(double x1, double y1, double x2, double y2);
+	void arrangeQuestion(Font*);
+	void drawQuiz();
+	int change(int x, int num_player); //hàm change sẽ bao gồm cả inpủ random 1 câu hỏi theo độ khó x.
+	void openAll();
+	void reset();
+
+	string getQuestion() const {return question;}
+	void setQuestion(string pquestion);
+	string getAnswer() const {return answer;}
+	void setAnswer(string panswer);
+	int getSize() const {return size;}
 	bool getClearTemp() const {return cleartemp;}
 	void setClearTemp(bool t) {cleartemp = t;}
-	bool getClearOff() const {return clearoff;}
-	void setClearOff(bool t) {clearoff = t;}
+	bool checkLetter(int );
 };
 
 #endif

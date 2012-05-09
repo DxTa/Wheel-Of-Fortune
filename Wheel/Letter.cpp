@@ -13,12 +13,12 @@ Letters::Letters(string plabel) : Sprite() {
 
 	static int i = 0;
 	if ((i == 0) || (image_off == NULL)) {
-		image_off->Load("source/button/off.png");
+		image_off->Load("source/button/off.tga");
 		i=1;
 	}
 	
 	image_on = new	Texture();
-	ss << "source/button/" << label << "_normal" <<".png";
+	ss << "source/button/" << label << "_normal" <<".tga";
 	image_on->Load(ss.str());
 	off();
 }

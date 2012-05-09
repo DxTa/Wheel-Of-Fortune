@@ -100,7 +100,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,i
 		ShowCursor(FALSE);
 	}
 	else {
-		dwStyle = WS_OVERLAPPEDWINDOW;
+		//dwStyle = WS_OVERLAPPEDWINDOW;
+		dwStyle=(WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX);
 		dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
 	}
 

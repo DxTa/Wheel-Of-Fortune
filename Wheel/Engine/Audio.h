@@ -44,6 +44,8 @@ namespace Advanced2D {
 		void StopAll();
 		void StopAllExcept(std::string name);
 		
+		bool SetVolume(std::string filename, float level);
+
 		bool IsPlaying(std::string name);
 		bool SampleExists(std::string name);
 		Sample *FindSample(std::string name);

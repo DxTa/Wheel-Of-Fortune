@@ -19,7 +19,7 @@ Player::Player() : Sprite() {
 	gift = "";
 	specialGift = "";
 	ostringstream ss2;
-	ss2 << "source/player/" << name << "_on.png";
+	ss2 << "source/player/" << name << "_on.tga";
 	loadImage(ss2.str());
 }
 
@@ -36,7 +36,7 @@ Player::Player(string na) : Sprite() {
 	gift = "";
 	specialGift = "";
 	ostringstream ss;
-	ss << "source/player/" << name << "_on.png";
+	ss << "source/player/" << name << "_on.tga";
 	loadImage(ss.str());
 }
 
@@ -123,9 +123,11 @@ int Player::spin(Wheel* wheel) {
 string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 	static int count_full = 0;
 	static int result_full = 0;
-	if(getStatus() == LOSED) {
+	static int turnfull = 0;
+	if(getStatus() == LOSED || getStatus() == LOSED_SPECIAL) {
 		count_full = 0;
 		result_full = 0;
+		turnfull = 0;
 		quiz->setClearTemp(true);
 		quiz->indicator(-1);
 		keyboard->loadState();
@@ -139,15 +141,24 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 			setStatus(PLAYING);
 			int result = 0;
 			if(quiz->check(ss,&result)) {
+				g_engine->audio->Play("guesstrue");
 				turn_left = 3;
+				Sprite* hehe = new Sprite();
+				hehe->loadImage("source/emotion/ohyeah.tga");
+				hehe->setLifetime(2000);
+				hehe->setObjectType(Player::NEXT_PLAYER);
+				hehe->setCollisionMethod(COLLISION_DIST);
+				hehe->setPosition(g_engine->getScreenWidth()/2-80,75);
+				g_engine->addEntity(hehe);
 				if((TossUp > 0) && (TossUp != Wheel::G_FREEATURN))
 					score += TossUp*result;
 				if(TossUp == Wheel::G_FREEATURN)
 					turn_gift++;
 			}
 			else {
+				g_engine->audio->Play("guesswrong");
 				Sprite* hehe = new Sprite();
-				hehe->loadImage("source/emotion/nextplayer.png");
+				hehe->loadImage("source/emotion/nextplayer.tga");
 				hehe->setLifetime(2000);
 				hehe->setObjectType(Player::NEXT_PLAYER);
 				hehe->setCollisionMethod(COLLISION_DIST);
@@ -160,34 +171,49 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 	}
 	if(getStatus() == READY_TO_FULL_ANSWER) {
 		string ss;
+		bool check;
+		while(quiz->checkLetter(count_full) == true) {
+			count_full++;
+			result_full++;
+			if(count_full == quiz->getSize())
+				goto by_full;
+		}
 		keyboard->setStatus(Keyboard::AVAILABLE);
 		ss = keyboard->chose();
 		keyboard->setStatus(Keyboard::WAIT);
-		bool check;
 		quiz->setClearTemp(false);
 		quiz->indicator(count_full);
 		if(ss!= "") {
 			quiz->setLetter(count_full,ss);
-			quiz->indicator(count_full+1);
 			setStatus(READY_TO_FULL_ANSWER);
 			check = quiz->check(ss,count_full);
 			if(check == true) 
 				result_full++;
 			count_full++;
 			if(count_full == (quiz->getSize())) {
+				by_full:
 				if(result_full == count_full) {
+					g_engine->audio->Play("answertrue");
+					Sprite* hehe = new Sprite();
+					hehe->loadImage("source/emotion/correct.tga");
+					hehe->setLifetime(3000);
+					hehe->setObjectType(Player::FULLGUESSTRUE);
+					hehe->setCollisionMethod(COLLISION_DIST);
+					hehe->setPosition(g_engine->getScreenWidth()/2-75,75);
+					g_engine->addEntity(hehe);
 					this->winStage();
 					quiz->openAll();
 				}
 				else {
 					if(numberPlaying>1) {
 						Sprite* hehe = new Sprite();
-						hehe->loadImage("source/emotion/wrongfullguess.png");
+						hehe->loadImage("source/emotion/FULLGUESS.tga");
 						hehe->setLifetime(3000);
-						hehe->setObjectType(Player::WRONGFULLGUESS);
+						hehe->setObjectType(Player::FULLGUESSWRONG);
 						hehe->setPosition(g_engine->getScreenWidth()/2-75,75);
 						g_engine->addEntity(hehe);
 					}
+					g_engine->audio->Play("answerwrong");
 					end_play(LOSED);
 				}
 				count_full = 0;
@@ -195,10 +221,17 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 				quiz->setClearTemp(true);
 				keyboard->loadState();
 				keyboard->setStatus(Keyboard::UNAVAILABLE);
+				return ss;
 			}
+			while(quiz->checkLetter(count_full) == true) {
+				count_full++;
+				result_full++;
+				if(count_full == quiz->getSize())
+					goto by_full;
+			}
+			quiz->indicator(count_full);
 		}
-		return ss;
-		
+		return ss;	
 	}
 	if(getStatus() == BEGIN_SPECIAL) {
 		static int turnguess = 0;
@@ -209,55 +242,80 @@ string Player::answer(Keyboard* keyboard,Quiz* quiz) {
 		if(ss!= "") {
 			setStatus(BEGIN_SPECIAL);
 			int result = 0;
-			quiz->check(ss,&result);
+			if(quiz->check(ss,&result)) {
+				g_engine->audio->Play("guesstrue");
+			}
 			turnguess++;
-			if(turnguess >= quiz->getAnswer().length()/5) 
+			if(turnguess >= quiz->getAnswer().length()/5) {
+				int a = 0;
+				while(quiz->checkLetter(a) == true) {
+					a++;
+
+				}
+				quiz->indicator(a);
+				count_full = a;
+				result_full = a;
 				status = Player::FULL_SPECIAl;
-			quiz->indicator(0);
+			}
 		}
 		return ss;
 	}
 	if(getStatus() == FULL_SPECIAl) {
-		static int turnfull = 0;
 		string ss;
+		bool check;
+		while(quiz->checkLetter(count_full) == true) {
+			count_full++;
+			result_full++;
+			if(count_full == quiz->getSize())
+				goto by_special;
+		}
 		keyboard->setStatus(Keyboard::AVAILABLE);
 		ss = keyboard->chose();
 		keyboard->setStatus(Keyboard::WAIT);
-		static int count=0;
-		bool check;
 		quiz->setClearTemp(false);
-		static int result = 0;
-		quiz->indicator(count);
+		quiz->indicator(count_full);
 		if(ss!= "") {
-			quiz->setLetter(count,ss);
-			quiz->indicator(count+1);
-			setStatus(FULL_SPECIAl);
-			check = quiz->check(ss,count);
+			quiz->setLetter(count_full,ss);
+			check = quiz->check(ss,count_full);
 			if(check == true) 
-				result++;
-			count++;
-			if(count == (quiz->getSize())) {
+				result_full++;
+			count_full++;
+			setStatus(FULL_SPECIAl);
+			if(count_full == (quiz->getSize())) {
+				by_special :
 				turnfull++;
-				if(result == count) {
+				if(result_full == count_full) {
 					this->setStatus(WIN_SPECIAL);
 					quiz->openAll();
 				}
 				else {
 					if((turnfull) == quiz->getSize()/2) {
 						Sprite* hehe = new Sprite();
-						hehe->loadImage("source/emotion/wtf.png");
+						hehe->loadImage("source/emotion/wtf.tga");
 						hehe->setLifetime(2000);
 						hehe->setObjectType(Player::WTF);
 						hehe->setPosition(g_engine->getScreenWidth()/2-300,g_engine->getScreenHeight()/2-100);
 						g_engine->addEntity(hehe);
 					}
-					quiz->indicator(0);
+					int temp = 0;
+					while(quiz->checkLetter(temp) == true) {
+						temp++;
+					}
+					quiz->indicator(temp);
 				}
-				count = 0;
-				result = 0;
+				count_full = 0;
+				result_full = 0;
 				quiz->setClearTemp(true);
 				keyboard->setStatus(Keyboard::WAIT);
+				return ss;
 			}
+			while(quiz->checkLetter(count_full) == true) {
+				count_full++;
+				result_full++;
+				if(count_full == quiz->getSize())
+					goto by_special;
+			}
+			quiz->indicator(count_full);
 		}
 		return ss;
 	}
@@ -274,7 +332,7 @@ void Player::end_play(int pstatus) {
 		image->Release();
 		image = new Texture();
 		ostringstream ss;
-		ss << "source/player/" << name << "_off.png";
+		ss << "source/player/" << name << "_off.tga";
 		loadImage(ss.str());
 		return;
 	}
@@ -286,6 +344,7 @@ void Player::end_play(int pstatus) {
 		if(turn_left <= 0) {
 			numberPlaying--;
 			setStatus(LOSED);
+			loseGame();
 		}
 		else {
 			setStatus(AWAIT);
@@ -304,7 +363,7 @@ void Player::reset() {
 	image->Release();
 	image = new Texture();
 	ostringstream ss;
-	ss << "source/player/" << name << "_on.png";
+	ss << "source/player/" << name << "_on.tga";
 	loadImage(ss.str());
 	turn_gift = 0;
 	turn_left = 3;
@@ -396,6 +455,6 @@ void Player::loseGame() {
 	image->Release();
 	image = new Texture();
 	ostringstream ss;
-	ss << "source/player/" << name << "_off.png";
+	ss << "source/player/" << name << "_off.tga";
 	loadImage(ss.str());
 }

@@ -10,6 +10,8 @@
 #include "Cursor.h"
 #include "Player.h"
 #include "timebar.h"
+#include "utils.h"
+#include "Engine/Audio.h"
 #include "Engine/Advanced2D.h"
 
 namespace Scene {
@@ -49,9 +51,7 @@ namespace Scene {
 	Button* startGame;
 	Button* pause_button;
 	Button* back_button;
-	Button* play_button;
-	Button* help_button;
-	Button* exit_button;
+	Button* music_button;
 
 	int openspecial = 0;
 	int numGift;
@@ -79,6 +79,7 @@ namespace Scene {
 	bool scenePause_start = false;
 	bool scenePause_on = false;
 	bool cleartemp= true;
+	bool isMute;
 
 	void sceneplay();
 	void sceneSpecial();
@@ -86,6 +87,7 @@ namespace Scene {
 	void sceneNewGame();
 	void sceneHelp();
 	void scenePause();
+	void updateAudio();
 
 	void release();
 
@@ -94,6 +96,7 @@ namespace Scene {
 	void nextStage();
 
 	enum {CURSOR=150,EMOTION_GIFT = 11000,NEXT_STAGE,GUESSAWORD,LOSEALL,OVERTIME,NOTIFY_GIFT,NEWGAME_TITTLE,EMO_SPECIAL,PAUSE_LAYER};
+	HWND findname = NULL;
 }
 
 void g_exit() {
@@ -144,7 +147,7 @@ void special2main() {
 	Scene::PlayeMenu_Guess->setVisible(false);
 	Scene::PlayerMenu_Spin->setCollidable(false);
 	Scene::PlayerMenu_Spin->setVisible(false);
-	Scene::quiz->setClearOff(true);
+	Scene::quiz->setClearTemp(true);
 	Scene::phase = 1;
 	
 	Scene::sceneMain_start = true;
@@ -155,6 +158,9 @@ void special2main() {
 	Scene::sceneSpecial_on = false;
 	Scene::scenePlayerMenu_start = false;
 	Scene::scenePlayerMenu_on = false;
+	Scene::g_player->setStatus(Player::LOSED);
+	Scene::g_player->answer(Scene::keyboard,Scene::quiz);
+	Scene::timebar->setCurrentFrame(59);
 }
 
 void stop2pause() {
@@ -199,7 +205,9 @@ void pause2main() {
 }
 
 void spin() {
+	g_engine->audio->StopAllExcept("bgm");
 	Scene::wheel->setStatus(Wheel::WAIT);
+	Scene::wheel->setCollidable(true);
 	Scene::keyboard->setStatus(Keyboard::WAIT);
 	Scene::scenePlayerMenu_start  = false;
 	Scene::scenePlayerMenu_on = false;
@@ -210,6 +218,7 @@ void spin() {
 }
 
 void guess() {
+	g_engine->audio->StopAllExcept("bgm");
 	Scene::timebar->setVisible(true);
 	Scene::keyboard->saveState();
 	Scene::g_player->setStatus(Player::READY_TO_FULL_ANSWER);
@@ -219,6 +228,14 @@ void guess() {
 	Scene::PlayerMenu_Spin->setCollidable(false);
 	Scene::PlayeMenu_Guess->setVisible(false);
 	Scene::PlayeMenu_Guess->setCollidable(false);	
+}
+
+void switchMute() {
+	if(!Scene::isMute) {
+		Scene::isMute = true;
+	}
+	else
+		Scene::isMute = false;
 }
 
 void readyspecial() {
@@ -292,13 +309,16 @@ void Scene::nextStage()  {
 	phase++;
 	if(phase > (Player::getNumPlayer()+1)) {
 		special2main();
-		phase = 1;
 	}
 	else {
 		if(!quiz->isFinish())
 			return;
 		g_player->winScore();
-		quiz->change(0,Player::getNumPlayer());
+		if(quiz->change(phase-1,Player::getNumPlayer()) == -1) {
+			g_engine->message("Error loading database");
+			g_engine->Close();
+			return;
+		}
 		keyboard->reset();
 		Player* player;
 		std::list<Player*>::iterator iter;
@@ -362,7 +382,7 @@ void Scene::sceneMain() {
 	if((sceneMain_start==true) &&  (sceneMain_on == false)) {
 		menu->close();
 		background_image->Release();
-		background_image->Load("source/mainmenu/mainmenu.png");
+		background_image->Load("source/scene/mainmenu.tga");
 		background->setImage(background_image);
 		menu = new Menu("mainmenu","play_button","help_button","exit_button",NULL);
 		menu->addCallback("play_button",main2newgame);
@@ -378,9 +398,19 @@ void Scene::sceneplay() {
 		return;
 	if((sceneplay_start == true) && (sceneplay_on == false)) {
 		menu->close();
+		if(quiz->change(0,Player::getNumPlayer()) == -1) {
+			ShowCursor(true);
+			g_engine->message("Error loading database");
+			g_engine->Close();
+			return;
+		}
+		if(Utils::KillProcess("input.exe")) {
+			g_engine->message("Please exit QuizManager before playing Game");
+		}
+		g_engine->audio->StopAll();
+		pause_button->reset();
 		pause_button->setVisible(true);
-		pause_button->setCollidable(true);
-		quiz->change(0,Player::getNumPlayer());
+		pause_button->setCollidable(true);		
 		specialGift = "";
 		score_background->setVisible(true);
 		keyboard->setVisible(true);
@@ -405,7 +435,6 @@ void Scene::sceneSpecial() {
 		button_ready->setVisible(true);
 		button_ready->setCollidable(true);
 		timebar->setVisible(true);
-		quiz->setClearOff(false);
 		sceneSpecial_on = true;
 	}
 }
@@ -417,8 +446,9 @@ void Scene::sceneHelp() {
 		menu->close();
 		back_button->reset();
 		back_button->setVisible(true);
+		back_button->setCollidable(true);
 		background_image->Release();
-		background_image->Load("source/helpscene.png");
+		background_image->Load("source/scene/helpscene.tga");
 		background->setImage(background_image);
 		sceneHelp_on = true;
 	}
@@ -429,7 +459,7 @@ void Scene::scenePause() {
 		return;
 	if((scenePause_start == true) && (scenePause_on == false)) {
 		Sprite* layer = new Sprite();
-		layer->loadImage("source/pauselayer.png");
+		layer->loadImage("source/scene/pauselayer.tga");
 		layer->setObjectType(Scene::PAUSE_LAYER);
 		g_engine->addEntity(layer);
 		wheel->setCollidable(false);
@@ -448,7 +478,32 @@ void Scene::scenePause() {
 	}
 }
 
+void Scene::updateAudio() {
+	if(Scene::isMute) {
+		g_engine->audio->StopAll();
+		return;
+	}
+	if((scenePlayerMenu_start == false) || ((sceneSpecial_start == true) &&(button_ready->getVisible() == false))) {
+		g_engine->audio->SetVolume("bgm",0.6f);
+	}
+	else
+		g_engine->audio->SetVolume("bgm",1.0f);
+	if((sceneMain_start == true) || (sceneHelp_start == true) || (sceneNewGame_start == true)) {
+		if(!g_engine->audio->IsPlaying("main")) {
+			g_engine->audio->StopAll();
+			g_engine->audio->Play("main");
+		}
+	}
+	if((sceneplay_start == true) || (sceneSpecial_start == true)) { 
+		if(!g_engine->audio->IsPlaying("bgm")) {
+			g_engine->audio->Play("bgm");
+		}
+	}
+
+}
+
 void Scene::release() {
+	Utils::KillProcess("input.exe");
 	Letters::release();
 	delete menu;
 	delete background;
@@ -467,9 +522,7 @@ void Scene::release() {
 	delete startGame;
 	delete back_button;
 	delete pause_button;
-	delete play_button;
-	delete help_button;
-	delete exit_button;
+	delete music_button;
 	delete timebar;
 	delete cursor;
 }

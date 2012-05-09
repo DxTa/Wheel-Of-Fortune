@@ -147,3 +147,46 @@ bool Utils::xmlat(IXmlReader *pReader, IStream *pFileStream, int index, WCHAR* s
    if (check == 1) return true;
    else return false;
 }
+
+DWORD Utils::FindProcess(TCHAR *procname)
+{
+	HANDLE hProcessSnap;
+	PROCESSENTRY32 pe32;
+	TCHAR fname[100];
+
+	lstrcpy(fname,procname);
+
+	hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (hProcessSnap == (HANDLE)-1)
+		return 0;
+
+	pe32.dwSize = sizeof(PROCESSENTRY32);
+	if (Process32First(hProcessSnap, &pe32))
+	{
+		do
+		{
+			if (lstrcmp(fname,pe32.szExeFile) == 0 )
+			{
+				CloseHandle (hProcessSnap);
+				return pe32.th32ProcessID;
+			}
+		}
+		while (Process32Next(hProcessSnap, &pe32));
+	}
+
+	CloseHandle (hProcessSnap);
+	return 0;
+}
+
+bool Utils::KillProcess(char *szProcessToKill){
+	DWORD pid = FindProcess(wchar(szProcessToKill));
+	if(pid) {
+		HANDLE hProcess = OpenProcess(
+			PROCESS_ALL_ACCESS,FALSE,pid); 
+		TerminateProcess (hProcess, 0);    
+		CloseHandle(hProcess);
+		return true;
+	}
+	else
+		return false;
+}

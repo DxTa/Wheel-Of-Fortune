@@ -27,7 +27,6 @@ namespace Advanced2D {
 		{
 			(*i) = NULL;
 		}
-		
 		FMOD_System_Release(system);
 	}
 	
@@ -152,6 +151,7 @@ namespace Advanced2D {
 		
 		if (sample->sample != NULL) {
 			try {
+				//FMOD_Channel_SetVolume(sample->channel,0.5f);
 				//sample found, play it
 				res = FMOD_System_PlaySound(
 					system,
@@ -159,7 +159,7 @@ namespace Advanced2D {
 					sample->sample, 
 					true, 
 					&sample->channel);
-
+				
 				if (res!= FMOD_OK) return false;
 				
 				FMOD_Channel_SetLoopCount(sample->channel, -1);
@@ -226,6 +226,22 @@ namespace Advanced2D {
 				FMOD_Channel_Stop( (*i)->channel );
 			}
 		}
+	}
+
+	bool Audio::SetVolume(std::string filename, float level) {
+		Sample *sample = FindSample(filename);
+//***BUG
+		if (!sample) return false;
+		
+		if (sample->sample != NULL) {
+			try {
+				FMOD_Channel_SetVolume(sample->channel,level);
+			} catch (...) {
+				return false;
+			}
+		}
+	
+		return true;
 	}
 
 };

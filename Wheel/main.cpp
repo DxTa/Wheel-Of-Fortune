@@ -17,7 +17,9 @@
 
 using namespace Advanced2D;
 using namespace std;
-using namespace Game;
+
+bool holdCtrl = false;
+Game* g_controller;
 
 bool game_preload() 
 {
@@ -32,35 +34,33 @@ bool game_preload()
 
 bool game_init(HWND) 
 {	
-	Game::init();
-	//Scene::sceneNewGame_start = true;
+	g_controller= new Game();
 	Scene::sceneMain_start = true;
 	return true;
 }
 
 void game_update() 
 {
-	Game::update();
+	g_controller->update();
 }
 
 void game_render2d()
 {	
-	Game::draw();
-}
-
-void game_end() 
-{
-	Game::release();
-	g_engine->Close();
+	g_controller->draw();
 }
 
 void game_keyPress(int key) 
 { 
+	holdCtrl = false;
+	switch(key) {
+	case DIK_LCONTROL :
+	case DIK_RCONTROL :
+		holdCtrl = true;
+	}
 }
 
 void game_keyRelease(int key) 
 { 
-	Timer checkpress;
 	switch (key) {
 		case DIK_ESCAPE:
 			if((sceneHelp_start == true) || (sceneNewGame_start == true))
@@ -72,9 +72,12 @@ void game_keyRelease(int key)
 			if(scenePause_start == true)
 				pause2resume();
 			break;
-		case DIK_SPACE:
-			if(scenePause_start == true)
-				pause2main();
+		case DIK_M :
+			if((sceneNewGame_start == true) && (holdCtrl == true)) {
+				DWORD pid = Utils::FindProcess(L"input.exe");
+				if(!pid)
+					ShellExecute(GetDesktopWindow(), L"open",L"source\\data\\input.exe", NULL, NULL, SW_SHOWNORMAL);
+			}
 			break;
 	}
 }
@@ -83,26 +86,26 @@ void game_render3d()
 {
     g_engine->ClearScene(D3DCOLOR_XRGB(0,0,80));
 	g_engine->SetIdentity();
-	GameController::updateWheel();
+	g_controller->updateScreen();
 }
 
 void game_mouseButton(int button) {
 	switch(button) {
 	case 0 :	
-			Game::updateMouseButton();
+			g_controller->updateMouseButton();
 	}
 }
 
 void game_mouseMotion(int x,int y) {
 	cursor->setDeltaX((float)x);
 	cursor->setDeltaY((float)y);
-	GameController::updateWheelMouseMotion();
+	g_controller->updateMouseMotion();
 }
 
 void game_mouseMove(int x,int y) {
 	double fx= (float)x;
 	double fy = (float)y;
-	Game::updateMouseMove(cursor->getDeltaX(),cursor->getDeltaY(),fx,fy);
+	g_controller->updateMouseMove(cursor->getDeltaX(),cursor->getDeltaY(),fx,fy);
 	cursor->setPosition(fx,fy);
 }
 
@@ -111,6 +114,8 @@ void game_mouseWheel(int wheel) {}
 void game_entityRender(Advanced2D::Entity* entity) { }
 
 void game_entityUpdate(Advanced2D::Entity* entity) {
+	static double cad = 1;
+	static double caq = 1;
 	if((entity->getObjectType() == Letters::LETTER_TEMP)) {
 		Letters *temp =(Letters*)entity;
 		if((quiz->getClearTemp() == true) && (Scene::cleartemp == true))
@@ -118,15 +123,9 @@ void game_entityUpdate(Advanced2D::Entity* entity) {
 		if(sceneMain_start == true)
 			temp->setAlive(false);
 	}
-	if((entity->getObjectType() == Letters::OFF_TEMP)) {
-		Letters *temp =(Letters*)entity;
-		if((sceneMain_start == true) || (quiz->getClearOff() == true))
-			temp->setVisible(false);
-	}
 	if((entity->getObjectType() == Scene::EMOTION_GIFT) || (entity->getObjectType() == Scene::NEXT_STAGE) 
 		||(entity->getObjectType() == Player::NEXT_PLAYER) || (entity->getObjectType() == Scene::GUESSAWORD) || (entity->getObjectType() == Scene::OVERTIME)
 		||(entity->getObjectType() == Scene::NOTIFY_GIFT)) {
-		static int cad = 1;
 		Sprite *temp = (Sprite*)entity;
 		if(emotioncheck.stopwatch(14)) {
 			temp->setScale(temp->getScale() - 0.01*cad);
@@ -168,9 +167,14 @@ void game_entityUpdate(Advanced2D::Entity* entity) {
 		if(Next_Stage->getVisible() == false)
 			temp->setAlive(false);
 	}
-	if(entity->getObjectType() == Player::WRONGFULLGUESS) {
+	if(entity->getObjectType() == Player::FULLGUESSWRONG) {
 		Sprite *temp = (Sprite*)entity;
 		if((wheel->getStatus() == Wheel::WAIT) || (g_player->getStatus() == Player::READY_TO_FULL_ANSWER))
+			temp->setAlive(false);
+	}
+	if(entity->getObjectType() == Player::FULLGUESSTRUE) {
+		Sprite *temp = (Sprite*)entity;
+		if(Scene::Next_Stage->getVisible()==false)
 			temp->setAlive(false);
 	}
 	if(entity->getObjectType() == Scene::NEWGAME_TITTLE) {
@@ -182,6 +186,20 @@ void game_entityUpdate(Advanced2D::Entity* entity) {
 		Sprite *temp = (Sprite*)entity;
 		if(scenePause_start != true)
 			temp->setAlive(false);
+	}
+	if(entity->getObjectType() == Button::BUTTON) {
+		Button* temp = (Button*)entity;
+		if((temp->getLabel() == "play_button") || (temp->getLabel() == "help_button") || (temp->getLabel() == "exit_button") || (temp->getLabel() == "pause_button")) {
+			if(temp->isPosition() != false) {
+				temp->setRotation(temp->getRotation() - g_engine->math->toRadians(0.0005f)*caq);
+				if(temp->getRotation() < g_engine->math->toRadians(-4))
+					caq = -1;
+				if(temp->getRotation() > g_engine->math->toRadians(4))
+					caq = 1;
+			}
+			else
+				temp->setRotation(0);
+		}
 	}
 }
 
@@ -220,3 +238,10 @@ void game_entityCollision(Advanced2D::Entity* entity1,Advanced2D::Entity* entity
 		meme->setAlive(false);
 	}
 }		
+
+void game_end() 
+{
+	g_controller->release;
+	g_engine->Close();
+}
+
